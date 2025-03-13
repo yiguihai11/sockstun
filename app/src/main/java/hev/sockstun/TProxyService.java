@@ -25,6 +25,7 @@ import android.app.Notification.Builder;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.VpnService;
+import android.net.IpPrefix;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ServiceInfo;
 
@@ -43,6 +44,11 @@ public class TProxyService extends VpnService {
 	}
 
 	private ParcelFileDescriptor tunFd = null;
+	private static boolean isRunning = false;
+
+	public static boolean isRunning() {
+		return isRunning;
+	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -67,7 +73,7 @@ public class TProxyService extends VpnService {
 
 	public void startService() {
 		if (tunFd != null)
-		  return;
+			return;
 
 		Preferences prefs = new Preferences(this);
 
@@ -83,7 +89,7 @@ public class TProxyService extends VpnService {
 			builder.addAddress(addr, prefix);
 			builder.addRoute("0.0.0.0", 0);
 			if (!dns.isEmpty())
-			  builder.addDnsServer(dns);
+				builder.addDnsServer(dns);
 			session += "IPv4";
 
 			// 处理IP排除
@@ -105,13 +111,13 @@ public class TProxyService extends VpnService {
 
 						if (cidrMatcher.matches()) {
 							String ip = cidrMatcher.group(1);
-							int prefix = Integer.parseInt(cidrMatcher.group(2));
+							int cidrPrefix = Integer.parseInt(cidrMatcher.group(2));
 							if (Build.VERSION.SDK_INT >= 33) {
-								builder.excludeRoute(ip, prefix);
+								builder.excludeRoute(new IpPrefix(ip, cidrPrefix));
 							}
 						} else if (ipMatcher.matches()) {
 							if (Build.VERSION.SDK_INT >= 33) {
-								builder.excludeRoute(range, 32);
+								builder.excludeRoute(new IpPrefix(range, 32));
 							}
 						}
 					}
@@ -125,9 +131,9 @@ public class TProxyService extends VpnService {
 			builder.addAddress(addr, prefix);
 			builder.addRoute("::", 0);
 			if (!dns.isEmpty())
-			  builder.addDnsServer(dns);
+				builder.addDnsServer(dns);
 			if (!session.isEmpty())
-			  session += " + ";
+				session += " + ";
 			session += "IPv6";
 		}
 		boolean disallowSelf = true;
@@ -186,6 +192,7 @@ public class TProxyService extends VpnService {
 		}
 		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
 		prefs.setEnable(true);
+		isRunning = true;
 
 		String channelName = "socks5";
 		initNotificationChannel(channelName);
@@ -194,7 +201,7 @@ public class TProxyService extends VpnService {
 
 	public void stopService() {
 		if (tunFd == null)
-		  return;
+			return;
 
 		stopForeground(true);
 
@@ -207,6 +214,7 @@ public class TProxyService extends VpnService {
 		} catch (IOException e) {
 		}
 		tunFd = null;
+		isRunning = false;
 
 		System.exit(0);
 	}
