@@ -39,4 +39,5 @@
 		tools:ignore="QueryAllPackagesPermission" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
 		android:minSdkVersion="34" />
+	<uses-permission android:name="android.permission.EXCLUDE_ROUTE" />
 </manifest>
