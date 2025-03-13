@@ -15,4 +15,6 @@
 	<string name="save">Save</string>
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>
+	<string name="bypass_cn">Bypass China IP</string>
+	<string name="bypass_ip_ranges_hint">IP/CIDR List (one per line)</string>
 </resources>
