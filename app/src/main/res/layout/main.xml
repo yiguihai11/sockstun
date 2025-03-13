@@ -130,5 +130,46 @@
 				android:layout_weight="1"
 				android:text="@string/control_enable"/>
 		</LinearLayout>
+		<CheckBox
+			android:id="@+id/bypass_cn"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/bypass_cn"/>
+
+		<LinearLayout
+			android:id="@+id/bypass_ip_container"
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/bypass_ip_ranges_hint"/>
+			<EditText
+				android:id="@+id/bypass_ip_ranges"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:minLines="3"
+				android:gravity="top"
+				android:inputType="textMultiLine"/>
+		</LinearLayout>
 	</LinearLayout>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:layout_marginTop="16dp"
+		android:background="#F5F5F5"
+		android:padding="8dp">
+
+		<TextView
+			android:id="@+id/log_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			android:fontFamily="monospace"
+			android:textColor="#333333"/>
+	</ScrollView>
 </ScrollView>
