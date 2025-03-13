@@ -12,6 +12,8 @@ package hev.sockstun;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -83,6 +85,38 @@ public class TProxyService extends VpnService {
 			if (!dns.isEmpty())
 			  builder.addDnsServer(dns);
 			session += "IPv4";
+
+			// 处理IP排除
+			if (prefs.getBypassCN()) {
+				String ipRanges = prefs.getBypassIpRanges();
+				if (!ipRanges.isEmpty()) {
+					String[] ranges = ipRanges.split("\n");
+					for (String range : ranges) {
+						range = range.trim();
+						if (range.isEmpty()) continue;
+
+						// 匹配CIDR格式：192.168.1.0/24
+						Pattern cidrPattern = Pattern.compile("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})/(\\d{1,2})$");
+						Matcher cidrMatcher = cidrPattern.matcher(range);
+						
+						// 匹配单个IP：192.168.1.1
+						Pattern ipPattern = Pattern.compile("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$");
+						Matcher ipMatcher = ipPattern.matcher(range);
+
+						if (cidrMatcher.matches()) {
+							String ip = cidrMatcher.group(1);
+							int prefix = Integer.parseInt(cidrMatcher.group(2));
+							if (Build.VERSION.SDK_INT >= 33) {
+								builder.excludeRoute(ip, prefix);
+							}
+						} else if (ipMatcher.matches()) {
+							if (Build.VERSION.SDK_INT >= 33) {
+								builder.excludeRoute(range, 32);
+							}
+						}
+					}
+				}
+			}
 		}
 		if (prefs.getIpv6()) {
 			String addr = prefs.getTunnelIpv6Address();
@@ -201,5 +235,9 @@ public class TProxyService extends VpnService {
 			NotificationChannel channel = new NotificationChannel(channelName, name, NotificationManager.IMPORTANCE_DEFAULT);
 			notificationManager.createNotificationChannel(channel);
 		}
+	}
+
+	public long[] getStats() {
+		return TProxyGetStats();
 	}
 }

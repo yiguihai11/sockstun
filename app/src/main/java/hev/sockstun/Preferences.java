@@ -29,6 +29,8 @@ public class Preferences
 	public static final String UDP_IN_TCP = "UdpInTcp";
 	public static final String APPS = "Apps";
 	public static final String ENABLE = "Enable";
+	public static final String BYPASS_CN = "BypassCN";
+	public static final String BYPASS_IP_RANGES = "BypassIpRanges";
 
 	private SharedPreferences prefs;
 
@@ -178,5 +180,25 @@ public class Preferences
 
 	public int getTaskStackSize() {
 		return 81920;
+	}
+
+	public boolean getBypassCN() {
+		return prefs.getBoolean(BYPASS_CN, false);
+	}
+
+	public void setBypassCN(boolean enable) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(BYPASS_CN, enable);
+		editor.commit();
+	}
+
+	public String getBypassIpRanges() {
+		return prefs.getString(BYPASS_IP_RANGES, "");
+	}
+
+	public void setBypassIpRanges(String ranges) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(BYPASS_IP_RANGES, ranges);
+		editor.commit();
 	}
 }
