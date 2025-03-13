@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.net.InetAddress;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -48,6 +49,10 @@ public class TProxyService extends VpnService {
 
 	public static boolean isRunning() {
 		return isRunning;
+	}
+
+	public static long[] getStats() {
+		return TProxyGetStats();
 	}
 
 	@Override
@@ -109,16 +114,20 @@ public class TProxyService extends VpnService {
 						Pattern ipPattern = Pattern.compile("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$");
 						Matcher ipMatcher = ipPattern.matcher(range);
 
-						if (cidrMatcher.matches()) {
-							String ip = cidrMatcher.group(1);
-							int cidrPrefix = Integer.parseInt(cidrMatcher.group(2));
-							if (Build.VERSION.SDK_INT >= 33) {
-								builder.excludeRoute(new IpPrefix(ip, cidrPrefix));
+						try {
+							if (cidrMatcher.matches()) {
+								String ip = cidrMatcher.group(1);
+								int cidrPrefix = Integer.parseInt(cidrMatcher.group(2));
+								if (Build.VERSION.SDK_INT >= 33) {
+									builder.excludeRoute(new IpPrefix(InetAddress.getByName(ip), cidrPrefix));
+								}
+							} else if (ipMatcher.matches()) {
+								if (Build.VERSION.SDK_INT >= 33) {
+									builder.excludeRoute(new IpPrefix(InetAddress.getByName(range), 32));
+								}
 							}
-						} else if (ipMatcher.matches()) {
-							if (Build.VERSION.SDK_INT >= 33) {
-								builder.excludeRoute(new IpPrefix(range, 32));
-							}
+						} catch (Exception e) {
+							// 忽略无效的IP地址
 						}
 					}
 				}
@@ -243,9 +252,5 @@ public class TProxyService extends VpnService {
 			NotificationChannel channel = new NotificationChannel(channelName, name, NotificationManager.IMPORTANCE_DEFAULT);
 			notificationManager.createNotificationChannel(channel);
 		}
-	}
-
-	public long[] getStats() {
-		return TProxyGetStats();
 	}
 }
