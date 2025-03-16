@@ -1,79 +1,113 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-	namespace "hev.sockstun"
-	compileSdkVersion 34
-	ndkVersion "26.3.11579264"
+    namespace "hev.sockstun"
+    compileSdk 34
+    ndkVersion "27.2.12479018"
 
-	defaultConfig {
-		applicationId "hev.sockstun"
-		minSdkVersion 24
-		targetSdkVersion 34
-		versionCode 1
-		versionName "1.0"
-		setProperty("archivesBaseName", "$applicationId-$versionName")
-		ndk {
-			abiFilters "armeabi-v7a", "arm64-v8a",'x86','x86_64'
-		}
-		externalNativeBuild {
-			ndkBuild {
-				arguments "APP_CFLAGS+=-DPKGNAME=hev/sockstun -ffile-prefix-map=${rootDir}=."
-				arguments "APP_LDFLAGS+=-Wl,--build-id=none"
-			}
-		}
-	}
+    defaultConfig {
+        applicationId "hev.sockstun"
+        minSdk 33  // ✅ 规范化
+        targetSdk 34  // ✅ 规范化
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        setProperty("archivesBaseName", "$applicationId-$versionName")
 
-	signingConfigs {
-		release {
-		}
-	}
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
 
-	buildTypes {
-		release {
-			minifyEnabled false
-			signingConfig signingConfigs.release
-		}
-		debug {
-			minifyEnabled false
-			signingConfig signingConfigs.release
-		}
-	}
+        externalNativeBuild {
+            ndkBuild {
+                arguments "APP_CFLAGS+=-DPKGNAME=hev/sockstun -ffile-prefix-map=${rootDir}=."
+                arguments "APP_LDFLAGS+=-Wl,--build-id=none"
+            }
+        }
+    }
 
-	def propsFile = rootProject.file('store.properties')
-	def configName = 'release'
+    signingConfigs {
+        release {
+        }
+    }
 
-	if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
-		def props = new Properties()
-		props.load(new FileInputStream(propsFile))
-		if (props!=null && props.containsKey('storeFile')) {
-			android.signingConfigs[configName].storeFile = rootProject.file(props['storeFile'])
-			android.signingConfigs[configName].storePassword = props['storePassword']
-			android.signingConfigs[configName].keyAlias = props['keyAlias']
-			android.signingConfigs[configName].keyPassword = props['keyPassword']
-		}
-	}
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
 
-	externalNativeBuild {
-		ndkBuild {
-			path "src/main/jni/Android.mk"
-		}
-	}
+    // ✅ 使用 safer 的方式加载签名配置
+    def propsFile = rootProject.file('store.properties')
+    def configName = 'release'
 
-	lintOptions {
-		checkReleaseBuilds false
-		// Or, if you prefer, you can continue to check for errors in release builds,
-		// but continue the build even when errors are found:
-		abortOnError false
-	}
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
 
-	dependenciesInfo {
-		// Disables dependency metadata when building APKs.
-		includeInApk = false
-		// Disables dependency metadata when building Android App Bundles.
-		includeInBundle = false
-	}
+        if (props.containsKey('storeFile') && props.containsKey('storePassword') &&
+                props.containsKey('keyAlias') && props.containsKey('keyPassword')) {
+
+            signingConfigs.named(configName) {
+                storeFile = rootProject.file(props['storeFile'])
+                storePassword = props['storePassword']
+                keyAlias = props['keyAlias']
+                keyPassword = props['keyPassword']
+            }
+            println("✅ Signing config '$configName' loaded from store.properties")
+        } else {
+            println("⚠️ Warning: store.properties is missing required properties.")
+        }
+    } else {
+        println("⚠️ Warning: store.properties file not found.")
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17  // ✅ 统一 Java 目标版本
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"  // ✅ 启用 Kotlin
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 dependencies {
-	implementation 'androidx.appcompat:appcompat:1.4.1'
+    //implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+
+    // ✅ 确保 Kotlin 运行时库
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.10"
+
+    // ✅ 启用 Kotlin Android 开发
+    implementation 'androidx.core:core-ktx:1.12.0'
+    //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    //implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+
+    // 新增依赖：MaxMind GeoIP2
+    //implementation 'com.maxmind.geoip2:geoip2:4.2.0'
 }

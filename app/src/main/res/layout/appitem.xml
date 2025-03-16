@@ -16,20 +16,34 @@
 			android:layout_marginLeft="5px"
 			android:layout_marginRight="20px"
 			android:layout_marginTop="5px" />
-		<TextView
-			android:id="@+id/name"
+		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textSize="50px"
-			android:maxEms="14"
-			android:ellipsize="end"
-			android:singleLine="true" />
+			android:layout_gravity="center_vertical">
+			<TextView
+				android:id="@+id/name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="50px"
+				android:maxEms="14"
+				android:ellipsize="end"
+				android:singleLine="true"
+				android:textColor="?android:attr/textColorPrimary"/>
+			<TextView
+				android:id="@+id/uid"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="35px"
+				android:textColor="?android:attr/textColorPrimary"/>
+		</LinearLayout>
 	</LinearLayout>
 	<CheckBox
 		android:id="@+id/checked"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
+		android:layout_centerVertical="true"
 		android:focusable="false"
 		android:clickable="false" />
 </RelativeLayout>

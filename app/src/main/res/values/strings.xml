@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">SocksTun</string>
-	<string name="socks_addr">Socks Address:</string>
-	<string name="socks_port">Socks Port:</string>
-	<string name="socks_user">Socks Username:</string>
-	<string name="socks_pass">Socks Password:</string>
-	<string name="dns_ipv4">DNS IPv4:</string>
-	<string name="dns_ipv6">DNS IPv6:</string>
-	<string name="udp_in_tcp">UDP relay over TCP</string>
+	<string name="socks_addr">Socks5 Address</string>
+	<string name="socks_port">Socks5 Port</string>
+	<string name="socks_user">Socks5 Username</string>
+	<string name="socks_pass">Socks5 Password</string>
+	<string name="dns_ipv4">DNS IPv4</string>
+	<string name="dns_ipv6">DNS IPv6</string>
+	<string name="udp_in_tcp">UDP in TCP</string>
 	<string name="ipv4">IPv4</string>
 	<string name="ipv6">IPv6</string>
 	<string name="global">Global</string>
@@ -15,6 +15,35 @@
 	<string name="save">Save</string>
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>
-	<string name="bypass_cn">Bypass China IP</string>
-	<string name="bypass_ip_ranges_hint">IP/CIDR List (one per line)</string>
+	<string name="exclude">Exclude Routes</string>
+	<string name="exclude_routes_hint">One IP or CIDR per line, e.g.:\n192.168.1.0/24\n2001:db8::/32</string>
+	<string name="stop">Stop</string>
+	<string name="search_apps">Search apps</string>
+	<string name="filter_all">All Apps</string>
+	<string name="filter_user">User Apps</string>
+	<string name="filter_system">System Apps</string>
+	<string name="uid_format">UID: %1$s%2$s</string>
+	<string name="socks_server_settings">SocksTun Server Settings</string>
+	<string name="dns_settings">DNS Settings</string>
+	<string name="options">Options</string>
+	
+	<!-- Tab 标题 -->
+	<string name="tab_server">Server</string>
+	<string name="tab_dns">DNS</string>
+	<string name="tab_options">Options</string>
+	
+	<!-- 应用过滤模式 -->
+	<string name="app_filter_title">App Filter Mode</string>
+	<string name="app_filter_off">Global (All Apps Through VPN)</string>
+	<string name="app_filter_bypass">Bypass (Selected Apps Bypass VPN)</string>
+	<string name="app_filter_only">Only (Only Selected Apps Use VPN)</string>
+	<string name="app_filter_select">Select Apps</string>
+	<string name="bypass_apps">Bypass Apps</string>
+	<string name="select_apps">Select Apps</string>
+	
+	<!-- VPN确认对话框 -->
+	<string name="vpn_conflict_title">VPN Conflict</string>
+	<string name="vpn_conflict_message">Another VPN is currently active. If you continue, the other VPN will be disconnected.</string>
+	<string name="vpn_conflict_continue">Continue</string>
+	<string name="vpn_conflict_cancel">Cancel</string>
 </resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SocksTun</string>
+    <string name="socks_addr">Socks5 地址</string>
+    <string name="socks_port">Socks5 端口</string>
+    <string name="socks_user">Socks5 用户名</string>
+    <string name="socks_pass">Socks5 密码</string>
+    <string name="dns_ipv4">DNS IPv4</string>
+    <string name="dns_ipv6">DNS IPv6</string>
+    <string name="udp_in_tcp">UDP 通过 TCP</string>
+    <string name="ipv4">IPv4</string>
+    <string name="ipv6">IPv6</string>
+    <string name="global">全局</string>
+    <string name="apps">应用</string>
+    <string name="save">保存</string>
+    <string name="control_enable">启用</string>
+    <string name="control_disable">禁用</string>
+    <string name="exclude">排除 IP</string>
+    <string name="exclude_routes_hint">每行一个 IP 或 CIDR，例如：\n192.168.1.0/24\n2001:db8::/32</string>
+    <string name="stop">停止</string>
+    <string name="search_apps">搜索应用</string>
+    <string name="filter_all">所有应用</string>
+    <string name="filter_user">用户应用</string>
+    <string name="filter_system">系统应用</string>
+    <string name="uid_format">UID: %1$s%2$s</string>
+    <string name="socks_server_settings">SocksTun 服务器设置</string>
+    <string name="dns_settings">DNS 设置</string>
+    <string name="options">选项</string>
+    
+    <!-- Tab 标题 -->
+    <string name="tab_server">服务器</string>
+    <string name="tab_dns">DNS</string>
+    <string name="tab_options">选项</string>
+    
+    <!-- 应用过滤模式 -->
+    <string name="app_filter_title">应用过滤模式</string>
+    <string name="app_filter_off">全局（所有应用经过VPN）</string>
+    <string name="app_filter_bypass">绕过（选定应用绕过VPN）</string>
+    <string name="app_filter_only">仅限（仅选定应用使用VPN）</string>
+    <string name="app_filter_select">选择应用</string>
+    <string name="bypass_apps">绕过的应用</string>
+    <string name="select_apps">选择应用</string>
+    
+    <!-- VPN确认对话框 -->
+    <string name="vpn_conflict_title">VPN冲突</string>
+    <string name="vpn_conflict_message">当前已有其他VPN处于活动状态。如果继续，其他VPN将被断开连接。</string>
+    <string name="vpn_conflict_continue">继续</string>
+    <string name="vpn_conflict_cancel">取消</string>
+</resources>

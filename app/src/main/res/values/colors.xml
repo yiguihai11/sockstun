@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light Theme -->
+    <color name="ios_system_blue">#007AFF</color>
+    <color name="ios_system_blue_container">#D0E4FF</color>
+    <color name="ios_system_background">#FFFFFF</color>
+    <color name="ios_surface">#F2F2F7</color>
+    
+    <!-- Dark Theme -->
+    <color name="ios_system_blue_dark">#0A84FF</color>
+    <color name="ios_system_blue_container_dark">#0040DD</color>
+    <color name="ios_system_background_dark">#000000</color>
+    <color name="ios_surface_dark">#1C1C1E</color>
+    
+    <!-- Typography -->
+    <color name="ios_label_primary">#000000</color>
+    <color name="ios_label_primary_dark">#FFFFFF</color>
+</resources>
