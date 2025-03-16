@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.mozilla.rust-android-gradle.rust-android'
 }
 
 android {
@@ -94,6 +95,20 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+    buildToolsVersion '35.0.0'
+}
+
+cargo {
+    module = 'src/main/jni/shadowsocks-rust'
+    libname = 'sslocal'
+    targets = ['arm', 'arm64', 'x86', 'x86_64']
+    profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
+    extraCargoBuildArguments = ['--bin', libname]
+    verbose = true
+    // https://github.com/mozilla/rust-android-gradle/tree/master#features
+    features {
+        noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
+    }
 }
 
 dependencies {
@@ -104,7 +119,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.10"
 
     // ✅ 启用 Kotlin Android 开发
-    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.core:core-ktx:1.13.0'
     //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
     //implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
 
