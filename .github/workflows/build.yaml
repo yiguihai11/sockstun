@@ -24,7 +24,7 @@ jobs:
           export ANDROID_SDK_ROOT=`pwd`/sdk
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           yes | sdk/cmdline-tools/bin/sdkmanager --sdk_root=`pwd`/sdk --licenses
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --stacktrace
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             ref_name="pr-${{ github.event.pull_request.number }}"
           else
