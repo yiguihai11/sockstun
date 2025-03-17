@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 apt-get -qqy update
 apt-get --quiet install --yes wget curl tar unzip lib32stdc++6 lib32z1 git ca-certificates autoconf libtool libev-dev cmake autoconf automake build-essential gcc m4 binutils pkg-config
 
