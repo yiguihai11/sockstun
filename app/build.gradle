@@ -18,15 +18,20 @@ android {
         multiDexEnabled true
         setProperty("archivesBaseName", "$applicationId-$versionName")
 
-        ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-        }
-
         externalNativeBuild {
             ndkBuild {
                 arguments "APP_CFLAGS+=-DPKGNAME=hev/sockstun -ffile-prefix-map=${rootDir}=."
                 arguments "APP_LDFLAGS+=-Wl,--build-id=none"
             }
+        }
+    }
+
+    splits {
+        abi {
+            enable true // 启用 ABI 分包
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64" // 仅包含这些 ABI
+            universalApk false // 不生成包含所有 ABI 的 APK
         }
     }
 
@@ -46,7 +51,7 @@ android {
         }
     }
 
-    // ✅ 使用 safer 的方式加载签名配置
+    // 使用 safer 的方式加载签名配置
     def propsFile = rootProject.file('store.properties')
     def configName = 'release'
 
@@ -100,29 +105,24 @@ android {
 cargo {
     module = 'src/main/jni/shadowsocks-rust'
     libname = 'sslocal'
+    // 修改为 recognized targets
     targets = ['arm', 'arm64', 'x86', 'x86_64']
     profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
     extraCargoBuildArguments = ['--bin', libname]
     verbose = true
-    // https://github.com/mozilla/rust-android-gradle/tree/master#features
     features {
         noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
     }
-    // 使用 exec 闭包设置环境变量
     exec = { spec, toolchain ->
-        // 根据操作系统选择默认的 Python 命令
         def osName = System.getProperty("os.name").toLowerCase()
         def defaultPython = osName.contains("windows") ? "python" : "python3"
         def pythonCmd = defaultPython
-
         try {
-            // 尝试执行默认的 Python 命令
             Runtime.runtime.exec([pythonCmd, "-V"] as String[])
             spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", pythonCmd)
             project.logger.lifecycle("${pythonCmd} detected.")
         } catch (IOException e) {
             project.logger.lifecycle("No ${pythonCmd} detected.")
-            // 如果默认命令失败，尝试备用命令
             pythonCmd = defaultPython == "python3" ? "python" : "python3"
             try {
                 Runtime.runtime.exec([pythonCmd, "-V"] as String[])
@@ -133,10 +133,8 @@ cargo {
             }
         }
         spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
-        // 构造 linker-wrapper.py 的路径，使用平台无关的分隔符
         def linkerWrapperFile = new File(projectDir, "${module}${File.separator}..${File.separator}linker-wrapper.py")
         spec.environment("RUST_ANDROID_GRADLE_LINKER_WRAPPER_PY", linkerWrapperFile.absolutePath)
-        // 构造目标库文件的路径
         def targetPath = "target${File.separator}${toolchain.target}${File.separator}${profile}${File.separator}lib${libname}.so"
         spec.environment("RUST_ANDROID_GRADLE_TARGET", targetPath)
     }
@@ -155,7 +153,6 @@ tasks.register('cargoClean', Exec) {
 }
 
 tasks.clean.dependsOn 'cargoClean'
-
 
 dependencies {
     //implementation 'androidx.appcompat:appcompat:1.7.0'
