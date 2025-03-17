@@ -4,6 +4,49 @@ plugins {
     id 'org.mozilla.rust-android-gradle.rust-android'
 }
 
+apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+cargo {
+    module = 'src/main/jni/shadowsocks-rust'
+    libname = 'sslocal'
+    targets = ['arm', 'arm64', 'x86', 'x86_64']
+    profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
+    extraCargoBuildArguments = ['--bin', libname]
+    verbose = true
+    // https://github.com/mozilla/rust-android-gradle/tree/master#features
+    features {
+        noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
+    }
+}
+
+// 添加检查 Rust 工具链的任务
+task checkRustToolchain {
+    doLast {
+        def cargoPath = 'cargo'
+        try {
+            exec {
+                commandLine cargoPath, '--version'
+            }
+            println("✅ Rust toolchain found.")
+        } catch (Exception e) {
+            throw new GradleException("❌ Rust toolchain (cargo) not found. Please install Rust via 'rustup' (https://rustup.rs/).")
+        }
+    }
+}
+
+// 使 cargoBuild 任务依赖检查任务
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith('cargoBuild')) {
+        task.dependsOn checkRustToolchain
+    }
+}
+
+// 确保 assembleRelease 依赖 cargoBuild 任务（可选）
+afterEvaluate {
+    tasks.named('assembleRelease') {
+        dependsOn tasks.matching { it.name.startsWith('cargoBuild') }
+    }
+}
+
 android {
     namespace "hev.sockstun"
     compileSdk 34
@@ -96,44 +139,6 @@ android {
         includeInBundle = false
     }
     buildToolsVersion '35.0.0'
-}
-
-apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
-cargo {
-    module = 'src/main/jni/shadowsocks-rust'
-    libname = 'sslocal'
-    targets = ['arm', 'arm64', 'x86', 'x86_64']
-    profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
-    extraCargoBuildArguments = ['--bin', libname]
-    verbose = true
-    // https://github.com/mozilla/rust-android-gradle/tree/master#features
-    features {
-        noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
-    }
-}
-
-// 添加自定义任务检查 Rust 工具链
-task checkRustToolchain {
-    doLast {
-        def cargoPath = 'cargo'
-        try {
-            // 执行 cargo --version 检查是否存在
-            exec {
-                commandLine cargoPath, '--version'
-            }
-            println("✅ Rust toolchain found.")
-        } catch (Exception e) {
-            // 如果 cargo 未找到，抛出异常并停止构建
-            throw new GradleException("❌ Rust toolchain (cargo) not found. Please install Rust via 'rustup' (https://rustup.rs/) and try again.")
-        }
-    }
-}
-
-// 将 cargo 任务依赖于检查任务
-tasks.whenTaskAdded { task ->
-    if (task.name.startsWith('cargoBuild')) {
-        task.dependsOn checkRustToolchain
-    }
 }
 
 dependencies {
