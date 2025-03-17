@@ -42,8 +42,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            signingConfig signingConfigs.release
+                signingConfig signingConfigs.release
+                minifyEnabled true // 压缩 & 混淆代码，减小体积
+                shrinkResources true // 移除无用资源
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
@@ -162,7 +164,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.10"
 
     // ✅ 启用 Kotlin Android 开发
-    implementation 'androidx.core:core-ktx:1.13.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
     //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
     //implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
 
