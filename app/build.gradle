@@ -10,13 +10,15 @@ cargo {
     libname = 'sslocal'
     targets = ['arm', 'arm64', 'x86', 'x86_64']
     profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
-    // extraCargoBuildArguments = ['--bin', libname]
-    crate-type = 'cdylib'
+    extraCargoBuildArguments = ['--bin', libname]
     verbose = true
     // https://github.com/mozilla/rust-android-gradle/tree/master#features
     features {
         noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
     }
+    // 设置环境变量
+    environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
+    environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/${profile}/lib${libname}.so")
 }
 
 // 添加检查 Rust 工具链的任务
