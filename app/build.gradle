@@ -4,54 +4,6 @@ plugins {
     id 'org.mozilla.rust-android-gradle.rust-android'
 }
 
-apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
-cargo {
-    module = 'src/main/jni/shadowsocks-rust'
-    libname = 'sslocal'
-    targets = ['arm', 'arm64', 'x86', 'x86_64']
-    profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
-    extraCargoBuildArguments = ['--bin', libname]
-    verbose = true
-    // https://github.com/mozilla/rust-android-gradle/tree/master#features
-    features {
-        noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
-    }
-    // 使用 exec 闭包设置环境变量
-    exec = { spec, toolchain ->
-        spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
-        spec.environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/${profile}/lib${libname}.so")
-    }
-}
-
-// 添加检查 Rust 工具链的任务
-task checkRustToolchain {
-    doLast {
-        def cargoPath = 'cargo'
-        try {
-            exec {
-                commandLine cargoPath, '--version'
-            }
-            println("✅ Rust toolchain found.")
-        } catch (Exception e) {
-            throw new GradleException("❌ Rust toolchain (cargo) not found. Please install Rust via 'rustup' (https://rustup.rs/).")
-        }
-    }
-}
-
-// 使 cargoBuild 任务依赖检查任务
-tasks.whenTaskAdded { task ->
-    if (task.name.startsWith('cargoBuild')) {
-        task.dependsOn checkRustToolchain
-    }
-}
-
-// 确保 assembleRelease 依赖 cargoBuild 任务（可选）
-afterEvaluate {
-    tasks.named('assembleRelease') {
-        dependsOn tasks.matching { it.name.startsWith('cargoBuild') }
-    }
-}
-
 android {
     namespace "hev.sockstun"
     compileSdk 34
@@ -143,8 +95,55 @@ android {
         includeInApk = false
         includeInBundle = false
     }
-    buildToolsVersion '35.0.0'
 }
+
+cargo {
+    module = 'src/main/jni/shadowsocks-rust'
+    libname = 'sslocal'
+    targets = ['arm', 'arm64', 'x86', 'x86_64']
+    profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
+    extraCargoBuildArguments = ['--bin', libname]
+    verbose = true
+    // https://github.com/mozilla/rust-android-gradle/tree/master#features
+    features {
+        noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
+    }
+    // 使用 exec 闭包设置环境变量
+    exec = { spec, toolchain ->
+        try {
+            Runtime.runtime.exec(["python3", "-V"] as String[])
+            spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", "python3")
+            project.logger.lifecycle("Python 3 detected.")
+        } catch (IOException e) {
+            project.logger.lifecycle("No python 3 detected.")
+            try {
+                Runtime.runtime.exec(["python", "-V"] as String[])
+                spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", "python")
+                project.logger.lifecycle("Python detected.")
+            } catch (IOException e2) {
+                throw new GradleException("No any python version detected. You should install the python first to compile project.")
+            }
+        }
+        spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
+        spec.environment("RUST_ANDROID_GRADLE_LINKER_WRAPPER_PY", "$projectDir/$module/../linker-wrapper.py")
+        spec.environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/${profile}/lib${libname}.so")
+    }
+}
+
+tasks.configureEach {
+    if (name == 'mergeDebugJniLibFolders' || name == 'mergeReleaseJniLibFolders') {
+        dependsOn 'cargoBuild'
+    }
+}
+
+tasks.register('cargoClean', Exec) {
+    executable = 'cargo'
+    args = ['clean']
+    workingDir = "$projectDir/${cargo.module}"
+}
+
+tasks.clean.dependsOn 'cargoClean'
+
 
 dependencies {
     //implementation 'androidx.appcompat:appcompat:1.7.0'
