@@ -16,9 +16,10 @@ cargo {
     features {
         noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
     }
-    // 设置环境变量
+    // 使用 exec 闭包设置环境变量
     exec = { spec, toolchain ->
-        spec.environment("TEST", "test")
+        spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
+        spec.environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/${profile}/lib${libname}.so")
     }
 }
 
