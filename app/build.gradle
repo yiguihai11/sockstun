@@ -42,10 +42,10 @@ android {
 
     buildTypes {
         release {
-                signingConfig signingConfigs.release
-                minifyEnabled true // 压缩 & 混淆代码，减小体积
-                shrinkResources true // 移除无用资源
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            minifyEnabled true // 压缩 & 混淆代码，减小体积
+            shrinkResources true // 移除无用资源
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
