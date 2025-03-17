@@ -17,9 +17,19 @@ cargo {
         noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
     }
     // 设置环境变量
-    environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
-    environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/${profile}/lib${libname}.so")
+    exec = { spec, toolchain ->
+        spec.environment("TEST", "test")
+    }
 }
+
+
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionSha256Sum=20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78
+distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-8.13-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
 
 // 添加检查 Rust 工具链的任务
 task checkRustToolchain {
