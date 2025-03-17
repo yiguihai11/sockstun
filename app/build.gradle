@@ -110,11 +110,29 @@ cargo {
     features {
         noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
     }
-    exec = { spec, toolchain ->
-            // https://developer.android.com/guide/practices/page-sizes#other-build-systems
-            spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib$libname.so")
-            spec.environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/$profile/lib$libname.so")
+}
+
+// 添加自定义任务检查 Rust 工具链
+task checkRustToolchain {
+    doLast {
+        def cargoPath = 'cargo'
+        try {
+            // 执行 cargo --version 检查是否存在
+            exec {
+                commandLine cargoPath, '--version'
+            }
+            println("✅ Rust toolchain found.")
+        } catch (Exception e) {
+            // 如果 cargo 未找到，抛出异常并停止构建
+            throw new GradleException("❌ Rust toolchain (cargo) not found. Please install Rust via 'rustup' (https://rustup.rs/) and try again.")
         }
+    }
+}
+
+// 将 cargo 任务依赖于检查任务
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith('cargoBuild')) {
+        task.dependsOn checkRustToolchain
     }
 }
 
