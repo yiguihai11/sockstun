@@ -31,13 +31,10 @@ jobs:
           sdk/cmdline-tools/bin/sdkmanager --sdk_root=`pwd`/sdk "platform-tools" "build-tools;35.0.0" "ndk;27.2.12479018"
 
       - name: Setup Rust
-        uses: actions/setup-rust@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          rust-version: stable
-
-      - name: Install Rust Android Targets
-        run: |
-          rustup target add armv7-linux-androideabi aarch64-linux-android i686-linux-android x86_64-linux-android
+          toolchain: stable
+          targets: "armv7-linux-androideabi,aarch64-linux-android,i686-linux-android,x86_64-linux-android"
 
       - name: Build
         run: |
