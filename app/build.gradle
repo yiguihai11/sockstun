@@ -98,6 +98,7 @@ android {
     buildToolsVersion '35.0.0'
 }
 
+apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
 cargo {
     module = 'src/main/jni/shadowsocks-rust'
     libname = 'sslocal'
@@ -108,6 +109,12 @@ cargo {
     // https://github.com/mozilla/rust-android-gradle/tree/master#features
     features {
         noDefaultBut 'local-tunnel', 'local-online-config', 'logging', 'local-flow-stat', 'local-dns', 'aead-cipher-2022'
+    }
+    exec = { spec, toolchain ->
+            // https://developer.android.com/guide/practices/page-sizes#other-build-systems
+            spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib$libname.so")
+            spec.environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/$profile/lib$libname.so")
+        }
     }
 }
 

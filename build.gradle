@@ -24,6 +24,7 @@ buildscript {
 		maven { url 'https://mirrors.163.com/maven/repository/maven-public' }
 		google()
 		mavenCentral()
+		gradlePluginPortal()
 	}
 
 	/**
@@ -35,6 +36,7 @@ buildscript {
 	dependencies {
 		classpath 'com.android.tools.build:gradle:8.8.2'
 		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.10'
+		classpath 'org.mozilla.rust-android-gradle:plugin:0.9.6'
 	}
 }
 
@@ -56,5 +58,6 @@ allprojects {
 		maven { url 'https://mirrors.163.com/maven/repository/maven-public' }
 		google()
 		mavenCentral()
+		gradlePluginPortal()
 	}
 }
