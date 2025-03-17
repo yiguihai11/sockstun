@@ -110,23 +110,35 @@ cargo {
     }
     // 使用 exec 闭包设置环境变量
     exec = { spec, toolchain ->
+        // 根据操作系统选择默认的 Python 命令
+        def osName = System.getProperty("os.name").toLowerCase()
+        def defaultPython = osName.contains("windows") ? "python" : "python3"
+        def pythonCmd = defaultPython
+
         try {
-            Runtime.runtime.exec(["python3", "-V"] as String[])
-            spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", "python3")
-            project.logger.lifecycle("Python 3 detected.")
+            // 尝试执行默认的 Python 命令
+            Runtime.runtime.exec([pythonCmd, "-V"] as String[])
+            spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", pythonCmd)
+            project.logger.lifecycle("${pythonCmd} detected.")
         } catch (IOException e) {
-            project.logger.lifecycle("No python 3 detected.")
+            project.logger.lifecycle("No ${pythonCmd} detected.")
+            // 如果默认命令失败，尝试备用命令
+            pythonCmd = defaultPython == "python3" ? "python" : "python3"
             try {
-                Runtime.runtime.exec(["python", "-V"] as String[])
-                spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", "python")
-                project.logger.lifecycle("Python detected.")
+                Runtime.runtime.exec([pythonCmd, "-V"] as String[])
+                spec.environment("RUST_ANDROID_GRADLE_PYTHON_COMMAND", pythonCmd)
+                project.logger.lifecycle("${pythonCmd} detected as fallback.")
             } catch (IOException e2) {
-                throw new GradleException("No any python version detected. You should install the python first to compile project.")
+                throw new GradleException("No python version detected. Please install python to compile the project.")
             }
         }
         spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
-        spec.environment("RUST_ANDROID_GRADLE_LINKER_WRAPPER_PY", "$projectDir/$module/../linker-wrapper.py")
-        spec.environment("RUST_ANDROID_GRADLE_TARGET", "target/${toolchain.target}/${profile}/lib${libname}.so")
+        // 构造 linker-wrapper.py 的路径，使用平台无关的分隔符
+        def linkerWrapperFile = new File(projectDir, "${module}${File.separator}..${File.separator}linker-wrapper.py")
+        spec.environment("RUST_ANDROID_GRADLE_LINKER_WRAPPER_PY", linkerWrapperFile.absolutePath)
+        // 构造目标库文件的路径
+        def targetPath = "target${File.separator}${toolchain.target}${File.separator}${profile}${File.separator}lib${libname}.so"
+        spec.environment("RUST_ANDROID_GRADLE_TARGET", targetPath)
     }
 }
 
