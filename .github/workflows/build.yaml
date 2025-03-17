@@ -13,9 +13,13 @@ jobs:
         with:
           fetch-depth: 1
           submodules: true
-      - name: Build
+
+      - name: Install Dependencies
         run: |
           sudo apt-get update -y && sudo apt-get install -y wget unzip file git openjdk-17-jdk
+
+      - name: Setup Android SDK
+        run: |
           git submodule foreach git submodule update --init
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           mkdir sdk
@@ -24,6 +28,22 @@ jobs:
           export ANDROID_SDK_ROOT=`pwd`/sdk
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           yes | sdk/cmdline-tools/bin/sdkmanager --sdk_root=`pwd`/sdk --licenses
+          sdk/cmdline-tools/bin/sdkmanager --sdk_root=`pwd`/sdk "platform-tools" "build-tools;35.0.0" "ndk;27.2.12479018"
+
+      - name: Setup Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+
+      - name: Install Rust Android Targets
+        run: |
+          rustup target add armv7-linux-androideabi aarch64-linux-android i686-linux-android x86_64-linux-android
+
+      - name: Build
+        run: |
+          export ANDROID_HOME=`pwd`/sdk
+          export ANDROID_SDK_ROOT=`pwd`/sdk
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           ./gradlew assembleRelease --stacktrace
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             ref_name="pr-${{ github.event.pull_request.number }}"
@@ -32,6 +52,7 @@ jobs:
           fi
           echo "ref_name=${ref_name}" >> $GITHUB_ENV
           cp app/build/outputs/apk/release/hev.sockstun-*-release.apk hev.sockstun-${ref_name}-release.apk
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
