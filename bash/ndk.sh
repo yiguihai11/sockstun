@@ -18,8 +18,8 @@ unzip cmdline-tools.zip
 export PATH=$PATH:${ANDROID_SDK_ROOT}/cmdline-tools/bin
 popd
 if [ -z "$JAVA_HOME" ] && ! command -v java; then
-	apt-get --quiet install --yes openjdk-8-jre
-	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+	apt-get --quiet install --yes openjdk-8-jre openjdk-17-jdk
+	export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 	export PATH=$PATH:$JAVA_HOME/bin
 fi
 sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --version
