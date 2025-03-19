@@ -18,27 +18,31 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.VpnService
-import android.os.Build
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import hev.sockstun.adapters.ViewPagerAdapter
-import hev.sockstun.fragments.ServerFragment
-import hev.sockstun.fragments.DnsFragment
-import hev.sockstun.fragments.OptionsFragment
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import com.google.android.material.navigation.NavigationView
+import hev.sockstun.fragments.AboutFragment
+import hev.sockstun.fragments.HomeFragment
+import hev.sockstun.fragments.HevSocks5TunnelFragment
+import hev.sockstun.fragments.LogFragment
+import hev.sockstun.fragments.ShadowsocksFragment
 
-class MainActivity : FragmentActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
         private const val NOTIFICATION_PERMISSION_CODE = 1001
+        private const val TAG = "MainActivity"
         
         // 应用过滤模式常量
         const val APP_FILTER_MODE_OFF = 0
@@ -47,22 +51,26 @@ class MainActivity : FragmentActivity(), View.OnClickListener {
     }
 
     private lateinit var prefs: Preferences
-    private lateinit var buttonSave: MaterialButton
-    private lateinit var buttonControl: MaterialButton
-    private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager2
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
+    private lateinit var toolbar: Toolbar
     
-    private lateinit var serverFragment: ServerFragment
-    private lateinit var dnsFragment: DnsFragment
-    private lateinit var optionsFragment: OptionsFragment
+    // 当前活动的Fragment
+    private var activeFragment: Fragment? = null
+    private var homeFragment: HomeFragment? = null
+    private var logFragment: LogFragment? = null
     
     // 用于处理VPN权限请求结果的ActivityResultLauncher
     private lateinit var vpnActivityResultLauncher: ActivityResultLauncher<Intent>
-
-    // 用于接收VPN服务状态广播的Receiver
-    private val serviceReceiver = object : BroadcastReceiver() {
+    
+    // 日志广播接收器
+    private val logReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            updateUI()
+            if (intent.action == TProxyService.ACTION_LOG_EVENT) {
+                val tag = intent.getStringExtra(TProxyService.EXTRA_LOG_TAG) ?: "Unknown"
+                val message = intent.getStringExtra(TProxyService.EXTRA_LOG_MESSAGE) ?: "No message"
+                appendLog(tag, message)
+            }
         }
     }
 
@@ -72,26 +80,30 @@ class MainActivity : FragmentActivity(), View.OnClickListener {
 
         prefs = Preferences(this)
         
+        // 初始化视图
+        initViews()
+        
+        // 设置导航抽屉
+        setupDrawer()
+        
+        // 默认显示Home页面
+        if (savedInstanceState == null) {
+            // 导航到Home页面
+            navigateToFragment(R.id.nav_home)
+            navigationView.setCheckedItem(R.id.nav_home)
+        }
+        
         // 注册VPN权限请求结果处理器
         vpnActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
-                // VPN权限已获取，启动服务
                 startVpnService()
             } else {
-                // 用户拒绝VPN权限
-                Toast.makeText(this, "VPN权限被拒绝", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.vpn_permission_denied, Toast.LENGTH_SHORT).show()
             }
         }
         
-        initViews()
-        setupViewPager()
-        setupListeners()
-        
-        // 使用Context.RECEIVER_NOT_EXPORTED标志，因为这是应用内部使用的广播
-        registerReceiver(serviceReceiver, IntentFilter(TProxyService.ACTION_STATUS_CHANGED), Context.RECEIVER_NOT_EXPORTED)
-
         // Android 13+需要请求通知权限
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -104,47 +116,140 @@ class MainActivity : FragmentActivity(), View.OnClickListener {
                 NOTIFICATION_PERMISSION_CODE
             )
         }
+        
+        // 检查是否需要显示解决方案
+        checkForSolutionRequest(intent)
 
-        updateUI()
+        // 设置返回键处理
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    finish()
+                }
+            }
+        })
+        
+        // 注册日志接收器
+        val intentFilter = IntentFilter(TProxyService.ACTION_LOG_EVENT)
+        registerReceiver(logReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
     }
-
+    
     override fun onDestroy() {
+        // 注销日志接收器
+        unregisterReceiver(logReceiver)
         super.onDestroy()
-        unregisterReceiver(serviceReceiver)
+    }
+    
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        checkForSolutionRequest(intent)
+    }
+    
+    private fun checkForSolutionRequest(intent: Intent?) {
+        if (intent?.action == "hev.sockstun.SHOW_SOLUTION") {
+            // 从SharedPreferences读取解决方案信息
+            val solutionText = getSharedPreferences("solution_info", Context.MODE_PRIVATE)
+                .getString("solution_text", getString(R.string.solution_not_found)) ?: getString(R.string.solution_not_found)
+            
+            // 显示对话框
+            AlertDialog.Builder(this)
+                .setTitle(R.string.solution_title)
+                .setMessage(solutionText)
+                .setPositiveButton(R.string.ok, null)
+                .setNegativeButton(R.string.solution_copy) { _, _ ->
+                    // 复制到剪贴板
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    val clip = android.content.ClipData.newPlainText(getString(R.string.solution_title), solutionText)
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(this, R.string.solution_copied, Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
     }
 
     private fun initViews() {
-        tabLayout = findViewById(R.id.tab_layout)
-        viewPager = findViewById(R.id.view_pager)
-        buttonSave = findViewById(R.id.save)
-        buttonControl = findViewById(R.id.control)
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        // 设置默认标题（进入应用时显示）
+        supportActionBar?.title = getString(R.string.nav_home)
+        
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navigationView = findViewById(R.id.nav_view)
     }
     
-    private fun setupViewPager() {
-        // 初始化Fragment
-        serverFragment = ServerFragment()
-        dnsFragment = DnsFragment()
-        optionsFragment = OptionsFragment()
+    private fun setupDrawer() {
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
         
-        // 设置ViewPager适配器
-        val fragments = listOf(serverFragment, dnsFragment, optionsFragment)
-        val adapter = ViewPagerAdapter(this, fragments)
-        viewPager.adapter = adapter
-        
-        // 连接TabLayout和ViewPager
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> getString(R.string.tab_server)
-                1 -> getString(R.string.tab_dns)
-                2 -> getString(R.string.tab_options)
-                else -> ""
-            }
-        }.attach()
+        navigationView.setNavigationItemSelectedListener(this)
     }
-
-    private fun setupListeners() {
-        buttonSave.setOnClickListener(this)
-        buttonControl.setOnClickListener(this)
+    
+    // 切换到指定Fragment
+    private fun navigateToFragment(fragmentId: Int) {
+        val fragment = when (fragmentId) {
+            R.id.nav_home -> {
+                toolbar.title = getString(R.string.nav_home)
+                HomeFragment().also { homeFragment = it }
+            }
+            R.id.nav_hev_socks5_tunnel -> {
+                toolbar.title = getString(R.string.nav_hev_socks5_tunnel)
+                HevSocks5TunnelFragment()
+            }
+            R.id.nav_shadowsocks -> {
+                toolbar.title = getString(R.string.nav_shadowsocks)
+                ShadowsocksFragment()
+            }
+            R.id.nav_log -> {
+                toolbar.title = getString(R.string.nav_log)
+                LogFragment().also { logFragment = it }
+            }
+            R.id.nav_about -> {
+                toolbar.title = getString(R.string.nav_about)
+                AboutFragment()
+            }
+            else -> {
+                toolbar.title = getString(R.string.nav_home)
+                HomeFragment().also { homeFragment = it }
+            }
+        }
+        
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+            
+        drawerLayout.closeDrawer(GravityCompat.START)
+    }
+    
+    // 侧边栏导航菜单点击处理
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        navigateToFragment(item.itemId)
+        return true
+    }
+    
+    // 显示提示消息
+    fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    
+    // 切换VPN服务状态
+    fun toggleVpnService() {
+        if (TProxyService.isRunning) {
+            stopVpnService()
+        } else {
+            // 检查是否有其他VPN活动
+            if (isOtherVpnActive()) {
+                showVpnConflictDialog()
+            } else {
+                startVpn()
+            }
+        }
     }
 
     // 显示VPN冲突确认对话框
@@ -155,7 +260,7 @@ class MainActivity : FragmentActivity(), View.OnClickListener {
             .setPositiveButton(R.string.vpn_conflict_continue) { _, _ ->
                 startVpn()
             }
-            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -174,17 +279,7 @@ class MainActivity : FragmentActivity(), View.OnClickListener {
         return false
     }
 
-    private fun savePrefs() {
-        // 保存所有Fragment的设置
-        serverFragment.savePreferences()
-        dnsFragment.savePreferences()
-        optionsFragment.savePreferences()
-    }
-
     private fun startVpn() {
-        // 保存用户设置
-        savePrefs()
-        
         // 准备VPN请求
         val intent = VpnService.prepare(this)
         if (intent != null) {
@@ -201,52 +296,39 @@ class MainActivity : FragmentActivity(), View.OnClickListener {
         serviceIntent.action = TProxyService.ACTION_CONNECT
         startForegroundService(serviceIntent)
         prefs.isEnabled = true
-        updateUI()
-    }
-
-    private fun updateUI() {
-        // 更新控制按钮文本
-        buttonControl.text = getString(
-            if (prefs.isEnabled) R.string.control_disable else R.string.control_enable
-        )
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == NOTIFICATION_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 权限被授予
-                Toast.makeText(this, "通知权限已授予", Toast.LENGTH_SHORT).show()
-            } else {
-                // 权限被拒绝
-                Toast.makeText(this, "需要通知权限来显示流量统计", Toast.LENGTH_LONG).show()
-            }
-        }
+        updateHomeUI()
     }
     
-    override fun onClick(view: View) {
-        when (view) {
-            buttonSave -> {
-                savePrefs()
-                Toast.makeText(applicationContext, "Saved", Toast.LENGTH_SHORT).show()
-            }
-            buttonControl -> {
-                if (prefs.isEnabled) {
-                    // 目前已经启用VPN，停止服务
-                    val intent = Intent(this, TProxyService::class.java)
-                    intent.action = TProxyService.ACTION_DISCONNECT
-                    startService(intent)
-                    prefs.isEnabled = false
-                    updateUI()
-                } else {
-                    // 检查是否有其他VPN正在运行
-                    if (isOtherVpnActive()) {
-                        showVpnConflictDialog()
-                    } else {
-                        startVpn()
-                    }
-                }
+    private fun stopVpnService() {
+        val serviceIntent = Intent(this, TProxyService::class.java)
+        serviceIntent.action = TProxyService.ACTION_DISCONNECT
+        startService(serviceIntent)
+        prefs.isEnabled = false
+        updateHomeUI()
+    }
+    
+    // 更新Home页面UI
+    private fun updateHomeUI() {
+        if (homeFragment == null) {
+            // 如果homeFragment为null，尝试从当前Fragment获取
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (currentFragment is HomeFragment) {
+                homeFragment = currentFragment
             }
         }
+        homeFragment?.updateUI()
+    }
+
+    // 添加日志
+    fun appendLog(tag: String, message: String) {
+        Log.d("Logger", "$tag: $message")
+        if (logFragment == null) {
+            // 如果logFragment为null，尝试从当前Fragment获取
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (currentFragment is LogFragment) {
+                logFragment = currentFragment
+            }
+        }
+        logFragment?.appendLog(tag, message)
     }
 }

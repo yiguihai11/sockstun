@@ -21,20 +21,25 @@ import hev.sockstun.R
 class DnsFragment : Fragment() {
     private lateinit var edittextDnsIpv4: TextInputEditText
     private lateinit var edittextDnsIpv6: TextInputEditText
-    private lateinit var prefs: Preferences
+    private var _prefs: Preferences? = null
+    private val prefs: Preferences
+        get() = _prefs ?: Preferences(requireContext()).also { _prefs = it }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _prefs = context?.let { Preferences(it) }
         return inflater.inflate(R.layout.fragment_dns, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        prefs = Preferences(requireContext())
+        if (_prefs == null) {
+            _prefs = Preferences(requireContext())
+        }
         
         initViews(view)
         loadPreferences()
@@ -51,6 +56,12 @@ class DnsFragment : Fragment() {
     }
 
     fun savePreferences() {
+        if (_prefs == null) {
+            context?.let {
+                _prefs = Preferences(it)
+            } ?: return
+        }
+        
         prefs.dnsIpv4 = edittextDnsIpv4.text.toString()
         prefs.dnsIpv6 = edittextDnsIpv6.text.toString()
     }

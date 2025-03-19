@@ -2,9 +2,21 @@
 <resources>
     <!-- iOS-inspired base theme -->
     <style name="Theme.SocksTun" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:colorPrimary">@color/ios_system_blue</item>
-        <item name="colorPrimaryContainer">@color/ios_system_blue_container</item>
-        <item name="android:colorBackground">@color/ios_system_background</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorPrimaryVariant">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorSecondaryVariant">@color/md_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- 启用Material 3动态颜色 -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         
         <!-- Typography -->
         <item name="textAppearanceTitleLarge">@style/TextAppearance.IOS.TitleLarge</item>

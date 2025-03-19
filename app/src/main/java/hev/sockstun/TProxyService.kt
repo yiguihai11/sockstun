@@ -9,31 +9,49 @@
 
 package hev.sockstun
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
-import android.net.IpPrefix
 import android.net.InetAddresses
+import android.net.IpPrefix
 import android.net.VpnService
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Locale
+import android.os.Build
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class TProxyService : VpnService() {
     companion object {
-        const val ACTION_CONNECT = "hev.sockstun.CONNECT"
-        const val ACTION_DISCONNECT = "hev.sockstun.DISCONNECT"
+        private const val TAG = "TProxyService"
+        const val ACTION_CONNECT = "hev.sockstun.START"
+        const val ACTION_DISCONNECT = "hev.sockstun.STOP"
         const val ACTION_STATUS_CHANGED = "hev.sockstun.STATUS_CHANGED"
+        const val ACTION_LOG_EVENT = "hev.sockstun.LOG_EVENT"
+        const val EXTRA_IS_RUNNING = "running"
+        const val EXTRA_LOG_TAG = "tag"
+        const val EXTRA_LOG_MESSAGE = "message"
         private const val CHANNEL_NAME = "socks5"
         private const val NOTIFICATION_ID = 1
 
+        // 服务运行状态
+        @Volatile
+        var isRunning = false
+            private set
+            
+        // 状态锁，防止并发操作
+        private val stateLock = Object()
+        
         // JNI 方法
         @JvmStatic
         private external fun TProxyStartService(configPath: String, fd: Int)
@@ -49,7 +67,9 @@ class TProxyService : VpnService() {
         fun getStats(): LongArray? = TProxyGetStats()
     }
 
+    private var isProcessing = false
     private var tunFd: android.os.ParcelFileDescriptor? = null
+    private lateinit var logFile: File
     private val statsHandler = Handler(Looper.getMainLooper())
     private val statsRunnable = object : Runnable {
         override fun run() {
@@ -59,78 +79,182 @@ class TProxyService : VpnService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_DISCONNECT) {
-            handleServiceStop()
-            return START_NOT_STICKY
+        synchronized(stateLock) {
+            if (isProcessing) {
+                Log.w(TAG, "服务正在处理中，忽略重复请求")
+                return START_STICKY
+            }
+            
+            isProcessing = true
+            try {
+                when(intent?.action) {
+                    ACTION_CONNECT -> {
+                        if (!isRunning) {
+                            // 先设置状态为运行中
+                            isRunning = true
+                            Preferences(this).isEnabled = true
+                            sendStatusChangeBroadcast(true)
+                            
+                            // 然后启动服务
+                            startService()
+                        }
+                    }
+                    ACTION_DISCONNECT -> {
+                        if (isRunning) {
+                            // 先停止服务
+                            handleServiceStop()
+                            
+                            // 然后更新状态
+                            isRunning = false
+                            Preferences(this).isEnabled = false
+                            sendStatusChangeBroadcast(false)
+                            
+                            // 停止前台服务
+                            stopForeground(STOP_FOREGROUND_REMOVE)
+                            
+                            // 停止服务
+                            stopSelf()
+                        }
+                    }
+                }
+            } finally {
+                isProcessing = false
+            }
         }
-        startService()
+        
         return START_STICKY
     }
 
     override fun onDestroy() {
-        handleServiceStop()
+        synchronized(stateLock) {
+            if (isRunning) {
+                // 先停止服务
+                handleServiceStop()
+                
+                // 然后更新状态
+                isRunning = false
+                Preferences(this).isEnabled = false
+                sendStatusChangeBroadcast(false)
+            }
+        }
+        
         super.onDestroy()
     }
 
     override fun onRevoke() {
-        handleServiceStop()
+        synchronized(stateLock) {
+            if (isRunning) {
+                // 先停止服务
+                handleServiceStop()
+                
+                // 然后更新状态
+                isRunning = false
+                Preferences(this).isEnabled = false
+                sendStatusChangeBroadcast(false)
+            }
+        }
+        
         super.onRevoke()
     }
 
-    private fun handleServiceStop() {
-        // 停止统计更新
-        statsHandler.removeCallbacks(statsRunnable)
+    override fun onCreate() {
+        super.onCreate()
+        
+        // 初始化日志文件
+        logFile = File(filesDir, "app.log")
+        
+        // 获取ShadowSocks版本信息
+        val executor = NativeProgramExecutor(this)
+        val version = executor.getSsLocalVersion()
+        Log.i(TAG, "ShadowSocks本地版本: $version")
+    }
 
-        // 停止前台服务（修正 API 34 以上的调用）
-        stopForeground(STOP_FOREGROUND_REMOVE)
-
-        // 关闭VPN接口
-        tunFd?.let {
-            try {
-                it.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            tunFd = null
+    private fun logToUI(tag: String, message: String) {
+        val intent = Intent(ACTION_LOG_EVENT)
+        intent.putExtra(EXTRA_LOG_TAG, tag)
+        intent.putExtra(EXTRA_LOG_MESSAGE, message)
+        sendBroadcast(intent, null)
+        
+        // 同时写入文件
+        writeLogToFile(tag, message)
+    }
+    
+    private fun writeLogToFile(tag: String, message: String) {
+        try {
+            val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(Date())
+            val logEntry = "$timestamp $tag: $message\n"
+            logFile.appendText(logEntry)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to write log to file", e)
         }
+    }
 
-        // 停止TProxy服务
-        TProxyStopService()
-
-        // 更新服务状态
-        Preferences(this).isEnabled = false
-
-        // 广播状态变更
-        sendStatusChangeBroadcast(false)
-
-        // 结束进程
-        //exitProcess(0)
+    private fun handleServiceStop() {
+        try {
+            // 停止统计更新
+            statsHandler.removeCallbacks(statsRunnable)
+            
+            // 停止前台服务
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            
+            // 关闭VPN接口
+            tunFd?.let {
+                try {
+                    it.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Log.e(TAG, "关闭VPN接口时出错", e)
+                    logToUI(TAG, "关闭VPN接口时出错: ${e.message}")
+                }
+                tunFd = null
+            }
+            
+            // 停止TProxy服务
+            TProxyStopService()
+            
+            // 记录日志
+            Log.i(TAG, "VPN服务已停止")
+            logToUI(TAG, "VPN服务已停止")
+        } catch (e: Exception) {
+            Log.e(TAG, "停止服务时出错", e)
+            logToUI(TAG, "停止服务时出错: ${e.message}")
+        }
     }
 
     private fun startService() {
-        // 避免重复启动
-        if (tunFd != null) return
-
-        val prefs = Preferences(this)
-
         try {
+            // 初始化通知渠道
+            initNotificationChannel()
+            
+            // 创建通知并启动前台服务
+            val notification = createNotification()
+            if (Build.VERSION.SDK_INT >= 34) {
+                // API 34 及以上，使用 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+            } else {
+                // API 33 及以下，不传递 service type
+                startForeground(NOTIFICATION_ID, notification)
+            }
+            
+            val prefs = Preferences(this)
             setupVpnInterface(prefs)
             setupTProxyService(prefs)
-
-            // 更新服务状态
-            prefs.isEnabled = true
             
-            // 广播状态变更
-            sendStatusChangeBroadcast(true)
-
-            // 启动前台服务
-            initNotificationChannel()
-            createNotification("")
-            statsHandler.post(statsRunnable)
-
+            // 启动后台线程更新通知
+            startStatsUpdateThread()
+            
+            // 记录日志
+            Log.i(TAG, "VPN服务已启动")
+            logToUI(TAG, "VPN服务已启动")
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "启动服务时出错", e)
+            logToUI(TAG, "启动服务时出错: ${e.message}")
+            
+            // 发生错误，停止服务并更新状态
             handleServiceStop()
+            isRunning = false
+            Preferences(this).isEnabled = false
+            sendStatusChangeBroadcast(false)
         }
     }
 
@@ -366,7 +490,11 @@ class TProxyService : VpnService() {
                 stats[0],
                 stats[2]
             )
-            createNotification(text)
+            val notification = createNotification(text)
+            
+            // 更新前台服务通知
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(NOTIFICATION_ID, notification)
         }
     }
 
@@ -399,51 +527,70 @@ class TProxyService : VpnService() {
         TProxyStartService(tproxyFile.absolutePath, tunFd!!.fd)
     }
 
-    private fun createNotification(stats: String = "") {
+    private fun createNotification(stats: String = ""): Notification {
         // 让通知打开 MainActivity
         val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 
+            0, 
+            intent, 
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
         // 让用户手动停止 VPN
         val stopIntent = Intent(this, TProxyService::class.java).apply {
             action = ACTION_DISCONNECT
         }
-        val stopPendingIntent =
-            PendingIntent.getService(this, 0, stopIntent, PendingIntent.FLAG_IMMUTABLE)
+        val stopPendingIntent = PendingIntent.getService(
+            this, 
+            0, 
+            stopIntent, 
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
-        val notification = NotificationCompat.Builder(this, CHANNEL_NAME)
+        return NotificationCompat.Builder(this, CHANNEL_NAME)
             .setContentTitle(getString(R.string.app_name))
-            .setSmallIcon(android.R.drawable.sym_def_app_icon)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentText(stats)
             .setStyle(NotificationCompat.BigTextStyle().bigText(stats))
             .setContentIntent(pendingIntent)
-            .addAction(android.R.drawable.ic_delete, getString(R.string.stop), stopPendingIntent)
+            .addAction(R.drawable.ic_stop, getString(R.string.stop), stopPendingIntent)
             .setOnlyAlertOnce(true)
             .setSilent(true)
             .build()
-
-        if (android.os.Build.VERSION.SDK_INT >= 34) {
-            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-        } else {
-            startForeground(NOTIFICATION_ID, notification)
-        }
     }
 
     private fun initNotificationChannel() {
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val name = getString(R.string.app_name)
-        val channel =
-            NotificationChannel(CHANNEL_NAME, name, NotificationManager.IMPORTANCE_LOW).apply {
-                setSound(null, null)
-                enableVibration(false)
-            }
+        val channel = NotificationChannel(CHANNEL_NAME, name, NotificationManager.IMPORTANCE_LOW).apply {
+            setSound(null, null)
+            enableVibration(false)
+        }
         notificationManager.createNotificationChannel(channel)
     }
 
     private fun sendStatusChangeBroadcast(isRunning: Boolean) {
         val intent = Intent(ACTION_STATUS_CHANGED)
-        intent.putExtra("running", isRunning)
-        sendBroadcast(intent)
+        intent.putExtra(EXTRA_IS_RUNNING, isRunning)
+        sendBroadcast(intent, null)
+        Log.d(TAG, "发送状态变更广播：isRunning=$isRunning")
+        
+        // 也通过日志记录
+        logToUI(TAG, "VPN状态变更：${if (isRunning) "已启动" else "已停止"}")
     }
-} 
+
+    // 统计更新线程
+    private fun startStatsUpdateThread() {
+        // 启动后台线程更新统计信息
+        statsHandler.post(statsRunnable)
+    }
+
+    // 发送日志广播
+    private fun sendLogBroadcast(tag: String, message: String) {
+        val intent = Intent(ACTION_LOG_EVENT)
+        intent.putExtra(EXTRA_LOG_TAG, tag)
+        intent.putExtra(EXTRA_LOG_MESSAGE, message)
+        sendBroadcast(intent, null) // 不需要权限
+    }
+}

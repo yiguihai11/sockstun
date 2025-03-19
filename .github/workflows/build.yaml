@@ -39,7 +39,7 @@ jobs:
       - name: Build
         run: |
           sudo source bash/ndk.sh
-          sudo bash bash/rust.sh nightly
+          sudo bash/rust.sh nightly
           source $HOME/.cargo/env
           export PATH=$PATH:$HOME/.cargo/bin
           ./gradlew assembleRelease --stacktrace

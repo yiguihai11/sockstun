@@ -27,11 +27,26 @@ android {
         }
     }
 
+    packagingOptions {
+        jniLibs {
+            jniLibs {
+                useLegacyPackaging = true
+            }
+        }
+    }
+
+    sourceSets {
+        main{
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
     splits {
         abi {
             enable true // 启用 ABI 分包
             reset()
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64" // 仅包含这些 ABI
+            //include "armeabi-v7a", "arm64-v8a", "x86", "x86_64" // 仅包含这些 ABI
+            include "x86_64"
             universalApk false // 不生成包含所有 ABI 的 APK
         }
     }
@@ -109,7 +124,8 @@ cargo {
     module = 'src/main/jni/shadowsocks-rust'
     libname = 'sslocal'
     // 修改为 recognized targets
-    targets = ['arm', 'arm64', 'x86', 'x86_64']
+    //targets = ['arm', 'arm64', 'x86', 'x86_64']
+    targets = ['x86_64']
     profile = findProperty('CARGO_PROFILE')?.toString() ?: 'release'
     extraCargoBuildArguments = ['--bin', libname]
     verbose = false

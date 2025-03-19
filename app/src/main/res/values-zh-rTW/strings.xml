@@ -2,12 +2,12 @@
 <resources>
     <string name="app_name">SocksTun</string>
     <string name="socks_addr">Socks5 位址</string>
-    <string name="socks_port">Socks5 端口</string>
+    <string name="socks_port">Socks5 連接埠</string>
     <string name="socks_user">Socks5 使用者名稱</string>
     <string name="socks_pass">Socks5 密碼</string>
     <string name="dns_ipv4">DNS IPv4</string>
     <string name="dns_ipv6">DNS IPv6</string>
-    <string name="udp_in_tcp">UDP 透過 TCP</string>
+    <string name="udp_in_tcp">UDP 傳輸在 TCP 中</string>
     <string name="ipv4">IPv4</string>
     <string name="ipv6">IPv6</string>
     <string name="global">全域</string>
@@ -15,16 +15,16 @@
     <string name="save">儲存</string>
     <string name="control_enable">啟用</string>
     <string name="control_disable">停用</string>
-    <string name="exclude">排除IP</string>
-    <string name="exclude_routes_hint">每行一個 IP 或 CIDR，例如：\n192.168.1.0/24\n2001:db8::/32</string>
+    <string name="exclude">排除路由</string>
+    <string name="exclude_routes_hint">每行一個IP或CIDR，例如：\n192.168.1.0/24\n2001:db8::/32</string>
     <string name="stop">停止</string>
     <string name="search_apps">搜尋應用程式</string>
     <string name="filter_all">所有應用程式</string>
     <string name="filter_user">使用者應用程式</string>
     <string name="filter_system">系統應用程式</string>
     <string name="uid_format">UID: %1$s%2$s</string>
-    <string name="socks_server_settings">SocksTun 伺服器設置</string>
-    <string name="dns_settings">DNS 設置</string>
+    <string name="socks_server_settings">SocksTun 伺服器設定</string>
+    <string name="dns_settings">DNS 設定</string>
     <string name="options">選項</string>
     
     <!-- Tab 標題 -->
@@ -32,18 +32,50 @@
     <string name="tab_dns">DNS</string>
     <string name="tab_options">選項</string>
     
-    <!-- 應用程式過濾模式 -->
+    <!-- 應用過濾模式 -->
     <string name="app_filter_title">應用程式過濾模式</string>
-    <string name="app_filter_off">全域（所有應用程式經過VPN）</string>
-    <string name="app_filter_bypass">繞過（選定應用程式繞過VPN）</string>
-    <string name="app_filter_only">僅限（僅選定應用程式使用VPN）</string>
+    <string name="app_filter_off">全域 (所有應用程式通過VPN)</string>
+    <string name="app_filter_bypass">繞過 (選中的應用程式繞過VPN)</string>
+    <string name="app_filter_only">僅限 (僅選中的應用程式使用VPN)</string>
     <string name="app_filter_select">選擇應用程式</string>
-    <string name="bypass_apps">繞過的應用程式</string>
+    <string name="bypass_apps">繞過應用程式</string>
     <string name="select_apps">選擇應用程式</string>
     
     <!-- VPN確認對話框 -->
     <string name="vpn_conflict_title">VPN衝突</string>
-    <string name="vpn_conflict_message">當前已有其他VPN處於活動狀態。如果繼續，其他VPN將被中斷連線。</string>
-    <string name="vpn_conflict_continue">繼續</string>
-    <string name="vpn_conflict_cancel">取消</string>
+    <string name="vpn_conflict_message">偵測到有其他VPN正在執行。繼續啟動可能會導致衝突。</string>
+    <string name="vpn_conflict_continue">繼續啟動</string>
+    
+    <!-- 通用 -->
+    <string name="ok">確定</string>
+    <string name="cancel">取消</string>
+    <string name="clear">清除</string>
+    <string name="copy">複製</string>
+    
+    <!-- 導航選單 -->
+    <string name="nav_home">首頁</string>
+    <string name="nav_hev_socks5_tunnel">HEV Socks5 Tunnel</string>
+    <string name="nav_shadowsocks">Shadowsocks</string>
+    <string name="nav_log">日誌</string>
+    <string name="nav_about">關於</string>
+    
+    <!-- VPN服務 -->
+    <string name="vpn_status_enabled">已啟用</string>
+    <string name="vpn_status_disabled">未啟用</string>
+    <string name="vpn_status_prefix">目前狀態：</string>
+    <string name="vpn_permission_denied">VPN權限被拒絕</string>
+    
+    <!-- 日誌 -->
+    <string name="log_cleared">日誌已清除</string>
+    <string name="log_saved">日誌已儲存</string>
+    <string name="log_save_failed">儲存日誌失敗</string>
+    <string name="log_copied">日誌已複製到剪貼簿</string>
+    <string name="log_file_not_exist">日誌檔案不存在，建立新日誌</string>
+    <string name="log_load_failed">載入日誌檔案失敗</string>
+    
+    <!-- 解決方案 -->
+    <string name="solution_title">缺少必要檔案的解決方案</string>
+    <string name="solution_copy">複製訊息</string>
+    <string name="solution_copied">訊息已複製到剪貼簿</string>
+    <string name="solution_not_found">未找到解決方案訊息</string>
 </resources>

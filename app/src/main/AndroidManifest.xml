@@ -25,7 +25,8 @@
 		android:roundIcon="@mipmap/sockstun"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SocksTun"
-		android:banner="@mipmap/sockstun">
+		android:banner="@mipmap/sockstun"
+		android:enableOnBackInvokedCallback="true">
 
 		<!-- VPN 和前台服务 -->
 		<service
@@ -35,8 +36,8 @@
 			android:exported="false"
 			tools:ignore="ExportedService">
 			<intent-filter>
-				<action android:name="hev.sockstun.CONNECT" />
-				<action android:name="hev.sockstun.DISCONNECT" />
+				<action android:name="hev.sockstun.START" />
+				<action android:name="hev.sockstun.STOP" />
 			</intent-filter>
 		</service>
 

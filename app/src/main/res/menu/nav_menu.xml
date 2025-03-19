@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/nav_group">
+        <item
+            android:id="@+id/nav_home"
+            app:icon="@drawable/ic_home"
+            android:title="@string/nav_home" />
+            
+        <item
+            android:id="@+id/nav_hev_socks5_tunnel"
+            app:icon="@drawable/ic_tunnel"
+            android:title="@string/nav_hev_socks5_tunnel" />
+            
+        <item
+            android:id="@+id/nav_shadowsocks"
+            app:icon="@drawable/ic_shadowsocks"
+            android:title="@string/nav_shadowsocks" />
+            
+        <item
+            android:id="@+id/nav_log"
+            app:icon="@android:drawable/ic_menu_edit"
+            android:title="@string/nav_log" />
+            
+        <item
+            android:id="@+id/nav_about"
+            app:icon="@drawable/ic_info"
+            android:title="@string/nav_about" />
+    </group>
+</menu> 

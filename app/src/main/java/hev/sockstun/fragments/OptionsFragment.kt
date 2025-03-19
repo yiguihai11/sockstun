@@ -38,20 +38,28 @@ class OptionsFragment : Fragment(), View.OnClickListener {
     private lateinit var radioAppFilterBypass: MaterialRadioButton
     private lateinit var radioAppFilterOnly: MaterialRadioButton
     private lateinit var buttonAppFilterSelect: MaterialButton
-    private lateinit var prefs: Preferences
+    // 提前初始化prefs，避免lateinit初始化问题
+    private var _prefs: Preferences? = null
+    private val prefs: Preferences
+        get() = _prefs ?: Preferences(requireContext()).also { _prefs = it }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // 确保提前初始化prefs
+        _prefs = context?.let { Preferences(it) }
         return inflater.inflate(R.layout.fragment_options, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        prefs = Preferences(requireContext())
+        // 确保prefs已经初始化
+        if (_prefs == null) {
+            _prefs = Preferences(requireContext())
+        }
         
         initViews(view)
         setupListeners()
@@ -113,6 +121,13 @@ class OptionsFragment : Fragment(), View.OnClickListener {
     }
 
     fun savePreferences() {
+        // 在保存前确保prefs已初始化
+        if (_prefs == null) {
+            context?.let {
+                _prefs = Preferences(it)
+            } ?: return // 如果上下文不可用，直接返回，避免崩溃
+        }
+        
         prefs.isUdpInTcp = checkboxUdpInTcp.isChecked
         prefs.isIpv4 = checkboxIpv4.isChecked
         prefs.isIpv6 = checkboxIpv6.isChecked

@@ -23,7 +23,6 @@ class Preferences(context: Context) {
         const val DNS_IPV6 = "DnsIpv6"
         const val IPV4 = "Ipv4"
         const val IPV6 = "Ipv6"
-        const val GLOBAL = "Global"
         const val UDP_IN_TCP = "UdpInTcp"
         const val APPS = "Apps"
         const val ENABLE = "Enable"
@@ -70,21 +69,9 @@ class Preferences(context: Context) {
         get() = prefs.getBoolean(IPV6, true)
         set(enable) = prefs.edit().putBoolean(IPV6, enable).apply()
 
-    var isGlobal: Boolean
-        get() = prefs.getBoolean(GLOBAL, false)
-        set(enable) = prefs.edit().putBoolean(GLOBAL, enable).apply()
-
     // 应用过滤模式 (0=全局, 1=绕行, 2=仅代理)
     var appFilterMode: Int
-        get() {
-            // 兼容旧版本，如果之前使用了全局模式，返回APP_FILTER_MODE_OFF
-            // 如果之前使用了应用过滤，返回APP_FILTER_MODE_BYPASS
-            return if (!prefs.contains(APP_FILTER_MODE)) {
-                if (isGlobal) 0 else 1
-            } else {
-                prefs.getInt(APP_FILTER_MODE, 0)  // 默认为0（全局模式）
-            }
-        }
+        get() = prefs.getInt(APP_FILTER_MODE, 0) // 默认为 0（全局模式）
         set(mode) = prefs.edit().putInt(APP_FILTER_MODE, mode).apply()
 
     fun getApps(): Set<String> = prefs.getStringSet(APPS, emptySet()) ?: emptySet()

@@ -23,20 +23,25 @@ class ServerFragment : Fragment() {
     private lateinit var edittextSocksPort: TextInputEditText
     private lateinit var edittextSocksUser: TextInputEditText
     private lateinit var edittextSocksPass: TextInputEditText
-    private lateinit var prefs: Preferences
+    private var _prefs: Preferences? = null
+    private val prefs: Preferences
+        get() = _prefs ?: Preferences(requireContext()).also { _prefs = it }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _prefs = context?.let { Preferences(it) }
         return inflater.inflate(R.layout.fragment_server, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        prefs = Preferences(requireContext())
+        if (_prefs == null) {
+            _prefs = Preferences(requireContext())
+        }
         
         initViews(view)
         loadPreferences()
@@ -57,6 +62,12 @@ class ServerFragment : Fragment() {
     }
 
     fun savePreferences() {
+        if (_prefs == null) {
+            context?.let {
+                _prefs = Preferences(it)
+            } ?: return
+        }
+        
         prefs.socksAddress = edittextSocksAddr.text.toString()
         prefs.socksPort = edittextSocksPort.text.toString().toIntOrNull() ?: 1080
         prefs.socksUsername = edittextSocksUser.text.toString()
