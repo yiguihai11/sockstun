@@ -4,3 +4,6 @@
 [submodule "app/src/main/jni/shadowsocks-rust"]
 	path = app/src/main/jni/shadowsocks-rust
 	url = https://github.com/shadowsocks/shadowsocks-rust.git
+[submodule "app/src/main/jni/v2ray-plugin"]
+	path = app/src/main/jni/v2ray-plugin
+	url = https://github.com/teddysun/v2ray-plugin
