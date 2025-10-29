@@ -7,22 +7,33 @@
 		android:orientation="vertical"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:padding="2dp">
+		android:padding="8dp">
+
+		<!-- TCP SOCKS5 Configuration -->
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
+			android:text="TCP SOCKS5 代理设置"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:layout_marginBottom="8dp"
+			android:layout_marginTop="8dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:text="@string/socks_addr"
 			android:singleLine="true"/>
 		<EditText
 			android:id="@+id/socks_addr"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:singleLine="true"/>
+			android:singleLine="true"
+			android:layout_marginBottom="4dp"/>
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
 			android:text="@string/socks_port"
 			android:singleLine="true"/>
 		<EditText
@@ -30,22 +41,24 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
-			android:inputType="number"/>
+			android:inputType="number"
+			android:layout_marginBottom="4dp"/>
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
 			android:text="@string/socks_user"
 			android:singleLine="true"/>
 		<EditText
 			android:id="@+id/socks_user"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:singleLine="true"/>
+			android:singleLine="true"
+			android:layout_marginBottom="4dp"/>
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
 			android:text="@string/socks_pass"
 			android:singleLine="true"/>
 		<EditText
@@ -53,11 +66,93 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
-			android:inputType="textPassword"/>
+			android:inputType="textPassword"
+			android:layout_marginBottom="8dp"/>
+
+		<!-- UDP SOCKS5 Configuration -->
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
+			android:text="UDP SOCKS5 代理设置"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:layout_marginBottom="8dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="UDP 代理地址 (留空则使用TCP设置)"
+			android:singleLine="true"/>
+		<EditText
+			android:id="@+id/udp_addr"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:layout_marginBottom="4dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="UDP 代理端口 (留空则使用TCP设置)"
+			android:singleLine="true"/>
+		<EditText
+			android:id="@+id/udp_port"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:inputType="number"
+			android:layout_marginBottom="4dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="UDP 认证用户名 (留空则使用TCP设置)"
+			android:singleLine="true"/>
+		<EditText
+			android:id="@+id/udp_user"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:layout_marginBottom="4dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="UDP 认证密码 (留空则使用TCP设置)"
+			android:singleLine="true"/>
+		<EditText
+			android:id="@+id/udp_pass"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:inputType="textPassword"
+			android:layout_marginBottom="8dp"/>
+
+		<!-- UDP Relay Mode -->
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="UDP 转发模式"
+			android:singleLine="true"/>
+		<Spinner
+			android:id="@+id/udp_relay_mode"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="8dp"
+			android:entries="@array/udp_relay_modes"/>
+
+		<!-- DNS Configuration -->
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="DNS 设置"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:layout_marginBottom="8dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:text="@string/dns_ipv4"
 			android:singleLine="true"/>
 		<EditText
@@ -65,11 +160,12 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
-			android:digits="0123456789."/>
+			android:digits="0123456789."
+			android:layout_marginBottom="4dp"/>
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
 			android:text="@string/dns_ipv6"
 			android:singleLine="true"/>
 		<EditText
@@ -77,24 +173,81 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
-			android:digits="0123456789abcdef:"/>
-		<LinearLayout
-			android:orientation="horizontal"
+			android:digits="0123456789abcdef:"
+			android:layout_marginBottom="8dp"/>
+
+		<!-- Feature Toggles -->
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="功能开关"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:layout_marginBottom="8dp"/>
+
+		<CheckBox
+			android:id="@+id/chnroutes_enabled"
 			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
-			<CheckBox
-				android:id="@+id/remote_dns"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/remote_dns"/>
-			<CheckBox
-				android:id="@+id/udp_in_tcp"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/udp_in_tcp"/>
-		</LinearLayout>
+			android:layout_height="wrap_content"
+			android:text="启用中国路由分流 (内置)"/>
+
+		<CheckBox
+			android:id="@+id/acl_enabled"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="启用访问控制列表 (内置)"/>
+
+		<CheckBox
+			android:id="@+id/smart_proxy_enabled"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="启用智能代理 (直连失败后自动代理)"/>
+
+		<!-- Smart Proxy Configuration -->
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="智能代理设置"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:layout_marginBottom="8dp"
+			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="直连超时时间 (毫秒)"
+			android:singleLine="true"
+			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"/>
+		<EditText
+			android:id="@+id/smart_proxy_timeout"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:inputType="number"
+			android:layout_marginBottom="4dp"
+			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="IP屏蔽时间 (分钟)"
+			android:singleLine="true"
+			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"/>
+		<EditText
+			android:id="@+id/smart_proxy_block_expiry"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:inputType="number"
+			android:layout_marginBottom="8dp"
+			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"/>
+
 		<LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
@@ -111,12 +264,26 @@
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
 				android:text="@string/ipv6"/>
-			<CheckBox
-				android:id="@+id/global"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/global"/>
+		</LinearLayout>
+
+		<CheckBox
+			android:id="@+id/global"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/global"/>
+
+		<CheckBox
+			android:id="@+id/remote_dns"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/remote_dns"/>
+
+		<!-- Action Buttons -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_marginTop="16dp">
 			<Button
 				android:id="@+id/apps"
 				android:layout_width="fill_parent"
@@ -124,6 +291,7 @@
 				android:layout_weight="1"
 				android:text="@string/apps"/>
 		</LinearLayout>
+
 		<LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"

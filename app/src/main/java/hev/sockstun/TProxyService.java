@@ -126,43 +126,23 @@ public class TProxyService extends VpnService {
 			return;
 		}
 
-		/* TProxy */
-		File tproxy_file = new File(getCacheDir(), "tproxy.conf");
-		try {
-			tproxy_file.createNewFile();
-			FileOutputStream fos = new FileOutputStream(tproxy_file, false);
+		/* TProxy - 使用新的配置管理系统 */
+		ConfigManager configManager = new ConfigManager(this);
 
-			String tproxy_conf = "misc:\n" +
-				"  task-stack-size: " + prefs.getTaskStackSize() + "\n" +
-				"tunnel:\n" +
-				"  mtu: " + prefs.getTunnelMtu() + "\n";
-
-			tproxy_conf += "socks5:\n" +
-				"  port: " + prefs.getSocksPort() + "\n" +
-				"  address: '" + prefs.getSocksAddress() + "'\n" +
-				"  udp: '" + (prefs.getUdpInTcp() ? "tcp" : "udp") + "'\n";
-
-			if (!prefs.getSocksUsername().isEmpty() &&
-				!prefs.getSocksPassword().isEmpty()) {
-				tproxy_conf += "  username: '" + prefs.getSocksUsername() + "'\n";
-				tproxy_conf += "  password: '" + prefs.getSocksPassword() + "'\n";
-			}
-
-			if (prefs.getRemoteDns()) {
-				tproxy_conf += "mapdns:\n" +
-					"  address: " + prefs.getMappedDns() + "\n" +
-					"  port: 53\n" +
-					"  network: 240.0.0.0\n" +
-					"  netmask: 240.0.0.0\n" +
-					"  cache-size: 10000\n";
-			}
-
-			fos.write(tproxy_conf.getBytes());
-			fos.close();
-		} catch (IOException e) {
+		// 确保配置文件已初始化并生成最新的配置
+		if (!configManager.initializeConfigs()) {
+			stopSelf();
 			return;
 		}
-		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
+
+		if (!configManager.updateMainYaml(prefs)) {
+			stopSelf();
+			return;
+		}
+
+		// 使用生成的main.yml配置文件
+		String configPath = configManager.getMainYamlPath();
+		TProxyStartService(configPath, tunFd.getFd());
 		prefs.setEnable(true);
 
 		String channelName = "socks5";

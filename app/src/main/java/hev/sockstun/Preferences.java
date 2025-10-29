@@ -31,47 +31,93 @@ public class Preferences
 	public static final String APPS = "Apps";
 	public static final String ENABLE = "Enable";
 
+	// 新增配置项
+	public static final String UDP_ADDR = "UdpAddr";
+	public static final String UDP_PORT = "UdpPort";
+	public static final String UDP_USER = "UdpUser";
+	public static final String UDP_PASS = "UdpPass";
+	public static final String UDP_RELAY_MODE = "UdpRelayMode";
+	public static final String CHNROUTES_ENABLED = "ChnroutesEnabled";
+	public static final String ACL_ENABLED = "AclEnabled";
+	public static final String SMART_PROXY_ENABLED = "SmartProxyEnabled";
+	public static final String SMART_PROXY_TIMEOUT = "SmartProxyTimeout";
+	public static final String SMART_PROXY_BLOCK_EXPIRY = "SmartProxyBlockExpiry";
+
 	private SharedPreferences prefs;
 
 	public Preferences(Context context) {
 		prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_MULTI_PROCESS);
 	}
 
+	// 保持向后兼容的方法
 	public String getSocksAddress() {
-		return prefs.getString(SOCKS_ADDR, "127.0.0.1");
+		return getSocksAddr();
 	}
 
 	public void setSocksAddress(String addr) {
+		setSocksAddr(addr);
+	}
+
+	public int getSocksPort() {
+		return Integer.parseInt(getSocksPortStr());
+	}
+
+	public void setSocksPort(int port) {
+		setSocksPortStr(String.valueOf(port));
+	}
+
+	public String getSocksUsername() {
+		return getSocksUser();
+	}
+
+	public void setSocksUsername(String user) {
+		setSocksUser(user);
+	}
+
+	public String getSocksPassword() {
+		return getSocksPass();
+	}
+
+	public void setSocksPassword(String pass) {
+		setSocksPass(pass);
+	}
+
+	// 新的统一命名方法
+	public String getSocksAddr() {
+		return prefs.getString(SOCKS_ADDR, "64.69.34.166");
+	}
+
+	public void setSocksAddr(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_ADDR, addr);
 		editor.commit();
 	}
 
-	public int getSocksPort() {
-		return prefs.getInt(SOCKS_PORT, 1080);
+	public String getSocksPortStr() {
+		return prefs.getString(SOCKS_PORT, "1080");
 	}
 
-	public void setSocksPort(int port) {
+	public void setSocksPortStr(String port) {
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putInt(SOCKS_PORT, port);
+		editor.putString(SOCKS_PORT, port);
 		editor.commit();
 	}
 
-	public String getSocksUsername() {
-		return prefs.getString(SOCKS_USER, "");
+	public String getSocksUser() {
+		return prefs.getString(SOCKS_USER, "yiguihai");
 	}
 
-	public void setSocksUsername(String user) {
+	public void setSocksUser(String user) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_USER, user);
 		editor.commit();
 	}
 
-	public String getSocksPassword() {
-		return prefs.getString(SOCKS_PASS, "");
+	public String getSocksPass() {
+		return prefs.getString(SOCKS_PASS, "ygh15177542493");
 	}
 
-	public void setSocksPassword(String pass) {
+	public void setSocksPass(String pass) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_PASS, pass);
 		editor.commit();
@@ -193,5 +239,107 @@ public class Preferences
 
 	public int getTaskStackSize() {
 		return 81920;
+	}
+
+	// UDP配置方法
+	public String getUdpAddr() {
+		return prefs.getString(UDP_ADDR, "");
+	}
+
+	public void setUdpAddr(String addr) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(UDP_ADDR, addr);
+		editor.commit();
+	}
+
+	public String getUdpPort() {
+		return prefs.getString(UDP_PORT, "");
+	}
+
+	public void setUdpPort(String port) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(UDP_PORT, port);
+		editor.commit();
+	}
+
+	public String getUdpUser() {
+		return prefs.getString(UDP_USER, "");
+	}
+
+	public void setUdpUser(String user) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(UDP_USER, user);
+		editor.commit();
+	}
+
+	public String getUdpPass() {
+		return prefs.getString(UDP_PASS, "");
+	}
+
+	public void setUdpPass(String pass) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(UDP_PASS, pass);
+		editor.commit();
+	}
+
+	public String getUdpRelayMode() {
+		return prefs.getString(UDP_RELAY_MODE, "tcp");
+	}
+
+	public void setUdpRelayMode(String mode) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(UDP_RELAY_MODE, mode);
+		editor.commit();
+	}
+
+	// 功能开关配置方法
+	public boolean isChnroutesEnabled() {
+		return prefs.getBoolean(CHNROUTES_ENABLED, true);
+	}
+
+	public void setChnroutesEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(CHNROUTES_ENABLED, enabled);
+		editor.commit();
+	}
+
+	public boolean isAclEnabled() {
+		return prefs.getBoolean(ACL_ENABLED, false);
+	}
+
+	public void setAclEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(ACL_ENABLED, enabled);
+		editor.commit();
+	}
+
+	public boolean isSmartProxyEnabled() {
+		return prefs.getBoolean(SMART_PROXY_ENABLED, true);
+	}
+
+	public void setSmartProxyEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(SMART_PROXY_ENABLED, enabled);
+		editor.commit();
+	}
+
+	public String getSmartProxyTimeout() {
+		return prefs.getString(SMART_PROXY_TIMEOUT, "2000");
+	}
+
+	public void setSmartProxyTimeout(String timeout) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(SMART_PROXY_TIMEOUT, timeout);
+		editor.commit();
+	}
+
+	public String getSmartProxyBlockExpiry() {
+		return prefs.getString(SMART_PROXY_BLOCK_EXPIRY, "360");
+	}
+
+	public void setSmartProxyBlockExpiry(String blockExpiry) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(SMART_PROXY_BLOCK_EXPIRY, blockExpiry);
+		editor.commit();
 	}
 }

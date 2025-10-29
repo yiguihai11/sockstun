@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="udp_relay_modes">
+		<item>UDP-in-TCP (推荐)</item>
+		<item>UDP-in-UDP</item>
+	</string-array>
+</resources>
