@@ -140,9 +140,10 @@ public class ConfigManager {
             options.setIndent(2);
             Yaml yamlDumper = new Yaml(options);
 
-            try (FileOutputStream fos = new FileOutputStream(mainYamlFile)) {
-                yamlDumper.dump(config, fos);
-                fos.flush();
+            try (FileOutputStream fos = new FileOutputStream(mainYamlFile);
+                 java.io.OutputStreamWriter writer = new java.io.OutputStreamWriter(fos, "UTF-8")) {
+                yamlDumper.dump(config, writer);
+                writer.flush();
             }
 
             Log.i(TAG, "Updated main.yml successfully");
@@ -319,7 +320,7 @@ public class ConfigManager {
         }
         if (!udpPort.isEmpty()) {
             replacements.put("port: 1080",
-                "port: " + udp.getSocksPort());
+                "port: " + prefs.getSocksPortStr());
         }
         if (!udpUser.isEmpty()) {
             replacements.put("username: 'yiguihai'",
