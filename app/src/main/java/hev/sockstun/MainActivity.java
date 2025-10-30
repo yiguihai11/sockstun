@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	private Button button_apps;
 	private Button button_save;
 	private Button button_control;
+	private Button button_view_config;
 
 	// 日志显示
 	private ScrollView log_scrollview;
@@ -152,6 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		button_apps = (Button) findViewById(R.id.apps);
 		button_save = (Button) findViewById(R.id.save);
 		button_control = (Button) findViewById(R.id.control);
+		button_view_config = (Button) findViewById(R.id.view_config);
 
 		// 日志显示
 		log_scrollview = (ScrollView) findViewById(R.id.log_scrollview);
@@ -164,6 +166,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		button_apps.setOnClickListener(this);
 		button_save.setOnClickListener(this);
 		button_control.setOnClickListener(this);
+		button_view_config.setOnClickListener(this);
 		checkbox_remote_dns.setOnClickListener(this);
 		checkbox_global.setOnClickListener(this);
 		checkbox_smart_proxy_enabled.setOnClickListener(this);
@@ -217,6 +220,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			savePrefs();
 			Context context = getApplicationContext();
 			Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+		} else if (view == button_view_config) {
+			viewConfigFile();
 		} else if (view == button_control) {
 			boolean isEnable = prefs.getEnable();
 			prefs.setEnable(!isEnable);
@@ -368,6 +373,54 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			Log.e(TAG, "Failed to update configuration file");
 			Toast.makeText(this, "配置文件更新失败", Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	/**
+	 * 查看配置文件内容
+	 */
+	private void viewConfigFile() {
+		try {
+			// 确保配置文件已生成
+			if (!configManager.initializeConfigs()) {
+				showConfigDialog("配置文件初始化失败", "无法初始化配置文件，请检查应用权限。");
+				return;
+			}
+
+			// 更新配置文件内容
+			if (!configManager.updateMainYaml(prefs)) {
+				showConfigDialog("配置文件更新失败", "无法根据界面设置更新配置文件。");
+				return;
+			}
+
+			// 获取配置文件内容
+			String configContent = configManager.getMainYamlContent();
+			String configPath = configManager.getMainYamlPath();
+
+			String title = "配置文件内容\n路径: " + configPath;
+			showConfigDialog(title, configContent);
+
+		} catch (Exception e) {
+			Log.e(TAG, "Error viewing config file", e);
+			showConfigDialog("错误", "查看配置文件时发生错误：" + e.getMessage());
+		}
+	}
+
+	/**
+	 * 显示配置文件对话框
+	 */
+	private void showConfigDialog(String title, String content) {
+		new android.app.AlertDialog.Builder(this)
+			.setTitle(title)
+			.setMessage(content)
+			.setPositiveButton("确定", null)
+			.setNeutralButton("复制到剪贴板", (dialog, which) -> {
+				android.content.ClipboardManager clipboard =
+					(android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+				android.content.ClipData clip = android.content.ClipData.newPlainText("配置文件", content);
+				clipboard.setPrimaryClip(clip);
+				Toast.makeText(this, "配置文件内容已复制到剪贴板", Toast.LENGTH_SHORT).show();
+			})
+			.show();
 	}
 
 	/**

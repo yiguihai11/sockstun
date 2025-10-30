@@ -386,6 +386,33 @@ public class ConfigManager {
     }
 
     /**
+     * 读取main.yml文件内容
+     */
+    public String getMainYamlContent() {
+        try {
+            File mainYamlFile = new File(configDir, "main.yml");
+            if (!mainYamlFile.exists()) {
+                return "配置文件不存在，请先点击保存按钮生成配置文件。";
+            }
+
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.FileReader(mainYamlFile));
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            reader.close();
+
+            return content.toString();
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading main.yml", e);
+            return "读取配置文件失败：" + e.getMessage();
+        }
+    }
+
+    /**
      * 获取acl.txt文件路径
      */
     public String getAclPath() {
