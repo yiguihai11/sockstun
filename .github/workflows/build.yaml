@@ -23,7 +23,6 @@ jobs:
       - name: Build
         run: |
           sudo apt-get update -y && sudo apt-get install -y wget unzip file git openjdk-17-jdk
-          git submodule foreach git submodule update --init
           wget https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
           mkdir sdk
           unzip -d sdk commandlinetools-linux-13114758_latest.zip
