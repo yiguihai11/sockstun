@@ -95,7 +95,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		// 设置监听器
 		setupListeners();
 
-		// 初始化日志刷新Handler
+		// 初始化日志刷新Handler（但不立即启动）
 		logHandler = new Handler();
 		logRunnable = new Runnable() {
 			@Override
@@ -304,6 +304,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			button_control.setText(R.string.control_enable);
 		else
 			button_control.setText(R.string.control_disable);
+
+		// 根据服务状态控制日志Handler
+		if (!editable) {
+			// 服务正在运行，启动日志更新
+			if (logHandler != null && logRunnable != null) {
+				logHandler.post(logRunnable);
+			}
+			// 初始化日志显示
+			log_textview.setText("正在加载日志...\n");
+		} else {
+			// 服务未运行，停止日志更新
+			if (logHandler != null && logRunnable != null) {
+				logHandler.removeCallbacks(logRunnable);
+			}
+			// 显示提示信息
+			log_textview.setText("代理服务未启动，请先启动服务以查看日志。\n");
+		}
 	}
 
 	private void savePrefs() {
@@ -358,44 +375,43 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	 */
 	private void refreshLog() {
 		try {
-			int logSize = TProxyService.getLogSize();
-			if (logSize > 0) {
-				// 读取最多8KB的日志数据
-				int readSize = Math.min(logSize, 8192);
-				byte[] logData = TProxyService.getLog(readSize);
-
-				if (logData != null && logData.length > 0) {
-					String logText = new String(logData, "UTF-8");
-
-					// 只显示最后10行日志
-					String[] lines = logText.split("\n");
-					StringBuilder displayLines = new StringBuilder();
-					int start = Math.max(0, lines.length - 10);
-
-					for (int i = start; i < lines.length; i++) {
-						if (!lines[i].trim().isEmpty()) {
-							displayLines.append(lines[i]).append("\n");
-						}
+			// 检查服务是否正在运行
+			if (!prefs.getEnable()) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						log_textview.setText("代理服务未启动，请先启动服务以查看日志。\n");
 					}
+				});
+				return;
+			}
 
-					final String finalLogText = displayLines.toString();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							log_textview.setText(finalLogText);
-							// 自动滚动到底部
-							log_scrollview.post(new Runnable() {
-								@Override
-								public void run() {
-									log_scrollview.fullScroll(ScrollView.FOCUS_DOWN);
-								}
-							});
-						}
-					});
-				}
+			// 使用新的日志获取API
+			String logs = TProxyService.getLogs(10);
+			if (logs != null && !logs.isEmpty()) {
+				final String finalLogText = logs;
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						log_textview.setText(finalLogText);
+						// 自动滚动到底部
+						log_scrollview.post(new Runnable() {
+							@Override
+							public void run() {
+								log_scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+							}
+						});
+					}
+				});
 			}
 		} catch (Exception e) {
 			Log.e(TAG, "Error refreshing log", e);
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					log_textview.setText("获取日志时发生错误：" + e.getMessage() + "\n");
+				}
+			});
 		}
 	}
 }

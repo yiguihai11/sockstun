@@ -32,16 +32,16 @@ public class TProxyService extends VpnService {
 	private static native void TProxyStartService(String config_path, int fd);
 	private static native void TProxyStopService();
 	private static native long[] TProxyGetStats();
-	private static native byte[] TProxyGetLog(int size);
-	private static native int TProxyGetLogSize();
+	private static native String TProxyGetLogs(int max_lines);
 
 	/* Public methods for accessing logs */
-	public static byte[] getLog(int size) {
-		return TProxyGetLog(size);
-	}
-
-	public static int getLogSize() {
-		return TProxyGetLogSize();
+	public static String getLogs(int max_lines) {
+		try {
+			return TProxyGetLogs(max_lines);
+		} catch (UnsatisfiedLinkError e) {
+			// 如果 tunnel 还未启动，返回提示信息
+			return "日志服务未启动，请先启动代理服务。\n";
+		}
 	}
 
 	public static final String ACTION_CONNECT = "hev.sockstun.CONNECT";
