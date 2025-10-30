@@ -10,6 +10,7 @@
 package hev.sockstun;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.net.VpnService;
 import android.util.Log;
@@ -27,6 +30,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 	private Preferences prefs;
 	private ConfigManager configManager;
+	private Handler logHandler;
+	private Runnable logRunnable;
 
 	// TCP SOCKS5
 	private EditText edittext_socks_addr;
@@ -63,6 +68,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	private Button button_save;
 	private Button button_control;
 
+	// 日志显示
+	private ScrollView log_scrollview;
+	private TextView log_textview;
+	private Button button_log_refresh;
+	private Button button_log_clear;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,6 +94,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 		// 设置监听器
 		setupListeners();
+
+		// 初始化日志刷新Handler
+		logHandler = new Handler();
+		logRunnable = new Runnable() {
+			@Override
+			public void run() {
+				refreshLog();
+				// 每2秒自动刷新一次日志
+				logHandler.postDelayed(this, 2000);
+			}
+		};
 
 		// 更新界面状态
 		updateUI();
@@ -130,6 +152,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		button_apps = (Button) findViewById(R.id.apps);
 		button_save = (Button) findViewById(R.id.save);
 		button_control = (Button) findViewById(R.id.control);
+
+		// 日志显示
+		log_scrollview = (ScrollView) findViewById(R.id.log_scrollview);
+		log_textview = (TextView) findViewById(R.id.log_textview);
+		button_log_refresh = (Button) findViewById(R.id.log_refresh);
+		button_log_clear = (Button) findViewById(R.id.log_clear);
 	}
 
 	private void setupListeners() {
@@ -139,6 +167,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		checkbox_remote_dns.setOnClickListener(this);
 		checkbox_global.setOnClickListener(this);
 		checkbox_smart_proxy_enabled.setOnClickListener(this);
+		button_log_refresh.setOnClickListener(this);
+		button_log_clear.setOnClickListener(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// 启动日志自动刷新
+		if (logHandler != null && logRunnable != null) {
+			logHandler.post(logRunnable);
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// 暂停日志自动刷新
+		if (logHandler != null && logRunnable != null) {
+			logHandler.removeCallbacks(logRunnable);
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// 停止日志自动刷新
+		if (logHandler != null && logRunnable != null) {
+			logHandler.removeCallbacks(logRunnable);
+		}
 	}
 
 	@Override
@@ -170,6 +227,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			  startService(intent.setAction(TProxyService.ACTION_DISCONNECT));
 			else
 			  startService(intent.setAction(TProxyService.ACTION_CONNECT));
+		} else if (view == button_log_refresh) {
+			refreshLog();
+		} else if (view == button_log_clear) {
+			log_textview.setText("日志已清空。\n");
 		}
 	}
 
@@ -289,6 +350,52 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		} else {
 			Log.e(TAG, "Failed to update configuration file");
 			Toast.makeText(this, "配置文件更新失败", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * 刷新日志显示
+	 */
+	private void refreshLog() {
+		try {
+			int logSize = TProxyService.getLogSize();
+			if (logSize > 0) {
+				// 读取最多8KB的日志数据
+				int readSize = Math.min(logSize, 8192);
+				byte[] logData = TProxyService.getLog(readSize);
+
+				if (logData != null && logData.length > 0) {
+					String logText = new String(logData, "UTF-8");
+
+					// 只显示最后10行日志
+					String[] lines = logText.split("\n");
+					StringBuilder displayLines = new StringBuilder();
+					int start = Math.max(0, lines.length - 10);
+
+					for (int i = start; i < lines.length; i++) {
+						if (!lines[i].trim().isEmpty()) {
+							displayLines.append(lines[i]).append("\n");
+						}
+					}
+
+					final String finalLogText = displayLines.toString();
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							log_textview.setText(finalLogText);
+							// 自动滚动到底部
+							log_scrollview.post(new Runnable() {
+								@Override
+								public void run() {
+									log_scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+								}
+							});
+						}
+					});
+				}
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Error refreshing log", e);
 		}
 	}
 }
