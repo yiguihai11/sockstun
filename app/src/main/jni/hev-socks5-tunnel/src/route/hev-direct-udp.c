@@ -292,13 +292,13 @@ hev_direct_udp_receive (hev_direct_udp_session_t *session)
     /* Convert sockaddr to ip_addr */
     if (sa.ss_family == AF_INET) {
         struct sockaddr_in *sa4 = (struct sockaddr_in *)&sa;
-        IP_ADDR4 (&addr, sa4->sin_addr.s_addr);
+        ip_addr_set_ip4_u32_val (addr, sa4->sin_addr.s_addr);
         port = ntohs (sa4->sin_port);
     } else if (sa.ss_family == AF_INET6) {
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&sa;
         /* Convert IPv6 address - use memcpy for simplicity */
         memcpy (ip_2_ip6 (&addr), &sa6->sin6_addr, sizeof (struct in6_addr));
-        IP_SET_TYPE (&addr, IPADDR_TYPE_V6);
+        IP_SET_TYPE_VAL (addr, IPADDR_TYPE_V6);
         port = ntohs (sa6->sin6_port);
     } else {
         LOG_E ("Unknown address family %d", sa.ss_family);
