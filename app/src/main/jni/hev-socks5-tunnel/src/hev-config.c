@@ -455,7 +455,8 @@ hev_config_parse_smart_proxy (yaml_document_t *doc, yaml_node_t *base)
                     }
                 }
             }
-      }
+        }
+    }
 
     return 0;
 }
