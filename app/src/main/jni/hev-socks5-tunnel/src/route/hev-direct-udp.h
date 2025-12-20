@@ -21,15 +21,29 @@ typedef struct hev_direct_udp_config_t
     int timeout_ms;
 } hev_direct_udp_config_t;
 
+/* Forward declaration */
+typedef struct hev_direct_udp_session_t hev_direct_udp_session_t;
+
+/* Direct UDP receive callback type */
+typedef void (*hev_direct_udp_recv_fn)(hev_direct_udp_session_t *session,
+                                       struct pbuf *p,
+                                       const ip_addr_t *addr,
+                                       u16_t port,
+                                       void *user_data);
+
 /* Direct UDP session state */
-typedef struct hev_direct_udp_session_t
+struct hev_direct_udp_session_t
 {
     int fd;
     int is_direct;
     struct udp_pcb *pcb;
     ip_addr_t remote_addr;
     u16_t remote_port;
-} hev_direct_udp_session_t;
+
+    /* Receive callback */
+    hev_direct_udp_recv_fn recv_cb;
+    void *user_data;
+};
 
 /* Direct UDP functions */
 int hev_direct_udp_init (const hev_direct_udp_config_t *config);
@@ -41,6 +55,15 @@ void hev_direct_udp_close_socket (hev_direct_udp_session_t *session);
 
 int hev_direct_udp_send (hev_direct_udp_session_t *session,
                          struct pbuf *p, const ip_addr_t *addr, u16_t port);
+
+void hev_direct_udp_set_receive_callback (hev_direct_udp_session_t *session,
+                                          hev_direct_udp_recv_fn cb,
+                                          void *user_data);
+
+int hev_direct_udp_receive (hev_direct_udp_session_t *session);
+void hev_direct_udp_input (hev_direct_udp_session_t *session,
+                           const void *data, size_t len,
+                           const ip_addr_t *addr, u16_t port);
 
 #ifdef __cplusplus
 }

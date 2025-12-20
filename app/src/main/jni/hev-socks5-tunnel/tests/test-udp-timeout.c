@@ -1,5 +1,5 @@
 /*
- * HEV SOCKS5 Tunnel UDP Timeout Tests
+ * HEV SOCKS5 Tunnel UDP Bidirectional Tests
  *
  * Copyright (c) 2024 hev
  * Author: hev <github@hev.im>
@@ -18,6 +18,37 @@
 #include "../src/route/hev-smart-proxy.h"
 #include "../src/route/hev-chnroutes.h"
 #include "../src/hev-config.h"
+
+/* Test receive callback data */
+static int packet_received = 0;
+static uint8_t recv_buffer[2048];
+static size_t recv_len = 0;
+static ip_addr_t last_recv_addr;
+static u16_t last_recv_port = 0;
+
+/* Test receive callback function */
+static void
+test_recv_callback (hev_direct_udp_session_t *session,
+                    struct pbuf *p,
+                    const ip_addr_t *addr,
+                    u16_t port,
+                    void *user_data)
+{
+    if (!p)
+        return;
+
+    /* Store received packet info */
+    recv_len = (p->len < sizeof (recv_buffer)) ? p->len : sizeof (recv_buffer);
+    memcpy (recv_buffer, p->payload, recv_len);
+
+    /* Store sender info */
+    memcpy (&last_recv_addr, addr, sizeof (ip_addr_t));
+    last_recv_port = port;
+
+    packet_received++;
+
+    pbuf_free (p);
+}
 
 /* Test UDP timeout configuration */
 void
@@ -226,11 +257,86 @@ test_udp_broadcast (void)
     printf ("    UDP broadcast test passed\n");
 }
 
+/* Test UDP receive callback functionality */
+void
+test_udp_receive_callback (void)
+{
+    hev_direct_udp_config_t config = {
+        .enabled = 1,
+        .timeout_ms = 1000
+    };
+
+    hev_direct_udp_init (&config);
+
+    ip_addr_t addr;
+    hev_direct_udp_session_t session;
+    ipaddr_aton ("127.0.0.1", &addr);
+
+    int res = hev_direct_udp_create_socket (&addr, 8888, &session);
+    TEST_ASSERT (res >= 0, "Socket creation should succeed");
+
+    /* Reset test state */
+    packet_received = 0;
+    recv_len = 0;
+
+    /* Set receive callback */
+    hev_direct_udp_set_receive_callback (&session, test_recv_callback, NULL);
+
+    /* Test input function with sample data */
+    const char *test_data = "Hello UDP World!";
+    ip_addr_t test_addr;
+    ipaddr_aton ("192.168.1.100", &test_addr);
+    hev_direct_udp_input (&session, test_data, strlen (test_data), &test_addr, 9999);
+
+    /* Verify callback was called */
+    TEST_ASSERT (packet_received == 1, "Should receive one packet");
+    TEST_ASSERT (recv_len == strlen (test_data), "Should receive correct data length");
+    TEST_ASSERT (memcmp (recv_buffer, test_data, strlen (test_data)) == 0,
+                 "Should receive correct data");
+    TEST_ASSERT (last_recv_port == 9999, "Should receive correct port");
+
+    hev_direct_udp_close_socket (&session);
+    hev_direct_udp_fini ();
+
+    printf ("    UDP receive callback test passed\n");
+}
+
+/* Test UDP socket receive functionality */
+void
+test_udp_socket_receive (void)
+{
+    hev_direct_udp_config_t config = {
+        .enabled = 1,
+        .timeout_ms = 1000
+    };
+
+    hev_direct_udp_init (&config);
+
+    ip_addr_t addr;
+    hev_direct_udp_session_t session;
+    ipaddr_aton ("127.0.0.1", &addr);
+
+    int res = hev_direct_udp_create_socket (&addr, 8889, &session);
+    TEST_ASSERT (res >= 0, "Socket creation should succeed");
+
+    /* Set receive callback */
+    hev_direct_udp_set_receive_callback (&session, test_recv_callback, NULL);
+
+    /* Test receive from socket (should not block) */
+    res = hev_direct_udp_receive (&session);
+    /* Should return 0 (no data available) since socket is non-blocking */
+
+    hev_direct_udp_close_socket (&session);
+    hev_direct_udp_fini ();
+
+    printf ("    UDP socket receive test passed (non-blocking)\n");
+}
+
 /* Main test runner */
 int
 main (int argc, char *argv[])
 {
-    printf ("Running UDP Timeout Tests...\n\n");
+    printf ("Running UDP Bidirectional Tests...\n\n");
 
     /* Run tests */
     test_udp_timeout_config ();
@@ -239,6 +345,8 @@ main (int argc, char *argv[])
     test_udp_socket_options ();
     test_udp_ttl ();
     test_udp_broadcast ();
+    test_udp_receive_callback ();
+    test_udp_socket_receive ();
 
     printf ("\nAll UDP Timeout tests passed!\n");
 

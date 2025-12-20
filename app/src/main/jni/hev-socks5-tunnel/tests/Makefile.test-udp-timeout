@@ -1,4 +1,4 @@
-# Makefile for UDP timeout test
+# Makefile for UDP bidirectional test
 
 CC = gcc
 CFLAGS = -Wall -Werror -g -I../src -I../src/core/include -I../src/misc -I../third-part/lwip/src/include -I../third-part/lwip/src/ports/include -I../src/route -I../src/route/router
@@ -19,7 +19,7 @@ SRC = test-udp-timeout.c \
       ../src/misc/hev-logger.c
 
 OBJS = $(SRC:.c=.o)
-TARGET = test-udp-timeout
+TARGET = test-udp-bidirectional
 
 .PHONY: all clean test
 
