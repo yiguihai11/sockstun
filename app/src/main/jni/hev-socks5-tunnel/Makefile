@@ -17,8 +17,7 @@ CCFLAGS=-O3 -pipe -Wall -Werror $(CFLAGS) \
 		-I$(THIRDPARTDIR)/wintun/include \
 		-I$(THIRDPARTDIR)/lwip/src/include \
 		-I$(THIRDPARTDIR)/lwip/src/ports/include \
-		-I$(THIRDPARTDIR)/hev-task-system/include \
-		-DFD_SET_DEFINED
+		-I$(THIRDPARTDIR)/hev-task-system/include
 LDFLAGS=-L$(THIRDPARTDIR)/yaml/bin -lyaml \
 		-L$(THIRDPARTDIR)/lwip/bin -llwip \
 		-L$(THIRDPARTDIR)/hev-task-system/bin -lhev-task-system \
