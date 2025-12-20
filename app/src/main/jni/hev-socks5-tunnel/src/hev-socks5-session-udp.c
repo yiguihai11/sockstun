@@ -28,6 +28,7 @@
 #include "hev-socks5-tunnel.h"
 #include "hev-smart-proxy.h"
 #include "hev-chnroutes.h"
+#include "hev-direct-udp.h"
 
 #include "hev-socks5-session-udp.h"
 
@@ -39,6 +40,7 @@ struct _HevSocks5UDPFrame
     HevSocks5Addr addr;
     struct pbuf *data;
     int use_direct;  /* 0: use proxy, 1: direct connection */
+    hev_direct_udp_session_t direct_session;  /* Direct UDP session info */
 };
 
 /* Helper functions */
@@ -164,31 +166,103 @@ hev_socks5_session_udp_fwd_f (HevSocks5SessionUDP *self, unsigned int num)
         msgv[i].buf = buf->payload;
         msgv[i].len = buf->len;
         msgv[i].addr = &frame->addr;
+    }
 
-        /* Note: UDP direct connection not implemented yet, always use proxy for now */
+    /* Handle direct UDP packets separately */
+    node = hev_list_first (&self->frame_list);
+    int proxy_count = 0;
+    int direct_count = 0;
+
+    /* First pass: send direct packets */
+    for (i = 0; i < res; i++) {
+        frame = container_of (node, HevSocks5UDPFrame, node);
+        node = hev_list_node_next (node);
+
         if (frame->use_direct) {
-            LOG_D ("UDP packet would use direct connection (not implemented), using proxy instead");
-        } else {
-            LOG_D ("UDP packet using proxy");
+            ip_addr_t addr;
+            u16_t port;
+
+            /* Convert SOCKS5 address to lwip address */
+            if (hev_socks5_addr_into_lwip (&frame->addr, &addr, &port) == 0) {
+                /* Create direct UDP session if needed */
+                if (!frame->direct_session.is_direct) {
+                    hev_direct_udp_config_t config = {
+                        .enabled = 1,
+                        .timeout_ms = hev_config_get_smart_proxy_timeout_ms ()
+                    };
+
+                    /* Initialize direct UDP module if not done yet */
+                    static int direct_udp_initialized = 0;
+                    if (!direct_udp_initialized) {
+                        hev_direct_udp_init (&config);
+                        direct_udp_initialized = 1;
+                    }
+
+                    if (hev_direct_udp_create_socket (&addr, port, &frame->direct_session) < 0) {
+                        LOG_E ("Failed to create direct UDP socket, falling back to proxy");
+                        frame->use_direct = 0;
+                    }
+                }
+
+                /* Send direct UDP packet */
+                if (frame->direct_session.is_direct) {
+                    if (hev_direct_udp_send (&frame->direct_session, buf, &addr, port) < 0) {
+                        LOG_E ("Failed to send direct UDP, closing socket");
+                        hev_direct_udp_close_socket (&frame->direct_session);
+                        frame->use_direct = 0;
+                    } else {
+                        direct_count++;
+                    }
+                }
+            }
         }
     }
 
-    res = hev_socks5_udp_sendmmsg (HEV_SOCKS5_UDP (self), msgv, res);
-    if (res <= 0) {
-        LOG_D ("%p socks5 session udp fwd f send", self);
-        return -1;
+    /* Second pass: count proxy packets and prepare array */
+    HevSocks5UDPMsg proxy_msgv[res];
+    int proxy_index = 0;
+
+    node = hev_list_first (&self->frame_list);
+    for (i = 0; i < res; i++) {
+        frame = container_of (node, HevSocks5UDPFrame, node);
+        node = hev_list_node_next (node);
+
+        if (!frame->use_direct) {
+            proxy_msgv[proxy_index].buf = buf->payload;
+            proxy_msgv[proxy_index].len = buf->len;
+            proxy_msgv[proxy_index].addr = &frame->addr;
+            proxy_index++;
+        }
     }
 
+    /* Send proxy packets */
+    if (proxy_index > 0) {
+        res = hev_socks5_udp_sendmmsg (HEV_SOCKS5_UDP (self), proxy_msgv, proxy_index);
+        if (res <= 0) {
+            LOG_D ("%p socks5 session udp fwd f send", self);
+        }
+        proxy_count = res;
+    }
+
+    /* Clean up all frames */
     for (i = 0; i < res; i++) {
         node = hev_list_first (&self->frame_list);
         frame = container_of (node, HevSocks5UDPFrame, node);
         buf = frame->data;
+
+        /* Close direct session if needed */
+        if (frame->use_direct && frame->direct_session.is_direct) {
+            hev_direct_udp_close_socket (&frame->direct_session);
+        }
 
         hev_list_del (&self->frame_list, node);
         hev_free (frame);
         pbuf_free (buf);
         self->frames--;
     }
+
+    LOG_D ("UDP session: %d direct packets, %d proxy packets sent",
+           direct_count, proxy_count);
 
     return 1;
 }
