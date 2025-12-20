@@ -26,6 +26,8 @@
 #include "hev-compiler.h"
 #include "hev-config-const.h"
 #include "hev-socks5-tunnel.h"
+#include "hev-smart-proxy.h"
+#include "hev-chnroutes.h"
 
 #include "hev-socks5-session-udp.h"
 
@@ -36,7 +38,68 @@ struct _HevSocks5UDPFrame
     HevListNode node;
     HevSocks5Addr addr;
     struct pbuf *data;
+    int use_direct;  /* 0: use proxy, 1: direct connection */
 };
+
+/* Helper functions */
+static uint16_t hev_socks5_addr_get_port (const HevSocks5Addr *addr);
+
+/* UDP routing decision */
+static int
+hev_socks5_session_udp_should_use_direct (const HevSocks5Addr *addr)
+{
+    char addr_str[46];
+    u16_t port;
+    ip_addr_t saddr;
+
+    /* Convert address to string for routing */
+    if (hev_socks5_addr_into_lwip (addr, &saddr, &port) < 0) {
+        LOG_D ("UDP failed to convert address");
+        return 0;  /* Default to proxy */
+    }
+
+    /* Get IP address string */
+    if (IP_IS_V4 (&saddr)) {
+        ip4addr_ntoa_r (ip_2_ip4 (&saddr), addr_str, sizeof(addr_str));
+    } else {
+        ip6addr_ntoa_r (ip_2_ip6 (&saddr), addr_str, sizeof(addr_str));
+    }
+
+    /* Step 1: Check custom IP/port rules */
+    HevSmartProxy *smart_proxy = hev_smart_proxy_get_instance ();
+    if (smart_proxy) {
+        HevSmartProxyResult result = hev_smart_proxy_connect (smart_proxy, addr_str, port);
+        LOG_D ("UDP custom rules check for %s:%d - action=%d, match=%d",
+               addr_str, port, result.action, result.match);
+
+        if (result.match) {
+            if (result.action == HEV_ROUTER_ACTION_ALLOW) {
+                LOG_D ("UDP custom rule allows direct connection to %s:%d", addr_str, port);
+                return 1;
+            } else if (result.action == HEV_ROUTER_ACTION_BLOCK) {
+                LOG_D ("UDP custom rule blocks connection to %s:%d", addr_str, port);
+                return -1;  /* Block */
+            } else {
+                LOG_D ("UDP custom rule directs to proxy for %s:%d", addr_str, port);
+                return 0;  /* Use proxy */
+            }
+        }
+    }
+
+    /* Step 2: If no custom rule matched and IP is in China routes, use direct */
+    if (hev_config_get_chnroutes_enabled ()) {
+        HevChnroutes *chnroutes = hev_chnroutes_get_instance ();
+        if (chnroutes && hev_chnroutes_is_china_ip (chnroutes, addr_str)) {
+            LOG_D ("UDP No custom rule matched, China IP detected via chnroutes: %s:%d",
+                   addr_str, port);
+            return 1;
+        }
+    }
+
+    /* Step 3: Default to proxy */
+    LOG_D ("UDP Using proxy for %s:%d", addr_str, port);
+    return 0;
+}
 
 static int
 task_io_yielder (HevTaskYieldType type, void *data)
@@ -83,9 +146,31 @@ hev_socks5_session_udp_fwd_f (HevSocks5SessionUDP *self, unsigned int num)
         node = hev_list_node_next (node);
         buf = frame->data;
 
+        /* Make routing decision */
+        int route_decision = hev_socks5_session_udp_should_use_direct (&frame->addr);
+        if (route_decision == -1) {
+            /* Block this packet */
+            LOG_D ("UDP packet blocked");
+            hev_list_del (&self->frame_list, node);
+            hev_free (frame);
+            pbuf_free (buf);
+            self->frames--;
+            res--;
+            i--;
+            continue;
+        }
+
+        frame->use_direct = route_decision;
         msgv[i].buf = buf->payload;
         msgv[i].len = buf->len;
         msgv[i].addr = &frame->addr;
+
+        /* Note: UDP direct connection not implemented yet, always use proxy for now */
+        if (frame->use_direct) {
+            LOG_D ("UDP packet would use direct connection (not implemented), using proxy instead");
+        } else {
+            LOG_D ("UDP packet using proxy");
+        }
     }
 
     res = hev_socks5_udp_sendmmsg (HEV_SOCKS5_UDP (self), msgv, res);
