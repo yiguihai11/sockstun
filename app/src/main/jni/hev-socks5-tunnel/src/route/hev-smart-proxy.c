@@ -17,7 +17,7 @@
 #include "hev-router.h"
 #include "hev-traffic-detector.h"
 #include "hev-blocked-items-wrapper.h"
-#include "hev-direct.h"
+#include "hev-direct-tcp.h"
 #include "route/router/hev-blocked-items.h"
 
 /* Global smart proxy instance */

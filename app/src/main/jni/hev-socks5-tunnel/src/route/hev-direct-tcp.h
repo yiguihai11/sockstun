@@ -1,12 +1,12 @@
 /*
- * HEV SOCKS5 Tunnel Direct Connect
+ * HEV SOCKS5 Tunnel Direct Connect (TCP)
  *
  * Copyright (c) 2024 hev
  * Author: hev <github@hev.im>
  */
 
-#ifndef __HEV_DIRECT_H__
-#define __HEV_DIRECT_H__
+#ifndef __HEV_DIRECT_TCP_H__
+#define __HEV_DIRECT_TCP_H__
 
 #include <lwip/tcp.h>
 
@@ -48,4 +48,4 @@ int hev_direct_load_config (void);
 }
 #endif
 
-#endif /* __HEV_DIRECT_H__ */
+#endif /* __HEV_DIRECT_TCP_H__ */

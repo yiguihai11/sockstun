@@ -1,5 +1,5 @@
 /*
- * HEV SOCKS5 Tunnel Direct Connect
+ * HEV SOCKS5 Tunnel Direct Connect (TCP)
  *
  * Copyright (c) 2024 hev
  * Author: hev <github@hev.im>
@@ -21,7 +21,7 @@
 
 #include "hev-config.h"
 #include "hev-logger.h"
-#include "hev-direct.h"
+#include "hev-direct-tcp.h"
 
 /* Global state */
 static hev_direct_config_t direct_config;

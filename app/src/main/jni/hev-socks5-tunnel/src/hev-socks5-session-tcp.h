@@ -14,7 +14,7 @@
 #include <hev-socks5-client-tcp.h>
 
 #include "hev-socks5-session.h"
-#include "route/hev-direct.h"
+#include "route/hev-direct-tcp.h"
 
 #define HEV_SOCKS5_SESSION_TCP(p) ((HevSocks5SessionTCP *)p)
 #define HEV_SOCKS5_SESSION_TCP_CLASS(p) ((HevSocks5SessionTCPClass *)p)
