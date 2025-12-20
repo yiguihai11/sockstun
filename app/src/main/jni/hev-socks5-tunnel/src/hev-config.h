@@ -60,4 +60,14 @@ const char *hev_config_get_misc_pid_file (void);
 const char *hev_config_get_misc_log_file (void);
 int hev_config_get_misc_log_level (void);
 
+int hev_config_get_smart_proxy_enabled (void);
+int hev_config_get_smart_proxy_timeout_ms (void);
+int hev_config_get_blacklist_expiry_minutes (void);
+int hev_config_get_probing_ports_count (void);
+void hev_config_get_probing_ports (int *ports, int max_count);
+
+/* Independent chnroutes configuration */
+int hev_config_get_chnroutes_enabled (void);
+const char *hev_config_get_chnroutes_file (void);
+
 #endif /* __HEV_CONFIG_H__ */

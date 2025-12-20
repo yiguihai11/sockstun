@@ -34,7 +34,7 @@ socks5:
   # Socket mark
 # mark: 0
 
-#mapdns:
+mapdns:
   # Mapped DNS address
 # address: 198.18.0.2
   # Mapped DNS port
@@ -45,6 +45,41 @@ socks5:
 # netmask: 240.0.0.0
   # Mapped DNS cache size
 # cache-size: 10000
+
+router:
+  # China routes configuration
+  chnroutes:
+    enable: false
+#   path: /path/to/chnroutes.txt
+
+  # Custom routing rules
+  # Each rule can have:
+  # - pattern: IP/CIDR, domain, or wildcard pattern
+  # - type: ip, domain, wildcard, or port
+  # - action: allow/direct, deny/proxy, or block
+  # - description: optional description
+  rules:
+    # Example rules (uncomment to use):
+    # - pattern: "*.cn"
+    #   type: wildcard
+    #   action: allow
+    #   description: "China domains direct"
+    # - pattern: "192.168.0.0/16"
+    #   type: ip
+    #   action: allow
+    #   description: "Private network direct"
+    # - pattern: "*.google.com"
+    #   type: wildcard
+    #   action: deny
+    #   description: "Google domains use proxy"
+
+smart_proxy:
+  # Enable smart proxy functionality
+  enabled: false
+  # Timeout in milliseconds for smart proxy decisions
+  timeout-ms: 5000
+  # Blacklist expiry time in minutes
+  blacklist-expiry-minutes: 60
 
 #misc:
   # task stack size (bytes)

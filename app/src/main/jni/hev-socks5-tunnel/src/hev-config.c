@@ -48,6 +48,16 @@ static int udp_read_write_timeout = 60000;
 static int limit_nofile = 65535;
 static int log_level = HEV_LOGGER_WARN;
 
+static int smart_proxy_enabled = 1;
+static int smart_proxy_timeout_ms = 1500;
+static int blacklist_expiry_minutes = 360;
+static int probing_ports[4] = {80, 443, 8080, 8443};
+static int probing_ports_count = 4;
+
+/* Independent chnroutes configuration */
+static int chnroutes_enabled = 0;
+static char chnroutes_file[512];
+
 static int
 hev_config_parse_tunnel_ipv4 (yaml_document_t *doc, yaml_node_t *base)
 {
@@ -319,6 +329,138 @@ hev_config_parse_log_level (const char *value)
 }
 
 static int
+hev_config_parse_router (yaml_document_t *doc, yaml_node_t *base)
+{
+    yaml_node_pair_t *pair;
+
+    if (!base || YAML_MAPPING_NODE != base->type)
+        return -1;
+
+    for (pair = base->data.mapping.pairs.start;
+         pair < base->data.mapping.pairs.top; pair++) {
+        yaml_node_t *node;
+        const char *key;
+
+        if (!pair->key || !pair->value)
+            break;
+
+        node = yaml_document_get_node (doc, pair->key);
+        if (!node || YAML_SCALAR_NODE != node->type)
+            break;
+
+        key = (const char *)node->data.scalar.value;
+        node = yaml_document_get_node (doc, pair->value);
+
+        if (0 == strcmp (key, "chnroutes")) {
+            if (YAML_MAPPING_NODE == node->type) {
+                /* Parse chnroutes configuration */
+                yaml_node_pair_t *chn_pair;
+                for (chn_pair = node->data.mapping.pairs.start;
+                     chn_pair < node->data.mapping.pairs.top; chn_pair++) {
+                    yaml_node_t *chn_node, *chn_value;
+
+                    if (!chn_pair->key || !chn_pair->value)
+                        break;
+
+                    chn_node = yaml_document_get_node (doc, chn_pair->key);
+                    if (!chn_node || YAML_SCALAR_NODE != chn_node->type)
+                        break;
+
+                    const char *chn_key = (const char *)chn_node->data.scalar.value;
+                    chn_value = yaml_document_get_node (doc, chn_pair->value);
+
+                    if (0 == strcmp (chn_key, "enable")) {
+                        if (YAML_SCALAR_NODE == chn_value->type) {
+                            const char *value = (const char *)chn_value->data.scalar.value;
+                            chnroutes_enabled = (0 == strcmp (value, "true") ||
+                                               0 == strcmp (value, "yes") ||
+                                               0 == strcmp (value, "1"));
+                        }
+                    } else if (0 == strcmp (chn_key, "path")) {
+                        if (YAML_SCALAR_NODE == chn_value->type) {
+                            const char *value = (const char *)chn_value->data.scalar.value;
+                            strncpy (chnroutes_file, value, 511);
+                            chnroutes_file[511] = '\0';
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+static int
+hev_config_parse_smart_proxy (yaml_document_t *doc, yaml_node_t *base)
+{
+    yaml_node_pair_t *pair;
+
+    if (!base || YAML_MAPPING_NODE != base->type)
+        return -1;
+
+    for (pair = base->data.mapping.pairs.start;
+         pair < base->data.mapping.pairs.top; pair++) {
+        yaml_node_t *node;
+        const char *key;
+
+        if (!pair->key || !pair->value)
+            break;
+
+        node = yaml_document_get_node (doc, pair->key);
+        if (!node || YAML_SCALAR_NODE != node->type)
+            break;
+
+        key = (const char *)node->data.scalar.value;
+        node = yaml_document_get_node (doc, pair->value);
+
+        if (0 == strcmp (key, "enabled")) {
+            if (YAML_SCALAR_NODE == node->type) {
+                const char *value = (const char *)node->data.scalar.value;
+                smart_proxy_enabled = (0 == strcmp (value, "true") ||
+                                      0 == strcmp (value, "yes") ||
+                                      0 == strcmp (value, "1"));
+            }
+        } else if (0 == strcmp (key, "timeout_ms")) {
+            if (YAML_SCALAR_NODE == node->type) {
+                const char *value = (const char *)node->data.scalar.value;
+                smart_proxy_timeout_ms = atoi (value);
+                if (smart_proxy_timeout_ms < 100)
+                    smart_proxy_timeout_ms = 100;
+                else if (smart_proxy_timeout_ms > 10000)
+                    smart_proxy_timeout_ms = 10000;
+            }
+        } else if (0 == strcmp (key, "blacklist_expiry_minutes")) {
+            if (YAML_SCALAR_NODE == node->type) {
+                const char *value = (const char *)node->data.scalar.value;
+                blacklist_expiry_minutes = atoi (value);
+                if (blacklist_expiry_minutes < 1)
+                    blacklist_expiry_minutes = 1;
+                else if (blacklist_expiry_minutes > 1440)
+                    blacklist_expiry_minutes = 1440;
+            }
+        } else if (0 == strcmp (key, "probing_ports")) {
+            if (YAML_SEQUENCE_NODE == node->type) {
+                probing_ports_count = 0;
+                for (int i = 0; i < node->data.sequence.items.start[
+                        node->data.sequence.items.top - node->data.sequence.items.start]; i++) {
+                    yaml_node_item_t item = node->data.sequence.items.start[i];
+                    yaml_node_t *port_node = yaml_document_get_node (doc, item);
+                    if (port_node && YAML_SCALAR_NODE == port_node->type) {
+                        const char *value = (const char *)port_node->data.scalar.value;
+                        int port = atoi (value);
+                        if (port > 0 && port < 65536 && probing_ports_count < 4) {
+                            probing_ports[probing_ports_count++] = port;
+                        }
+                    }
+                }
+            }
+      }
+
+    return 0;
+}
+
+static int
 hev_config_parse_misc (yaml_document_t *doc, yaml_node_t *base)
 {
     yaml_node_pair_t *pair;
@@ -422,6 +564,10 @@ hev_config_parse_doc (yaml_document_t *doc)
             res = hev_config_parse_socks5 (doc, node);
         else if (0 == strcmp (key, "mapdns"))
             res = hev_config_parse_mapdns (doc, node);
+        else if (0 == strcmp (key, "router"))
+            res = hev_config_parse_router (doc, node);
+        else if (0 == strcmp (key, "smart_proxy"))
+            res = hev_config_parse_smart_proxy (doc, node);
         else if (0 == strcmp (key, "misc"))
             res = hev_config_parse_misc (doc, node);
 
@@ -679,4 +825,52 @@ int
 hev_config_get_misc_log_level (void)
 {
     return log_level;
+}
+
+int
+hev_config_get_smart_proxy_enabled (void)
+{
+    return smart_proxy_enabled;
+}
+
+int
+hev_config_get_smart_proxy_timeout_ms (void)
+{
+    return smart_proxy_timeout_ms;
+}
+
+int
+hev_config_get_blacklist_expiry_minutes (void)
+{
+    return blacklist_expiry_minutes;
+}
+
+int
+hev_config_get_probing_ports_count (void)
+{
+    return probing_ports_count;
+}
+
+void
+hev_config_get_probing_ports (int *ports, int max_count)
+{
+    int count = probing_ports_count < max_count ? probing_ports_count : max_count;
+    for (int i = 0; i < count; i++) {
+        ports[i] = probing_ports[i];
+    }
+}
+
+int
+hev_config_get_chnroutes_enabled (void)
+{
+    return chnroutes_enabled;
+}
+
+const char *
+hev_config_get_chnroutes_file (void)
+{
+    if (!chnroutes_file[0])
+        return NULL;
+
+    return chnroutes_file;
 }

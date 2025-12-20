@@ -300,15 +300,227 @@ hev_router_add_domain_rule (HevRouter *router, const char *domain, HevRouterRule
     return 0;
 }
 
-/* Load router config */
+/* Parse a single router rule from YAML */
+static int
+hev_router_parse_rule (HevRouter *router, yaml_document_t *doc, yaml_node_t *rule_node)
+{
+    yaml_node_pair_t *pair;
+    HevRouterRule *rule;
+    const char *pattern = NULL;
+    const char *action_str = NULL;
+    const char *type_str = NULL;
+    const char *description = "";
+    HevRouterAction action = HEV_ROUTER_ACTION_DENY;
+    HevRuleType type = HEV_RULE_TYPE_IP;
+
+    if (!rule_node || YAML_MAPPING_NODE != rule_node->type)
+        return -1;
+
+    /* Parse rule properties */
+    for (pair = rule_node->data.mapping.pairs.start;
+         pair < rule_node->data.mapping.pairs.top; pair++) {
+        yaml_node_t *key_node, *value_node;
+        const char *key;
+
+        if (!pair->key || !pair->value)
+            break;
+
+        key_node = yaml_document_get_node (doc, pair->key);
+        value_node = yaml_document_get_node (doc, pair->value);
+
+        if (!key_node || YAML_SCALAR_NODE != key_node->type)
+            break;
+
+        key = (const char *)key_node->data.scalar.value;
+
+        if (0 == strcmp (key, "pattern")) {
+            if (YAML_SCALAR_NODE == value_node->type)
+                pattern = (const char *)value_node->data.scalar.value;
+        } else if (0 == strcmp (key, "action")) {
+            if (YAML_SCALAR_NODE == value_node->type)
+                action_str = (const char *)value_node->data.scalar.value;
+        } else if (0 == strcmp (key, "type")) {
+            if (YAML_SCALAR_NODE == value_node->type)
+                type_str = (const char *)value_node->data.scalar.value;
+        } else if (0 == strcmp (key, "description")) {
+            if (YAML_SCALAR_NODE == value_node->type)
+                description = (const char *)value_node->data.scalar.value;
+        }
+    }
+
+    if (!pattern || !action_str || !type_str) {
+        LOG_W ("Invalid rule: missing required fields");
+        return -1;
+    }
+
+    /* Parse action */
+    if (0 == strcmp (action_str, "allow") || 0 == strcmp (action_str, "direct"))
+        action = HEV_ROUTER_ACTION_ALLOW;
+    else if (0 == strcmp (action_str, "deny") || 0 == strcmp (action_str, "proxy"))
+        action = HEV_ROUTER_ACTION_DENY;
+    else if (0 == strcmp (action_str, "block"))
+        action = HEV_ROUTER_ACTION_BLOCK;
+
+    /* Parse type */
+    if (0 == strcmp (type_str, "ip"))
+        type = HEV_RULE_TYPE_IP;
+    else if (0 == strcmp (type_str, "port"))
+        type = HEV_RULE_TYPE_PORT;
+    else if (0 == strcmp (type_str, "domain"))
+        type = HEV_RULE_TYPE_DOMAIN;
+    else if (0 == strcmp (type_str, "wildcard"))
+        type = HEV_RULE_TYPE_WILDCARD;
+
+    /* Create rule */
+    rule = malloc (sizeof (HevRouterRule));
+    if (!rule) {
+        LOG_E ("Failed to allocate memory for rule");
+        return -1;
+    }
+
+    memset (rule, 0, sizeof (HevRouterRule));
+    rule->action = action;
+    rule->type = type;
+    strncpy (rule->pattern, pattern, sizeof (rule->pattern) - 1);
+    strncpy (rule->description, description, sizeof (rule->description) - 1);
+
+    /* Add rule to router */
+    switch (type) {
+    case HEV_RULE_TYPE_IP:
+        hev_router_add_ip_rule (router, pattern, rule);
+        break;
+    case HEV_RULE_TYPE_DOMAIN:
+        hev_router_add_domain_rule (router, pattern, rule);
+        break;
+    case HEV_RULE_TYPE_WILDCARD:
+        hev_router_add_domain_rule (router, pattern, rule);
+        break;
+    case HEV_RULE_TYPE_PORT:
+        /* Add port rule to the main list for now */
+        rule->next = router->rules;
+        router->rules = rule;
+        router->rule_count++;
+        break;
+    default:
+        free (rule);
+        LOG_W ("Unknown rule type: %s", type_str);
+        return -1;
+    }
+
+    LOG_D ("Added rule: %s %s %s", action_str, type_str, pattern);
+    return 0;
+}
+
+/* Load router config from file */
 int
 hev_router_load_config (HevRouter *router)
 {
-    /* This should be implemented using YAML parser similar to hev-config.c */
-    /* No hardcoded rules - only use user configuration */
+    yaml_parser_t parser;
+    yaml_document_t doc;
+    yaml_node_t *root, *router_node = NULL;
+    yaml_node_pair_t *pair;
+    FILE *fp;
+    const char *config_path;
+    int res = -1;
 
-    LOG_D ("Loaded %d rules into efficient data structures", router->rule_count);
-    return 0;
+    /* Use fixed config path */
+    config_path = "/data/data/com.termux/files/home/sockstun/app/src/main/jni/hev-socks5-tunnel/conf/main.yml";
+
+    /* Initialize YAML parser */
+    if (!yaml_parser_initialize (&parser)) {
+        LOG_E ("Failed to initialize YAML parser");
+        return -1;
+    }
+
+    /* Open config file */
+    fp = fopen (config_path, "r");
+    if (!fp) {
+        LOG_W ("Failed to open config file: %s", config_path);
+        goto exit_free_parser;
+    }
+
+    yaml_parser_set_input_file (&parser, fp);
+    if (!yaml_parser_load (&parser, &doc)) {
+        LOG_E ("Failed to parse config file: %s", config_path);
+        goto exit_close_fp;
+    }
+
+    /* Find router section */
+    root = yaml_document_get_root_node (&doc);
+    if (!root || YAML_MAPPING_NODE != root->type) {
+        LOG_W ("Invalid config file format");
+        goto exit_delete_doc;
+    }
+
+    for (pair = root->data.mapping.pairs.start;
+         pair < root->data.mapping.pairs.top; pair++) {
+        yaml_node_t *key_node;
+
+        if (!pair->key || !pair->value)
+            break;
+
+        key_node = yaml_document_get_node (&doc, pair->key);
+        if (!key_node || YAML_SCALAR_NODE != key_node->type)
+            break;
+
+        if (0 == strcmp ((const char *)key_node->data.scalar.value, "router")) {
+            router_node = yaml_document_get_node (&doc, pair->value);
+            break;
+        }
+    }
+
+    if (!router_node) {
+        LOG_D ("No router section found in config");
+        res = 0;
+        goto exit_delete_doc;
+    }
+
+    if (YAML_MAPPING_NODE != router_node->type) {
+        LOG_W ("Invalid router section format");
+        goto exit_delete_doc;
+    }
+
+    /* Parse router rules */
+    for (pair = router_node->data.mapping.pairs.start;
+         pair < router_node->data.mapping.pairs.top; pair++) {
+        yaml_node_t *key_node, *value_node;
+        const char *key;
+
+        if (!pair->key || !pair->value)
+            break;
+
+        key_node = yaml_document_get_node (&doc, pair->key);
+        value_node = yaml_document_get_node (&doc, pair->value);
+
+        if (!key_node || YAML_SCALAR_NODE != key_node->type)
+            break;
+
+        key = (const char *)key_node->data.scalar.value;
+
+        if (0 == strcmp (key, "rules")) {
+            if (YAML_SEQUENCE_NODE == value_node->type) {
+                yaml_node_item_t *item;
+                for (item = value_node->data.sequence.items.start;
+                     item < value_node->data.sequence.items.top; item++) {
+                    yaml_node_t *rule_node = yaml_document_get_node (&doc, *item);
+                    if (hev_router_parse_rule (router, &doc, rule_node) < 0) {
+                        LOG_W ("Failed to parse rule");
+                    }
+                }
+            }
+        }
+    }
+
+    LOG_D ("Loaded %d rules from config", router->rule_count);
+    res = 0;
+
+exit_delete_doc:
+    yaml_document_delete (&doc);
+exit_close_fp:
+    fclose (fp);
+exit_free_parser:
+    yaml_parser_delete (&parser);
+    return res;
 }
 
 /* Stage 1: Match IP/port rules (connection phase) */

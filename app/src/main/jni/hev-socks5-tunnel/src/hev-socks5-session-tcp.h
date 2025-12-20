@@ -14,6 +14,7 @@
 #include <hev-socks5-client-tcp.h>
 
 #include "hev-socks5-session.h"
+#include "route/hev-direct.h"
 
 #define HEV_SOCKS5_SESSION_TCP(p) ((HevSocks5SessionTCP *)p)
 #define HEV_SOCKS5_SESSION_TCP_CLASS(p) ((HevSocks5SessionTCPClass *)p)
@@ -33,6 +34,9 @@ struct _HevSocks5SessionTCP
     HevTaskMutex *mutex;
     HevRingBuffer *buffer;
     int pcb_eof;
+
+    /* Direct connect state */
+    hev_direct_session_t direct_session;
 };
 
 struct _HevSocks5SessionTCPClass
