@@ -99,14 +99,8 @@ typedef struct hev_router_t {
     int rule_count;
 } HevRouter;
 
-/* Traffic detector */
-typedef struct hev_traffic_detector_t {
-    /* HTTP patterns */
-    const char *http_methods[8];
-
-    /* TLS patterns */
-    unsigned char tls_client_hello[5];
-} HevTrafficDetector;
+/* Forward declaration */
+typedef struct hev_traffic_detector_t HevTrafficDetector;
 
 /* Router functions */
 HevRouter *hev_router_new (const char *config_path);

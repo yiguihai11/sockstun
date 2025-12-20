@@ -10,6 +10,7 @@
 #include <string.h>
 #include <time.h>
 #include <arpa/inet.h>
+#include <ctype.h>
 
 #include "hev-blocked-items.h"
 #include "hev-logger.h"

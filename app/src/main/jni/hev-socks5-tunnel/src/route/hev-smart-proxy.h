@@ -9,6 +9,7 @@
 #define __HEV_SMART_PROXY_H__
 
 #include "hev-router.h"
+#include "route/router/hev-blocked-items.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,7 +18,6 @@ extern "C" {
 /* Forward declarations */
 typedef struct hev_traffic_detector_t HevTrafficDetector;
 typedef struct hev_blocked_items_manager_t HevBlockedItems;
-typedef enum hev_failure_reason_e HevFailureReason;
 
 /* Smart proxy result */
 typedef struct {

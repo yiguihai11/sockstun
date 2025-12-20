@@ -24,7 +24,7 @@ typedef struct radix_node_t {
 } RadixNode;
 
 /* Simple hash function for domain matching */
-static unsigned int
+static unsigned int __attribute__((unused))
 domain_hash (const char *str)
 {
     unsigned int hash = 5381;
@@ -48,7 +48,7 @@ radix_node_new (void)
 }
 
 /* Insert IP range into radix trie */
-static int
+static int __attribute__((unused))
 radix_trie_insert (RadixNode **root, const char *ip, int prefix_len, void *value)
 {
     RadixNode *node = *root ? *root : radix_node_new ();
@@ -75,7 +75,7 @@ radix_trie_insert (RadixNode **root, const char *ip, int prefix_len, void *value
 }
 
 /* Lookup IP in radix trie */
-static void *
+static void * __attribute__((unused))
 radix_trie_lookup (RadixNode *root, const char *ip, int prefix_len)
 {
     if (!root || prefix_len == 0)
@@ -90,7 +90,7 @@ radix_trie_lookup (RadixNode *root, const char *ip, int prefix_len)
 }
 
 /* Convert CIDR to IP and prefix */
-static int
+static int __attribute__((unused))
 parse_cidr (const char *cidr, char *ip, int *prefix_len)
 {
     char *slash = strchr (cidr, '/');
@@ -114,7 +114,7 @@ parse_cidr (const char *cidr, char *ip, int *prefix_len)
 }
 
 /* Match pattern against string */
-static int
+static int __attribute__((unused))
 match_pattern (const char *pattern, const char *str)
 {
     /* Exact match */
@@ -301,7 +301,7 @@ hev_router_add_domain_rule (HevRouter *router, const char *domain, HevRouterRule
 }
 
 /* Parse a single router rule from YAML */
-static int
+static int __attribute__((unused))
 hev_router_parse_rule (HevRouter *router, yaml_document_t *doc, yaml_node_t *rule_node)
 {
     yaml_node_pair_t *pair;

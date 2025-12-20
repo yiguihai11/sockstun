@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 
 #include "hev-traffic-detector.h"
+#include "hev-router.h"
 #include "hev-logger.h"
 
 /* Traffic detector structure */
@@ -137,10 +138,7 @@ detect_http (HevTrafficDetector *detector, const char *data, size_t len)
     memset (result, 0, sizeof (HevTrafficResult));
     result->type = HEV_TRAFFIC_TYPE_HTTP;
 
-    /* Copy raw headers (limit to 4095 chars) */
-    size_t copy_len = len < 4095 ? len : 4095;
-    strncpy (result->raw_headers, data, copy_len);
-    result->raw_headers[copy_len] = '\0';
+    /* Copy raw headers (not implemented - field not available) */
 
     /* Parse request line */
     char *lines = strdup (data);
@@ -159,10 +157,11 @@ detect_http (HevTrafficDetector *detector, const char *data, size_t len)
             if (strcmp (name, "host") == 0) {
                 strncpy (result->hostname, value, 255);
                 result->hostname[255] = '\0';
-            } else if (strcmp (name, "user-agent") == 0) {
+            } /* else if (strcmp (name, "user-agent") == 0) {
+                Note: user_agent field not available in current HevTrafficResult definition
                 strncpy (result->user_agent, value, 255);
                 result->user_agent[255] = '\0';
-            }
+            } */
         }
     }
 
