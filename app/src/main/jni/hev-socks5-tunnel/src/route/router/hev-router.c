@@ -75,7 +75,8 @@ radix_trie_insert (RadixNode **root, const char *ip, int prefix_len, void *value
 }
 
 /* Lookup IP in radix trie */
-static void * __attribute__((unused))
+#if 0
+static void *
 radix_trie_lookup (RadixNode *root, const char *ip, int prefix_len)
 {
     if (!root || prefix_len == 0)
@@ -88,6 +89,7 @@ radix_trie_lookup (RadixNode *root, const char *ip, int prefix_len)
         return radix_trie_lookup (root->left, ip + (prefix_len - 1) / 8, prefix_len - 1);
     }
 }
+#endif
 
 /* Convert CIDR to IP and prefix */
 static int __attribute__((unused))
