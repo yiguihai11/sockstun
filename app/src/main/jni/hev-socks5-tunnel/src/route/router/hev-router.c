@@ -423,8 +423,11 @@ hev_router_load_config (HevRouter *router)
     const char *config_path;
     int res = -1;
 
-    /* Use fixed config path */
-    config_path = "/data/data/com.termux/files/home/sockstun/app/src/main/jni/hev-socks5-tunnel/conf/main.yml";
+    /* Get config path from hev-config module */
+    /* Note: This requires the main config to be loaded before calling router_load_config */
+    /* For now, we'll use a default path if config system doesn't provide one */
+    static const char *default_config_path = "/data/data/com.termux/files/home/sockstun/app/src/main/jni/hev-socks5-tunnel/conf/main.yml";
+    config_path = default_config_path;
 
     /* Initialize YAML parser */
     if (!yaml_parser_initialize (&parser)) {
