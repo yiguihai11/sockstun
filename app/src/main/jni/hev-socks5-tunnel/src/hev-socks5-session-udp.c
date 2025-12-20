@@ -131,7 +131,6 @@ task_io_yielder (HevTaskYieldType type, void *data)
 static int
 hev_socks5_session_udp_fwd_f (HevSocks5SessionUDP *self, unsigned int num)
 {
-    HevSocks5UDPMsg msgv[num];
     HevSocks5UDPFrame *frame;
     HevListNode *node;
     struct pbuf *buf;
@@ -142,6 +141,8 @@ hev_socks5_session_udp_fwd_f (HevSocks5SessionUDP *self, unsigned int num)
         return 0;
 
     res = (res > num) ? num : res;
+
+    /* First pass: make routing decisions and handle direct packets */
     node = hev_list_first (&self->frame_list);
     for (i = 0; i < res; i++) {
         frame = container_of (node, HevSocks5UDPFrame, node);
@@ -163,17 +164,13 @@ hev_socks5_session_udp_fwd_f (HevSocks5SessionUDP *self, unsigned int num)
         }
 
         frame->use_direct = route_decision;
-        msgv[i].buf = buf->payload;
-        msgv[i].len = buf->len;
-        msgv[i].addr = &frame->addr;
     }
 
-    /* Handle direct UDP packets separately */
+    /* Handle direct UDP packets */
     node = hev_list_first (&self->frame_list);
     int proxy_count = 0;
     int direct_count = 0;
 
-    /* First pass: send direct packets */
     for (i = 0; i < res; i++) {
         frame = container_of (node, HevSocks5UDPFrame, node);
         node = hev_list_node_next (node);
