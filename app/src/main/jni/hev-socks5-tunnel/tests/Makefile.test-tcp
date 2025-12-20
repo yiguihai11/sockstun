@@ -1,0 +1,30 @@
+# Makefile for direct-tcp test
+
+CC = gcc
+CFLAGS = -Wall -Werror -g -I../src -I../src/core/include -I../src/misc -I../third-part/lwip/src/include -I../third-part/lwip/src/ports/include -I../src/route
+
+LDFLAGS = -L../third-part/lwip/bin -llwip -lpthread
+
+SRC = test-direct-tcp.c \
+      ../src/route/hev-direct-tcp.c \
+      ../src/misc/hev-utils.c \
+      ../src/misc/hev-logger.c
+
+OBJS = $(SRC:.c=.o)
+TARGET = test-direct-tcp
+
+.PHONY: all clean test
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+test: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
