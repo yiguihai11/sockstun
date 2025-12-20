@@ -15,6 +15,7 @@
 #include <arpa/inet.h>
 #include <sys/select.h>
 #include <fcntl.h>
+#include <netdb.h>
 #include <hev-task.h>
 #include <hev-task-io.h>
 #include <lwip/err.h>
@@ -74,6 +75,9 @@ hev_direct_create_socket (const char *dest_addr, int dest_port)
 {
     int sock_fd = -1;
     int ret = -1;
+    struct sockaddr_storage server_addr;
+    socklen_t addr_len;
+    int family;
 
     if (!direct_initialized || !dest_addr || dest_port <= 0) {
         return -1;
@@ -81,9 +85,31 @@ hev_direct_create_socket (const char *dest_addr, int dest_port)
 
     LOG_D ("Creating direct socket to %s:%d", dest_addr, dest_port);
 
-    sock_fd = socket (AF_INET, SOCK_STREAM, 0);
+    /* Determine address family and prepare sockaddr */
+    struct addrinfo hints, *res;
+    memset (&hints, 0, sizeof (hints));
+    hints.ai_family = AF_UNSPEC;  /* Allow IPv4 or IPv6 */
+    hints.ai_socktype = SOCK_STREAM;
+
+    char port_str[16];
+    snprintf (port_str, sizeof (port_str), "%d", dest_port);
+
+    ret = getaddrinfo (dest_addr, port_str, &hints, &res);
+    if (ret != 0) {
+        LOG_W ("Failed to resolve address %s: %s", dest_addr, gai_strerror (ret));
+        return -1;
+    }
+
+    /* Use the first address returned */
+    family = res->ai_family;
+    memcpy (&server_addr, res->ai_addr, res->ai_addrlen);
+    addr_len = res->ai_addrlen;
+
+    /* Create socket */
+    sock_fd = socket (family, SOCK_STREAM, 0);
     if (sock_fd < 0) {
         LOG_W ("Failed to create socket: %s", strerror (errno));
+        freeaddrinfo (res);
         return -1;
     }
 
@@ -91,14 +117,14 @@ hev_direct_create_socket (const char *dest_addr, int dest_port)
     int flags = fcntl (sock_fd, F_GETFL, 0);
     fcntl (sock_fd, F_SETFL, flags | O_NONBLOCK);
 
-    /* Connect with timeout */
-    struct sockaddr_in addr;
-    memset (&addr, 0, sizeof (addr));
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons (dest_port);
-    inet_pton (AF_INET, dest_addr, &addr.sin_addr);
+    /* For IPv6, disable dual-stack to avoid conflicts */
+    if (family == AF_INET6) {
+        int ipv6only = 1;
+        setsockopt (sock_fd, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6only, sizeof (ipv6only));
+    }
 
-    ret = connect (sock_fd, (struct sockaddr *)&addr, sizeof (addr));
+    /* Connect with timeout */
+    ret = connect (sock_fd, (struct sockaddr *)&server_addr, addr_len);
     if (ret < 0) {
         if (errno == EINPROGRESS) {
             /* Wait for connection with timeout */
@@ -150,6 +176,11 @@ hev_direct_create_socket (const char *dest_addr, int dest_port)
 
         return sock_fd;
     }
+
+    /* Cleanup on error paths */
+    freeaddrinfo (res);
+    close (sock_fd);
+    return -1;
 }
 
 int

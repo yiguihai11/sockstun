@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 
 #include <lwip/udp.h>
 #include <lwip/ip_addr.h>
@@ -72,14 +73,17 @@ hev_direct_udp_create_socket (const ip_addr_t *addr, u16_t port,
                               hev_direct_udp_session_t *session)
 {
     int fd;
-    struct sockaddr_in sa;
     int flags;
 
     if (!session)
         return -1;
 
-    /* Create UDP socket */
-    fd = socket (AF_INET, SOCK_DGRAM, 0);
+    /* Create UDP socket - try IPv6 first, fallback to IPv4 */
+    if (IP_IS_V6 (addr)) {
+        fd = socket (AF_INET6, SOCK_DGRAM, 0);
+    } else {
+        fd = socket (AF_INET, SOCK_DGRAM, 0);
+    }
     if (fd < 0) {
         LOG_E ("Failed to create UDP socket: %s", strerror (errno));
         return -1;
@@ -94,15 +98,20 @@ hev_direct_udp_create_socket (const ip_addr_t *addr, u16_t port,
     }
 
     /* Bind to a local port (any available) */
-    memset (&sa, 0, sizeof (sa));
-    sa.sin_family = AF_INET;
-    sa.sin_addr.s_addr = INADDR_ANY;
-    sa.sin_port = 0;
-
-    if (bind (fd, (struct sockaddr *)&sa, sizeof (sa)) < 0) {
-        LOG_E ("Failed to bind UDP socket: %s", strerror (errno));
-        close (fd);
-        return -1;
+    if (IP_IS_V6 (addr)) {
+        struct sockaddr_in6 sa6;
+        memset (&sa6, 0, sizeof (sa6));
+        sa6.sin6_family = AF_INET6;
+        sa6.sin6_addr = in6addr_any;
+        sa6.sin6_port = 0;
+        bind (fd, (struct sockaddr *)&sa6, sizeof (sa6));
+    } else {
+        struct sockaddr_in sa4;
+        memset (&sa4, 0, sizeof (sa4));
+        sa4.sin_family = AF_INET;
+        sa4.sin_addr.s_addr = INADDR_ANY;
+        sa4.sin_port = 0;
+        bind (fd, (struct sockaddr *)&sa4, sizeof (sa4));
     }
 
     /* Store session info */
@@ -161,7 +170,6 @@ int
 hev_direct_udp_send (hev_direct_udp_session_t *session,
                      struct pbuf *p, const ip_addr_t *addr, u16_t port)
 {
-    struct sockaddr_in sa;
     ssize_t sent;
 
     if (!session || !session->is_direct || !p || session->fd < 0) {
@@ -169,23 +177,27 @@ hev_direct_udp_send (hev_direct_udp_session_t *session,
         return -1;
     }
 
-    /* Prepare destination address */
-    memset (&sa, 0, sizeof (sa));
-    sa.sin_family = AF_INET;
-
     if (IP_IS_V4 (addr)) {
-        sa.sin_addr.s_addr = ip4_addr_get_u32 (ip_2_ip4 (addr));
+        /* IPv4 send */
+        struct sockaddr_in sa4;
+        memset (&sa4, 0, sizeof (sa4));
+        sa4.sin_family = AF_INET;
+        sa4.sin_addr.s_addr = ip4_addr_get_u32 (ip_2_ip4 (addr));
+        sa4.sin_port = htons (port);
+
+        sent = sendto (session->fd, p->payload, p->len, 0,
+                        (struct sockaddr *)&sa4, sizeof (sa4));
     } else {
-        /* IPv6 not supported in this simple implementation */
-        LOG_E ("IPv6 not supported for direct UDP");
-        return -1;
+        /* IPv6 send */
+        struct sockaddr_in6 sa6;
+        memset (&sa6, 0, sizeof (sa6));
+        sa6.sin6_family = AF_INET6;
+        memcpy (&sa6.sin6_addr, ip_2_ip6 (addr), sizeof (struct in6_addr));
+        sa6.sin6_port = htons (port);
+
+        sent = sendto (session->fd, p->payload, p->len, 0,
+                        (struct sockaddr *)&sa6, sizeof (sa6));
     }
-
-    sa.sin_port = htons (port);
-
-    /* Send packet */
-    sent = sendto (session->fd, p->payload, p->len, 0,
-                    (struct sockaddr *)&sa, sizeof (sa));
 
     if (sent < 0) {
         LOG_E ("Direct UDP send failed: %s", strerror (errno));
