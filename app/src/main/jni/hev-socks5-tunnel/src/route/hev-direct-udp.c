@@ -74,6 +74,8 @@ hev_direct_udp_create_socket (const ip_addr_t *addr, u16_t port,
 {
     int fd;
     int flags;
+    int optval;
+    socklen_t optlen;
 
     if (!session)
         return -1;
@@ -96,6 +98,29 @@ hev_direct_udp_create_socket (const ip_addr_t *addr, u16_t port,
         close (fd);
         return -1;
     }
+
+    /* Set socket options for better performance */
+
+    /* Set receive buffer size (64KB) */
+    optval = 65536;
+    optlen = sizeof (optval);
+    setsockopt (fd, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
+
+    /* Set send buffer size (64KB) */
+    setsockopt (fd, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
+
+    /* Set TTL (Time To Live) */
+    if (IP_IS_V6 (addr)) {
+        int ttl = 64;  /* Default IPv6 TTL */
+        setsockopt (fd, IPPROTO_IPV6, IPV6_UNICAST_HOPS, &ttl, sizeof (ttl));
+    } else {
+        int ttl = 64;  /* Default IPv4 TTL */
+        setsockopt (fd, IPPROTO_IP, IP_TTL, &ttl, sizeof (ttl));
+    }
+
+    /* Enable broadcast if needed (for local testing) */
+    int broadcast = 1;
+    setsockopt (fd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof (broadcast));
 
     /* Bind to a local port (any available) */
     if (IP_IS_V6 (addr)) {

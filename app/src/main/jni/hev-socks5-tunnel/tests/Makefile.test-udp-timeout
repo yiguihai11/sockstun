@@ -1,0 +1,38 @@
+# Makefile for UDP timeout test
+
+CC = gcc
+CFLAGS = -Wall -Werror -g -I../src -I../src/core/include -I../src/misc -I../third-part/lwip/src/include -I../third-part/lwip/src/ports/include -I../src/route -I../src/route/router
+
+LDFLAGS = -L../third-part/lwip/bin -llwip -lpthread
+
+SRC = test-udp-timeout.c \
+      ../src/route/hev-direct-udp.c \
+      ../src/route/hev-smart-proxy.c \
+      ../src/route/hev-chnroutes.c \
+      ../src/route/router/hev-router.c \
+      ../src/route/router/hev-radix-tree.c \
+      ../src/route/router/hev-domain-hash.c \
+      ../src/route/router/hev-traffic-detector.c \
+      ../src/route/router/hev-blocked-items.c \
+      ../src/route/hev-blocked-items-wrapper.c \
+      ../src/misc/hev-utils.c \
+      ../src/misc/hev-logger.c
+
+OBJS = $(SRC:.c=.o)
+TARGET = test-udp-timeout
+
+.PHONY: all clean test
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+test: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
