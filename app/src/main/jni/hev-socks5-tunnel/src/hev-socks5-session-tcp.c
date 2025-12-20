@@ -449,19 +449,56 @@ hev_socks5_session_tcp_construct (HevSocks5SessionTCP *self,
     inet_ntop (AF_INET, &pcb->local_ip, dest_addr, sizeof (dest_addr));
     dest_port = pcb->local_port;
 
-    /* Step 1: Check chnroutes first (if enabled) */
+    /* Step 1: Check custom IP/port rules first */
     int use_direct = 0;
-    if (hev_config_get_chnroutes_enabled ()) {
-        HevChnroutes *chnroutes = hev_chnroutes_get_instance ();
-        if (chnroutes && hev_chnroutes_is_china_ip (chnroutes, dest_addr)) {
-            /* IP matches China routes, use direct connection */
-            use_direct = 1;
-            LOG_D ("%p China IP detected via chnroutes: %s:%d", self, dest_addr, dest_port);
+    int custom_rule_matched = 0;
+
+    HevSmartProxy *smart_proxy = hev_smart_proxy_get_instance ();
+    if (!smart_proxy) {
+        smart_proxy = hev_smart_proxy_new (NULL);
+        if (smart_proxy) {
+            hev_smart_proxy_load_config (smart_proxy);
+            hev_smart_proxy_set_instance (smart_proxy);
         }
     }
 
+    if (smart_proxy) {
+        /* Check custom routing rules */
+        HevSmartProxyResult result = hev_smart_proxy_connect (smart_proxy, dest_addr, dest_port);
+        LOG_D ("%p Custom rules check for %s:%d - action=%d, match=%d",
+               self, dest_addr, dest_port, result.action, result.match);
+
+        if (result.match) {
+            /* Custom rule matched */
+            custom_rule_matched = 1;
+            if (result.action == HEV_ROUTER_ACTION_ALLOW) {
+                use_direct = 1;
+                LOG_D ("%p Custom rule allows direct connection to %s:%d", self, dest_addr, dest_port);
+            } else if (result.action == HEV_ROUTER_ACTION_BLOCK) {
+                /* Block connection */
+                LOG_D ("%p Custom rule blocks connection to %s:%d", self, dest_addr, dest_port);
+                return -1;
+            } else {
+                /* HEV_ROUTER_ACTION_DENY - use proxy */
+                use_direct = 0;
+                LOG_D ("%p Custom rule directs to proxy for %s:%d", self, dest_addr, dest_port);
+            }
+        }
+    }
+
+    /* Step 2: If no custom rule matched and IP is in China routes, use direct */
+    if (!custom_rule_matched && hev_config_get_chnroutes_enabled ()) {
+        HevChnroutes *chnroutes = hev_chnroutes_get_instance ();
+        if (chnroutes && hev_chnroutes_is_china_ip (chnroutes, dest_addr)) {
+            use_direct = 1;
+            LOG_D ("%p No custom rule matched, China IP detected via chnroutes: %s:%d",
+                   self, dest_addr, dest_port);
+        }
+    }
+
+    /* Step 3: Apply routing decision */
     if (use_direct) {
-        /* Direct connection for China IP */
+        /* Direct connection */
         LOG_D ("%p Using direct connection to %s:%d", self, dest_addr, dest_port);
 
         /* Initialize direct connect module */
@@ -478,79 +515,21 @@ hev_socks5_session_tcp_construct (HevSocks5SessionTCP *self,
             /* Direct connection failed, fallback to SOCKS5 */
             self->direct_session.is_direct = 0;
             LOG_D ("%p Direct connection failed, using SOCKS5", self);
+            if (smart_proxy) {
+                hev_smart_proxy_record_failure (smart_proxy, dest_addr, NULL,
+                                               HEV_FAILURE_REASON_CONN_REFUSED);
+            }
             res = hev_socks5_client_tcp_construct (&self->base, &addr);
             if (res < 0)
                 return -1;
         }
     } else {
-        /* Step 2: Use smart proxy logic for non-China IPs */
-        HevSmartProxy *smart_proxy = hev_smart_proxy_get_instance ();
-        if (!smart_proxy) {
-            smart_proxy = hev_smart_proxy_new (NULL);
-            if (smart_proxy) {
-                hev_smart_proxy_load_config (smart_proxy);
-                hev_smart_proxy_set_instance (smart_proxy);
-            }
-        }
-
-        if (smart_proxy) {
-            /* Stage 1: Check initial connection routing */
-            HevSmartProxyResult result = hev_smart_proxy_connect (smart_proxy, dest_addr, dest_port);
-
-            LOG_D ("%p SmartProxy routing decision for %s:%d - action=%d, needs_detection=%d",
-                   self, dest_addr, dest_port, result.action, result.needs_detection);
-
-            if (result.action == HEV_ROUTER_ACTION_ALLOW) {
-                /* Direct connection */
-                LOG_D ("%p SmartProxy allows direct connection to %s:%d", self, dest_addr, dest_port);
-
-                /* Initialize direct connect module */
-                hev_direct_config_t direct_config;
-                direct_config.enabled = 1;
-                direct_config.timeout_ms = hev_config_get_smart_proxy_timeout_ms ();
-                hev_direct_init (&direct_config);
-
-                self->direct_session.fd = hev_direct_create_socket (dest_addr, dest_port);
-                if (self->direct_session.fd >= 0) {
-                    self->direct_session.is_direct = 1;
-                    LOG_D ("%p SmartProxy direct connection established", self);
-                } else {
-                    /* Record failure and fallback to SOCKS5 */
-                    hev_smart_proxy_record_failure (smart_proxy, dest_addr, NULL,
-                                                   HEV_FAILURE_REASON_CONN_REFUSED);
-                    self->direct_session.is_direct = 0;
-                    LOG_D ("%p SmartProxy direct connection failed, using SOCKS5", self);
-                    res = hev_socks5_client_tcp_construct (&self->base, &addr);
-                    if (res < 0)
-                        return -1;
-                }
-            } else if (result.action == HEV_ROUTER_ACTION_DENY) {
-                /* Use SOCKS5 proxy */
-                self->direct_session.is_direct = 0;
-                LOG_D ("%p SmartProxy using SOCKS5 for %s:%d", self, dest_addr, dest_port);
-                res = hev_socks5_client_tcp_construct (&self->base, &addr);
-                if (res < 0)
-                    return -1;
-            } else if (result.action == HEV_ROUTER_ACTION_BLOCK) {
-                /* Block connection */
-                LOG_D ("%p SmartProxy blocking connection to %s:%d", self, dest_addr, dest_port);
-                return -1;
-            } else {
-                /* Default to SOCKS5 */
-                self->direct_session.is_direct = 0;
-                LOG_D ("%p SmartProxy defaulting to SOCKS5 for %s:%d", self, dest_addr, dest_port);
-                res = hev_socks5_client_tcp_construct (&self->base, &addr);
-                if (res < 0)
-                    return -1;
-            }
-        } else {
-            /* No smart proxy, use SOCKS5 */
-            self->direct_session.is_direct = 0;
-            LOG_D ("%p No smart proxy, using SOCKS5 for %s:%d", self, dest_addr, dest_port);
-            res = hev_socks5_client_tcp_construct (&self->base, &addr);
-            if (res < 0)
-                return -1;
-        }
+        /* Use SOCKS5 proxy (default or explicitly directed) */
+        self->direct_session.is_direct = 0;
+        LOG_D ("%p Using SOCKS5 proxy for %s:%d", self, dest_addr, dest_port);
+        res = hev_socks5_client_tcp_construct (&self->base, &addr);
+        if (res < 0)
+            return -1;
     }
 
     LOG_D ("%p socks5 session tcp construct", self);
