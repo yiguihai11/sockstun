@@ -9,6 +9,8 @@
 
 #include <errno.h>
 #include <string.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 #include <lwip/tcp.h>
 
@@ -25,6 +27,8 @@
 #include "hev-config-const.h"
 #include "hev-socks5-tunnel.h"
 #include "hev-smart-proxy.h"
+#include "hev-chnroutes.h"
+#include "route/router/hev-blocked-items.h"
 
 #include "hev-socks5-session-tcp.h"
 
@@ -274,9 +278,9 @@ tcp_err_handler (void *arg, err_t err)
             else if (err == ERR_TIMEOUT)
                 reason = HEV_FAILURE_REASON_TIMEOUT;
             else if (err == ERR_CONN)
-                reason = HEV_FAILURE_REASON_CONNREFUSED;
+                reason = HEV_FAILURE_REASON_CONN_REFUSED;
             else if (err == ERR_ABRT)
-                reason = HEV_FAILURE_REASON_CONNRESET;
+                reason = HEV_FAILURE_REASON_RST;
 
             hev_smart_proxy_record_failure (smart_proxy, dest_addr, NULL, reason);
         }
@@ -513,7 +517,7 @@ hev_socks5_session_tcp_construct (HevSocks5SessionTCP *self,
                 } else {
                     /* Record failure and fallback to SOCKS5 */
                     hev_smart_proxy_record_failure (smart_proxy, dest_addr, NULL,
-                                                   HEV_FAILURE_REASON_CONNREFUSED);
+                                                   HEV_FAILURE_REASON_CONN_REFUSED);
                     self->direct_session.is_direct = 0;
                     LOG_D ("%p SmartProxy direct connection failed, using SOCKS5", self);
                     res = hev_socks5_client_tcp_construct (&self->base, &addr);

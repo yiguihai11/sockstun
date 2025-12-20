@@ -16,12 +16,14 @@ extern "C" {
 
 /* Forward declarations */
 typedef struct hev_traffic_detector_t HevTrafficDetector;
-typedef struct hev_blocked_items_t HevBlockedItems;
+typedef struct hev_blocked_items_manager_t HevBlockedItems;
+typedef enum hev_failure_reason_e HevFailureReason;
 
 /* Smart proxy result */
 typedef struct {
     HevRouterAction action;
     HevRouterRule *rule;
+    int match;
     int needs_detection;
     char hostname[256];
 } HevSmartProxyResult;

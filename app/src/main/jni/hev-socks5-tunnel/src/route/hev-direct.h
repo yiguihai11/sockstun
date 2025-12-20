@@ -42,7 +42,7 @@ int hev_direct_create_socket (const char *dest_addr, int dest_port);
 int hev_direct_check_fallback (hev_direct_session_t *session, err_t tcp_err);
 
 /* Configuration functions */
-int hev_direct_load_config (hev_config_t *config);
+int hev_direct_load_config (void);
 
 #ifdef __cplusplus
 }

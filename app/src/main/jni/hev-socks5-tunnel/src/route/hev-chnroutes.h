@@ -14,6 +14,9 @@
 extern "C" {
 #endif
 
+/* Forward declarations */
+typedef struct hev_radix_tree_t HevRadixTree;
+
 /* China IP range structure */
 typedef struct hev_china_ip_range_t {
     uint32_t start_ip;

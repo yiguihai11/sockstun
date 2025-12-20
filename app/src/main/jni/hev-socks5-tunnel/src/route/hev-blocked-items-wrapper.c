@@ -5,7 +5,12 @@
  * Author: hev <github@hev.im>
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
 #include "hev-blocked-items-wrapper.h"
+#include "hev-smart-proxy.h"
 #include "hev-config.h"
 #include "hev-logger.h"
 

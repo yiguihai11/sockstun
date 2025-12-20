@@ -192,11 +192,8 @@ hev_direct_check_fallback (hev_direct_session_t *session, err_t tcp_err)
 }
 
 int
-hev_direct_load_config (hev_config_t *config)
+hev_direct_load_config (void)
 {
-    /* Load values from config file (now using smart_proxy config) */
-    config->direct_config.enabled = hev_config_get_smart_proxy_enabled ();
-    config->direct_config.timeout_ms = hev_config_get_smart_proxy_timeout_ms ();
-
+    /* Configuration is now loaded directly from hev-config module */
     return 0;
 }
