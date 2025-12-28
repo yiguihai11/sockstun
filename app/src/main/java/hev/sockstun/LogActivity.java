@@ -17,9 +17,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.os.Handler;
 import android.os.Looper;
+import android.content.Context;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.RandomAccessFile;
 
 public class LogActivity extends Activity implements View.OnClickListener {
-	private static final int MAX_LOG_LINES = 500;
+	private static final int MAX_LOG_SIZE = 100 * 1024; // 100KB max
 	private TextView textview_log;
 	private ScrollView scrollview_log;
 	private Button button_refresh;
@@ -65,9 +70,7 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		if (view == button_refresh) {
 			refreshLogs();
 		} else if (view == button_clear) {
-			textview_log.setText("");
-			// Clear native logs by calling with 0 lines
-			TProxyService.getLogs(0);
+			clearLogs();
 		}
 	}
 
@@ -75,7 +78,7 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				final String logs = TProxyService.getLogs(MAX_LOG_LINES);
+				final String logs = readLogsFromFile();
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
@@ -89,11 +92,74 @@ public class LogActivity extends Activity implements View.OnClickListener {
 								}
 							});
 						} else {
-							textview_log.setText("No logs available.");
+							textview_log.setText("No logs available. Make sure VPN is running.");
 						}
 					}
 				});
 			}
 		}).start();
+	}
+
+	private void clearLogs() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					File logFile = new File(getCacheDir(), "tunnel.log");
+					if (logFile.exists()) {
+						logFile.delete();
+					}
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							textview_log.setText("Logs cleared.");
+						}
+					});
+				} catch (Exception e) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							textview_log.setText("Failed to clear logs: " + e.getMessage());
+						}
+					});
+				}
+			}
+		}).start();
+	}
+
+	private String readLogsFromFile() {
+		File logFile = new File(getCacheDir(), "tunnel.log");
+		if (!logFile.exists()) {
+			return null;
+		}
+
+		try {
+			long fileLength = logFile.length();
+			if (fileLength <= 0) {
+				return null;
+			}
+
+			// Read last MAX_LOG_SIZE bytes
+			long startPos = 0;
+			if (fileLength > MAX_LOG_SIZE) {
+				startPos = fileLength - MAX_LOG_SIZE;
+			}
+
+			RandomAccessFile raf = new RandomAccessFile(logFile, "r");
+			raf.seek(startPos);
+
+			StringBuilder sb = new StringBuilder();
+			String line;
+			BufferedReader reader = new BufferedReader(new FileReader(raf.getFD()));
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+			reader.close();
+			raf.close();
+
+			return sb.toString();
+		} catch (Exception e) {
+			return "Error reading logs: " + e.getMessage();
+		}
 	}
 }

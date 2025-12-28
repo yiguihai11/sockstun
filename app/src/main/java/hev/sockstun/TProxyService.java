@@ -132,6 +132,7 @@ public class TProxyService extends VpnService {
 		}
 
 		/* TProxy */
+		File log_file = new File(getCacheDir(), "tunnel.log");
 		File tproxy_file = new File(getCacheDir(), "tproxy.conf");
 		try {
 			tproxy_file.createNewFile();
@@ -139,7 +140,7 @@ public class TProxyService extends VpnService {
 
 			String tproxy_conf = "misc:\n" +
 				"  task-stack-size: " + prefs.getTaskStackSize() + "\n" +
-				"  log-file: stdout\n" +
+				"  log-file: '" + log_file.getAbsolutePath() + "'\n" +
 				"  log-level: debug\n" +
 				"tunnel:\n" +
 				"  mtu: " + prefs.getTunnelMtu() + "\n";
