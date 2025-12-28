@@ -24,6 +24,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	private Preferences prefs;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
+	private EditText edittext_socks_udp_port;
+	private EditText edittext_socks_udp_user;
+	private EditText edittext_socks_udp_pass;
 	private EditText edittext_socks_port;
 	private EditText edittext_socks_user;
 	private EditText edittext_socks_pass;
@@ -47,6 +50,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
+		edittext_socks_udp_port = (EditText) findViewById(R.id.socks_udp_port);
+		edittext_socks_udp_user = (EditText) findViewById(R.id.socks_udp_user);
+		edittext_socks_udp_pass = (EditText) findViewById(R.id.socks_udp_pass);
 		edittext_socks_port = (EditText) findViewById(R.id.socks_port);
 		edittext_socks_user = (EditText) findViewById(R.id.socks_user);
 		edittext_socks_pass = (EditText) findViewById(R.id.socks_pass);
@@ -112,6 +118,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	private void updateUI() {
 		edittext_socks_addr.setText(prefs.getSocksAddress());
 		edittext_socks_udp_addr.setText(prefs.getSocksUdpAddress());
+		int udpPort = prefs.getSocksUdpPort();
+		edittext_socks_udp_port.setText(udpPort > 0 ? Integer.toString(udpPort) : "");
+		edittext_socks_udp_user.setText(prefs.getSocksUdpUsername());
+		edittext_socks_udp_pass.setText(prefs.getSocksUdpPassword());
 		edittext_socks_port.setText(Integer.toString(prefs.getSocksPort()));
 		edittext_socks_user.setText(prefs.getSocksUsername());
 		edittext_socks_pass.setText(prefs.getSocksPassword());
@@ -126,6 +136,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
+		edittext_socks_udp_port.setEnabled(editable);
+		edittext_socks_udp_user.setEnabled(editable);
+		edittext_socks_udp_pass.setEnabled(editable);
 		edittext_socks_port.setEnabled(editable);
 		edittext_socks_user.setEnabled(editable);
 		edittext_socks_pass.setEnabled(editable);
@@ -148,6 +161,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	private void savePrefs() {
 		prefs.setSocksAddress(edittext_socks_addr.getText().toString());
 		prefs.setSocksUdpAddress(edittext_socks_udp_addr.getText().toString());
+
+		String udpPortStr = edittext_socks_udp_port.getText().toString();
+		int udpPort = udpPortStr.isEmpty() ? 0 : Integer.parseInt(udpPortStr);
+		prefs.setSocksUdpPort(udpPort);
+
+		prefs.setSocksUdpUsername(edittext_socks_udp_user.getText().toString());
+		prefs.setSocksUdpPassword(edittext_socks_udp_pass.getText().toString());
+
 		prefs.setSocksPort(Integer.parseInt(edittext_socks_port.getText().toString()));
 		prefs.setSocksUsername(edittext_socks_user.getText().toString());
 		prefs.setSocksPassword(edittext_socks_pass.getText().toString());

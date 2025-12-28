@@ -137,19 +137,49 @@ public class TProxyService extends VpnService {
 				"tunnel:\n" +
 				"  mtu: " + prefs.getTunnelMtu() + "\n";
 
-			tproxy_conf += "socks5:\n" +
-				"  port: " + prefs.getSocksPort() + "\n" +
-				"  address: '" + prefs.getSocksAddress() + "'\n" +
-				"  udp: '" + (prefs.getUdpInTcp() ? "tcp" : "udp") + "'\n";
+			/* TCP configuration */
+			tproxy_conf += "socks5:\n";
+			tproxy_conf += "  tcp:\n";
+			tproxy_conf += "    port: " + prefs.getSocksPort() + "\n";
+			tproxy_conf += "    address: '" + prefs.getSocksAddress() + "'\n";
 
-			if (!prefs.getSocksUdpAddress().isEmpty()) {
-				tproxy_conf += "  udp-address: '" + prefs.getSocksUdpAddress() + "'\n";
-			}
-
+			/* TCP authentication */
 			if (!prefs.getSocksUsername().isEmpty() &&
 				!prefs.getSocksPassword().isEmpty()) {
-				tproxy_conf += "  username: '" + prefs.getSocksUsername() + "'\n";
-				tproxy_conf += "  password: '" + prefs.getSocksPassword() + "'\n";
+				tproxy_conf += "    username: '" + prefs.getSocksUsername() + "'\n";
+				tproxy_conf += "    password: '" + prefs.getSocksPassword() + "'\n";
+			}
+
+			/* UDP configuration */
+			tproxy_conf += "  udp:\n";
+
+			/* UDP address (fallback to TCP address if not set) */
+			String udpAddr = prefs.getSocksUdpAddress();
+			if (udpAddr.isEmpty()) {
+				udpAddr = prefs.getSocksAddress();
+			}
+			tproxy_conf += "    address: '" + udpAddr + "'\n";
+
+			/* UDP port (fallback to TCP port if not set) */
+			int udpPort = prefs.getSocksUdpPort();
+			if (udpPort == 0) {
+				udpPort = prefs.getSocksPort();
+			}
+			tproxy_conf += "    port: " + udpPort + "\n";
+
+			/* UDP relay mode */
+			tproxy_conf += "    udp-relay: '" + (prefs.getUdpInTcp() ? "tcp" : "udp") + "'\n";
+
+			/* UDP authentication (use TCP credentials if not set) */
+			String udpUser = prefs.getSocksUdpUsername();
+			String udpPass = prefs.getSocksUdpPassword();
+			if (udpUser.isEmpty() && udpPass.isEmpty()) {
+				udpUser = prefs.getSocksUsername();
+				udpPass = prefs.getSocksPassword();
+			}
+			if (!udpUser.isEmpty() && !udpPass.isEmpty()) {
+				tproxy_conf += "    username: '" + udpUser + "'\n";
+				tproxy_conf += "    password: '" + udpPass + "'\n";
 			}
 
 			if (prefs.getRemoteDns()) {

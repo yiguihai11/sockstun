@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">SocksTun</string>
-	<string name="socks_addr">Socks Address:</string>
+	<string name="socks_addr">Socks Address (TCP):</string>
 	<string name="socks_udp_addr">Socks UDP Address:</string>
-	<string name="socks_port">Socks Port:</string>
-	<string name="socks_user">Socks Username:</string>
-	<string name="socks_pass">Socks Password:</string>
+	<string name="socks_udp_port">Socks UDP Port:</string>
+	<string name="socks_udp_user">Socks UDP Username:</string>
+	<string name="socks_udp_pass">Socks UDP Password:</string>
+	<string name="socks_port">Socks Port (TCP):</string>
+	<string name="socks_user">Socks Username (TCP):</string>
+	<string name="socks_pass">Socks Password (TCP):</string>
 	<string name="dns_ipv4">DNS IPv4:</string>
 	<string name="dns_ipv6">DNS IPv6:</string>
 	<string name="udp_in_tcp">UDP relay over TCP</string>

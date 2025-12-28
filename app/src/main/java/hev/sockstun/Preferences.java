@@ -19,6 +19,9 @@ public class Preferences
 	public static final String PREFS_NAME = "SocksPrefs";
 	public static final String SOCKS_ADDR = "SocksAddr";
 	public static final String SOCKS_UDP_ADDR = "SocksUdpAddr";
+	public static final String SOCKS_UDP_PORT = "SocksUdpPort";
+	public static final String SOCKS_UDP_USER = "SocksUdpUser";
+	public static final String SOCKS_UDP_PASS = "SocksUdpPass";
 	public static final String SOCKS_PORT = "SocksPort";
 	public static final String SOCKS_USER = "SocksUser";
 	public static final String SOCKS_PASS = "SocksPass";
@@ -204,5 +207,35 @@ public class Preferences
 
 	public int getTaskStackSize() {
 		return 81920;
+	}
+
+	public int getSocksUdpPort() {
+		return prefs.getInt(SOCKS_UDP_PORT, 0);
+	}
+
+	public void setSocksUdpPort(int port) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(SOCKS_UDP_PORT, port);
+		editor.commit();
+	}
+
+	public String getSocksUdpUsername() {
+		return prefs.getString(SOCKS_UDP_USER, "");
+	}
+
+	public void setSocksUdpUsername(String user) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(SOCKS_UDP_USER, user);
+		editor.commit();
+	}
+
+	public String getSocksUdpPassword() {
+		return prefs.getString(SOCKS_UDP_PASS, "");
+	}
+
+	public void setSocksUdpPassword(String pass) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(SOCKS_UDP_PASS, pass);
+		editor.commit();
 	}
 }
