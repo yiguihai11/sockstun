@@ -38,6 +38,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	private CheckBox checkbox_ipv4;
 	private CheckBox checkbox_ipv6;
 	private Button button_apps;
+	private Button button_logs;
 	private Button button_save;
 	private Button button_control;
 
@@ -64,6 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		checkbox_udp_in_tcp = (CheckBox) findViewById(R.id.udp_in_tcp);
 		checkbox_remote_dns = (CheckBox) findViewById(R.id.remote_dns);
 		button_apps = (Button) findViewById(R.id.apps);
+		button_logs = (Button) findViewById(R.id.logs);
 		button_save = (Button) findViewById(R.id.save);
 		button_control = (Button) findViewById(R.id.control);
 
@@ -71,6 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		checkbox_remote_dns.setOnClickListener(this);
 		checkbox_global.setOnClickListener(this);
 		button_apps.setOnClickListener(this);
+		button_logs.setOnClickListener(this);
 		button_save.setOnClickListener(this);
 		button_control.setOnClickListener(this);
 		updateUI();
@@ -98,6 +101,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			updateUI();
 		} else if (view == button_apps) {
 			startActivity(new Intent(this, AppListActivity.class));
+		} else if (view == button_logs) {
+			startActivity(new Intent(this, LogActivity.class));
 		} else if (view == button_save) {
 			savePrefs();
 			Context context = getApplicationContext();

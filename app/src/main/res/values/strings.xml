@@ -17,6 +17,7 @@
 	<string name="ipv6">IPv6</string>
 	<string name="global">Global</string>
 	<string name="apps">Apps</string>
+	<string name="logs">Logs</string>
 	<string name="save">Save</string>
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>

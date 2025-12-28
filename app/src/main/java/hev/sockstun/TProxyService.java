@@ -32,6 +32,11 @@ public class TProxyService extends VpnService {
 	private static native void TProxyStartService(String config_path, int fd);
 	private static native void TProxyStopService();
 	private static native long[] TProxyGetStats();
+	private static native String TProxyGetLogs(int max_lines);
+
+	public static String getLogs(int maxLines) {
+		return TProxyGetLogs(maxLines);
+	}
 
 	public static final String ACTION_CONNECT = "hev.sockstun.CONNECT";
 	public static final String ACTION_DISCONNECT = "hev.sockstun.DISCONNECT";
