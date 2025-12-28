@@ -139,6 +139,8 @@ public class TProxyService extends VpnService {
 
 			String tproxy_conf = "misc:\n" +
 				"  task-stack-size: " + prefs.getTaskStackSize() + "\n" +
+				"  log-file: stdout\n" +
+				"  log-level: debug\n" +
 				"tunnel:\n" +
 				"  mtu: " + prefs.getTunnelMtu() + "\n";
 
