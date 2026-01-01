@@ -170,7 +170,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_global.setEnabled(editable);
 		checkbox_ipv4.setEnabled(editable);
 		checkbox_ipv6.setEnabled(editable);
-		button_apps.setEnabled(editable && !prefs.getGlobal());
+		button_apps.setEnabled(!prefs.getGlobal());
 		button_save.setEnabled(editable);
 
 		if (editable)
