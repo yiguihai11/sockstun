@@ -15,7 +15,8 @@
 		<FrameLayout
 			android:id="@android:id/tabcontent"
 			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
+			android:layout_height="0dp"
+			android:layout_weight="1">
 			<include layout="@layout/tab_socks" android:id="@+id/tab_socks"/>
 			<include layout="@layout/tab_network" android:id="@+id/tab_network"/>
 			<include layout="@layout/tab_advanced" android:id="@+id/tab_advanced"/>
