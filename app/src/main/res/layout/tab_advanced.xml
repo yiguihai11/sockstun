@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="8dp">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Tools"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:paddingTop="8dp"
+			android:paddingBottom="4dp"/>
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button
+				android:id="@+id/apps"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/apps"/>
+			<Button
+				android:id="@+id/logs"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/logs"/>
+		</LinearLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Info"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:paddingTop="16dp"
+			android:paddingBottom="4dp"/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="SocksTun v6.0\n\nSOCKS5 VPN Tunnel Client\n\nGitHub: yiguihai11/sockstun"
+			android:textSize="14sp"
+			android:padding="8dp"
+			android:background="#333333"
+			android:textColor="#FFFFFF"/>
+	</LinearLayout>
+</ScrollView>

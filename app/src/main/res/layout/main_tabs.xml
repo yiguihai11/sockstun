@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@android:id/tabhost"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<TabWidget
+			android:id="@android:id/tabs"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="#333333"/>
+		<FrameLayout
+			android:id="@android:id/tabcontent"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<include layout="@layout/tab_socks" android:id="@+id/tab_socks"/>
+			<include layout="@layout/tab_network" android:id="@+id/tab_network"/>
+			<include layout="@layout/tab_advanced" android:id="@+id/tab_advanced"/>
+		</FrameLayout>
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="4dp">
+			<Button
+				android:id="@+id/save"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/save"/>
+			<Button
+				android:id="@+id/control"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/control_enable"/>
+		</LinearLayout>
+	</LinearLayout>
+</TabHost>

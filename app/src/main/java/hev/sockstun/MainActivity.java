@@ -11,6 +11,7 @@ package hev.sockstun;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.content.Context;
 import android.view.View;
@@ -18,10 +19,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.TabHost;
 import android.net.VpnService;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Preferences prefs;
+	private TabHost tabHost;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
 	private EditText edittext_socks_udp_port;
@@ -47,7 +50,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		prefs = new Preferences(this);
-		setContentView(R.layout.main);
+		setContentView(R.layout.main_tabs);
+
+		tabHost = getTabHost();
+
+		// Setup tabs
+		tabHost.addTab(tabHost.newTabSpec("socks")
+			.setIndicator("SOCKS")
+			.setContent(R.id.tab_socks));
+		tabHost.addTab(tabHost.newTabSpec("network")
+			.setIndicator("Network")
+			.setContent(R.id.tab_network));
+		tabHost.addTab(tabHost.newTabSpec("advanced")
+			.setIndicator("Advanced")
+			.setContent(R.id.tab_advanced));
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
