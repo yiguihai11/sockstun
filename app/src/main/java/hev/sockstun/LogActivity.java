@@ -18,6 +18,9 @@ import android.widget.TextView;
 import android.os.Handler;
 import android.os.Looper;
 import android.content.Context;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,6 +34,13 @@ public class LogActivity extends Activity implements View.OnClickListener {
 	private Button button_clear;
 	private Handler handler;
 	private Runnable refreshRunnable;
+
+	// Log colors
+	private static final int COLOR_DEBUG = 0xFFAAAAAA; // Gray
+	private static final int COLOR_INFO = 0xFF00FF00;  // Green
+	private static final int COLOR_WARN = 0xFFFFFF00;  // Yellow
+	private static final int COLOR_ERROR = 0xFFFF0000; // Red
+	private static final int COLOR_DEFAULT = 0xFF00FF00; // Green (default)
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +93,7 @@ public class LogActivity extends Activity implements View.OnClickListener {
 					@Override
 					public void run() {
 						if (logs != null && !logs.isEmpty()) {
-							textview_log.setText(logs);
+							textview_log.setText(colorizeLog(logs));
 							// Scroll to bottom
 							scrollview_log.post(new Runnable() {
 								@Override
@@ -161,5 +171,54 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		} catch (Exception e) {
 			return "Error reading logs: " + e.getMessage();
 		}
+	}
+
+	private SpannableString colorizeLog(String log) {
+		SpannableString spannable = new SpannableString(log);
+
+		int start = 0;
+		while (start < log.length()) {
+			// Find log level marker [D], [I], [W], [E], [?]
+			int levelStart = log.indexOf("[", start);
+			if (levelStart == -1) break;
+
+			int levelEnd = log.indexOf("]", levelStart);
+			if (levelEnd == -1 || levelEnd - levelStart != 2) {
+				start = levelStart + 1;
+				continue;
+			}
+
+			char level = log.charAt(levelStart + 1);
+			int color = COLOR_DEFAULT;
+
+			switch (level) {
+			case 'D':
+				color = COLOR_DEBUG;
+				break;
+			case 'I':
+				color = COLOR_INFO;
+				break;
+			case 'W':
+				color = COLOR_WARN;
+				break;
+			case 'E':
+				color = COLOR_ERROR;
+				break;
+			default:
+				continue;
+			}
+
+			// Color from the timestamp to end of line
+			int lineStart = log.lastIndexOf("\n", levelStart - 1) + 1;
+			int lineEnd = log.indexOf("\n", levelStart);
+			if (lineEnd == -1) lineEnd = log.length();
+
+			spannable.setSpan(new ForegroundColorSpan(color), lineStart,
+					  lineEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+			start = lineEnd;
+		}
+
+		return spannable;
 	}
 }
