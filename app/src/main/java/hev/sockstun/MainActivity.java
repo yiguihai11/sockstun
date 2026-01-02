@@ -50,7 +50,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		prefs = new Preferences(this);
-		setContentView(R.layout.main_tabs);
+		setContentView(R.layout.main);
 
 		tabHost = getTabHost();
 
