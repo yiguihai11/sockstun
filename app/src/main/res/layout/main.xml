@@ -20,6 +20,7 @@
 			<include layout="@layout/tab_socks" android:id="@+id/tab_socks"/>
 			<include layout="@layout/tab_network" android:id="@+id/tab_network"/>
 			<include layout="@layout/tab_advanced" android:id="@+id/tab_advanced"/>
+			<include layout="@layout/tab_misc" android:id="@+id/tab_misc"/>
 		</FrameLayout>
 		<LinearLayout
 			android:orientation="horizontal"

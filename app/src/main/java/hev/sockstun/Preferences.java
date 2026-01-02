@@ -34,6 +34,13 @@ public class Preferences
 	public static final String REMOTE_DNS = "RemoteDNS";
 	public static final String APPS = "Apps";
 	public static final String ENABLE = "Enable";
+	public static final String TASK_STACK_SIZE = "TaskStackSize";
+	public static final String TCP_BUFFER_SIZE = "TcpBufferSize";
+	public static final String UDP_RECV_BUFFER_SIZE = "UdpRecvBufferSize";
+	public static final String UDP_COPY_BUFFER_NUMS = "UdpCopyBufferNums";
+	public static final String CONNECT_TIMEOUT = "ConnectTimeout";
+	public static final String TCP_READ_WRITE_TIMEOUT = "TcpReadWriteTimeout";
+	public static final String UDP_READ_WRITE_TIMEOUT = "UdpReadWriteTimeout";
 
 	private SharedPreferences prefs;
 
@@ -206,7 +213,73 @@ public class Preferences
 	}
 
 	public int getTaskStackSize() {
-		return 81920;
+		return prefs.getInt(TASK_STACK_SIZE, 81920);
+	}
+
+	public void setTaskStackSize(int size) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(TASK_STACK_SIZE, size);
+		editor.commit();
+	}
+
+	public int getTcpBufferSize() {
+		return prefs.getInt(TCP_BUFFER_SIZE, 65536);
+	}
+
+	public void setTcpBufferSize(int size) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(TCP_BUFFER_SIZE, size);
+		editor.commit();
+	}
+
+	public int getUdpRecvBufferSize() {
+		return prefs.getInt(UDP_RECV_BUFFER_SIZE, 524288);
+	}
+
+	public void setUdpRecvBufferSize(int size) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(UDP_RECV_BUFFER_SIZE, size);
+		editor.commit();
+	}
+
+	public int getUdpCopyBufferNums() {
+		return prefs.getInt(UDP_COPY_BUFFER_NUMS, 10);
+	}
+
+	public void setUdpCopyBufferNums(int nums) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(UDP_COPY_BUFFER_NUMS, nums);
+		editor.commit();
+	}
+
+	public int getConnectTimeout() {
+		return prefs.getInt(CONNECT_TIMEOUT, 10000);
+	}
+
+	public void setConnectTimeout(int timeout) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(CONNECT_TIMEOUT, timeout);
+		editor.commit();
+	}
+
+	public int getTcpReadWriteTimeout() {
+		return prefs.getInt(TCP_READ_WRITE_TIMEOUT, 300000);
+	}
+
+	public void setTcpReadWriteTimeout(int timeout) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(TCP_READ_WRITE_TIMEOUT, timeout);
+		editor.commit();
+	}
+
+	public int getUdpReadWriteTimeout() {
+		return prefs.getInt(UDP_READ_WRITE_TIMEOUT, 60000);
+	}
+
+	public void setUdpReadWriteTimeout(int timeout) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(UDP_READ_WRITE_TIMEOUT, timeout);
+		editor.commit();
 	}
 
 	public int getSocksUdpPort() {

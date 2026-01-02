@@ -21,4 +21,11 @@
 	<string name="save">Save</string>
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>
+	<string name="task_stack_size">Task Stack Size (bytes)</string>
+	<string name="tcp_buffer_size">TCP Buffer Size (bytes)</string>
+	<string name="udp_recv_buffer_size">UDP Recv Buffer Size (bytes)</string>
+	<string name="udp_copy_buffer_nums">UDP Copy Buffer Nums</string>
+	<string name="connect_timeout">Connect Timeout (ms)</string>
+	<string name="tcp_read_write_timeout">TCP Read Write Timeout (ms)</string>
+	<string name="udp_read_write_timeout">UDP Read Write Timeout (ms)</string>
 </resources>

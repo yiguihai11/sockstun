@@ -44,6 +44,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_logs;
 	private Button button_save;
 	private Button button_control;
+	private EditText edittext_task_stack_size;
+	private EditText edittext_tcp_buffer_size;
+	private EditText edittext_udp_recv_buffer_size;
+	private EditText edittext_udp_copy_buffer_nums;
+	private EditText edittext_connect_timeout;
+	private EditText edittext_tcp_read_write_timeout;
+	private EditText edittext_udp_read_write_timeout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("advanced")
 			.setIndicator("Advanced")
 			.setContent(R.id.tab_advanced));
+		tabHost.addTab(tabHost.newTabSpec("misc")
+			.setIndicator("Misc")
+			.setContent(R.id.tab_misc));
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
@@ -84,6 +94,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_logs = (Button) findViewById(R.id.logs);
 		button_save = (Button) findViewById(R.id.save);
 		button_control = (Button) findViewById(R.id.control);
+
+		edittext_task_stack_size = (EditText) findViewById(R.id.task_stack_size);
+		edittext_tcp_buffer_size = (EditText) findViewById(R.id.tcp_buffer_size);
+		edittext_udp_recv_buffer_size = (EditText) findViewById(R.id.udp_recv_buffer_size);
+		edittext_udp_copy_buffer_nums = (EditText) findViewById(R.id.udp_copy_buffer_nums);
+		edittext_connect_timeout = (EditText) findViewById(R.id.connect_timeout);
+		edittext_tcp_read_write_timeout = (EditText) findViewById(R.id.tcp_read_write_timeout);
+		edittext_udp_read_write_timeout = (EditText) findViewById(R.id.udp_read_write_timeout);
 
 		checkbox_udp_in_tcp.setOnClickListener(this);
 		checkbox_remote_dns.setOnClickListener(this);
@@ -154,6 +172,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_udp_in_tcp.setChecked(prefs.getUdpInTcp());
 		checkbox_remote_dns.setChecked(prefs.getRemoteDns());
 
+		edittext_task_stack_size.setText(Integer.toString(prefs.getTaskStackSize()));
+		edittext_tcp_buffer_size.setText(Integer.toString(prefs.getTcpBufferSize()));
+		edittext_udp_recv_buffer_size.setText(Integer.toString(prefs.getUdpRecvBufferSize()));
+		edittext_udp_copy_buffer_nums.setText(Integer.toString(prefs.getUdpCopyBufferNums()));
+		edittext_connect_timeout.setText(Integer.toString(prefs.getConnectTimeout()));
+		edittext_tcp_read_write_timeout.setText(Integer.toString(prefs.getTcpReadWriteTimeout()));
+		edittext_udp_read_write_timeout.setText(Integer.toString(prefs.getUdpReadWriteTimeout()));
+
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
@@ -172,6 +198,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_ipv6.setEnabled(editable);
 		button_apps.setEnabled(editable && !prefs.getGlobal());
 		button_save.setEnabled(editable);
+
+		edittext_task_stack_size.setEnabled(editable);
+		edittext_tcp_buffer_size.setEnabled(editable);
+		edittext_udp_recv_buffer_size.setEnabled(editable);
+		edittext_udp_copy_buffer_nums.setEnabled(editable);
+		edittext_connect_timeout.setEnabled(editable);
+		edittext_tcp_read_write_timeout.setEnabled(editable);
+		edittext_udp_read_write_timeout.setEnabled(editable);
 
 		if (editable)
 		  button_control.setText(R.string.control_enable);
@@ -202,5 +236,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setGlobal(checkbox_global.isChecked());
 		prefs.setUdpInTcp(checkbox_udp_in_tcp.isChecked());
 		prefs.setRemoteDns(checkbox_remote_dns.isChecked());
+
+		prefs.setTaskStackSize(Integer.parseInt(edittext_task_stack_size.getText().toString()));
+		prefs.setTcpBufferSize(Integer.parseInt(edittext_tcp_buffer_size.getText().toString()));
+		prefs.setUdpRecvBufferSize(Integer.parseInt(edittext_udp_recv_buffer_size.getText().toString()));
+		prefs.setUdpCopyBufferNums(Integer.parseInt(edittext_udp_copy_buffer_nums.getText().toString()));
+		prefs.setConnectTimeout(Integer.parseInt(edittext_connect_timeout.getText().toString()));
+		prefs.setTcpReadWriteTimeout(Integer.parseInt(edittext_tcp_read_write_timeout.getText().toString()));
+		prefs.setUdpReadWriteTimeout(Integer.parseInt(edittext_udp_read_write_timeout.getText().toString()));
 	}
 }

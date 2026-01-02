@@ -129,6 +129,12 @@ public class ConfigGenerator {
     private void appendMiscSection() {
         config.append("misc:\n");
         config.append("  task-stack-size: ").append(prefs.getTaskStackSize()).append("\n");
+        config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
+        config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
+        config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
+        config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
+        config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
+        config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
         config.append("  log-level: debug\n");
     }

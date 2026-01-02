@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="8dp">
+
+		<!-- Task Stack Size -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/task_stack_size"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/task_stack_size"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="81920"/>
+		</LinearLayout>
+
+		<!-- TCP Buffer Size -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tcp_buffer_size"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tcp_buffer_size"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="65536"/>
+		</LinearLayout>
+
+		<!-- UDP Recv Buffer Size -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/udp_recv_buffer_size"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/udp_recv_buffer_size"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="524288"/>
+		</LinearLayout>
+
+		<!-- UDP Copy Buffer Nums -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/udp_copy_buffer_nums"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/udp_copy_buffer_nums"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="10"/>
+		</LinearLayout>
+
+		<!-- Connect Timeout -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/connect_timeout"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/connect_timeout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="10000"/>
+		</LinearLayout>
+
+		<!-- TCP Read Write Timeout -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tcp_read_write_timeout"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tcp_read_write_timeout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="300000"/>
+		</LinearLayout>
+
+		<!-- UDP Read Write Timeout -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/udp_read_write_timeout"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/udp_read_write_timeout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="60000"/>
+		</LinearLayout>
+
+	</LinearLayout>
+</ScrollView>
