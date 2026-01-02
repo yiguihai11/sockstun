@@ -138,66 +138,8 @@ public class TProxyService extends VpnService {
 			tproxy_file.createNewFile();
 			FileOutputStream fos = new FileOutputStream(tproxy_file, false);
 
-			String tproxy_conf = "misc:\n" +
-				"  task-stack-size: " + prefs.getTaskStackSize() + "\n" +
-				"  log-file: '" + log_file.getAbsolutePath() + "'\n" +
-				"  log-level: debug\n" +
-				"tunnel:\n" +
-				"  mtu: " + prefs.getTunnelMtu() + "\n";
-
-			/* TCP configuration */
-			tproxy_conf += "socks5:\n";
-			tproxy_conf += "  tcp:\n";
-			tproxy_conf += "    port: " + prefs.getSocksPort() + "\n";
-			tproxy_conf += "    address: '" + prefs.getSocksAddress() + "'\n";
-
-			/* TCP authentication */
-			if (!prefs.getSocksUsername().isEmpty() &&
-				!prefs.getSocksPassword().isEmpty()) {
-				tproxy_conf += "    username: '" + prefs.getSocksUsername() + "'\n";
-				tproxy_conf += "    password: '" + prefs.getSocksPassword() + "'\n";
-			}
-
-			/* UDP configuration */
-			tproxy_conf += "  udp:\n";
-
-			/* UDP address (fallback to TCP address if not set) */
-			String udpAddr = prefs.getSocksUdpAddress();
-			if (udpAddr.isEmpty()) {
-				udpAddr = prefs.getSocksAddress();
-			}
-			tproxy_conf += "    address: '" + udpAddr + "'\n";
-
-			/* UDP port (fallback to TCP port if not set) */
-			int udpPort = prefs.getSocksUdpPort();
-			if (udpPort == 0) {
-				udpPort = prefs.getSocksPort();
-			}
-			tproxy_conf += "    port: " + udpPort + "\n";
-
-			/* UDP relay mode */
-			tproxy_conf += "    udp-relay: '" + (prefs.getUdpInTcp() ? "tcp" : "udp") + "'\n";
-
-			/* UDP authentication (use TCP credentials if not set) */
-			String udpUser = prefs.getSocksUdpUsername();
-			String udpPass = prefs.getSocksUdpPassword();
-			if (udpUser.isEmpty() && udpPass.isEmpty()) {
-				udpUser = prefs.getSocksUsername();
-				udpPass = prefs.getSocksPassword();
-			}
-			if (!udpUser.isEmpty() && !udpPass.isEmpty()) {
-				tproxy_conf += "    username: '" + udpUser + "'\n";
-				tproxy_conf += "    password: '" + udpPass + "'\n";
-			}
-
-			if (prefs.getRemoteDns()) {
-				tproxy_conf += "mapdns:\n" +
-					"  address: " + prefs.getMappedDns() + "\n" +
-					"  port: 53\n" +
-					"  network: 240.0.0.0\n" +
-					"  netmask: 240.0.0.0\n" +
-					"  cache-size: 10000\n";
-			}
+			ConfigGenerator configGen = new ConfigGenerator(prefs, log_file);
+			String tproxy_conf = configGen.generate();
 
 			fos.write(tproxy_conf.getBytes());
 			fos.close();
