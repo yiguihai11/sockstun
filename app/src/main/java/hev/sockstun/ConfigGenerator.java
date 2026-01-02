@@ -34,27 +34,22 @@ public class ConfigGenerator {
     public String generate() {
         config.setLength(0);
 
-        appendMiscSection();
         appendTunnelSection();
         appendSocks5Section();
-
-        if (prefs.getRemoteDns()) {
-            appendMapDnsSection();
-        }
+        appendDnsSplitTunnelSection();
+        appendChnroutesSection();
+        appendMiscSection();
 
         return config.toString();
     }
 
-    private void appendMiscSection() {
-        config.append("misc:\n");
-        config.append("  task-stack-size: ").append(prefs.getTaskStackSize()).append("\n");
-        config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
-        config.append("  log-level: debug\n");
-    }
-
     private void appendTunnelSection() {
         config.append("tunnel:\n");
+        config.append("  name: tun0\n");
         config.append("  mtu: ").append(prefs.getTunnelMtu()).append("\n");
+        config.append("  multi-queue: false\n");
+        config.append("  ipv4: ").append(prefs.getTunnelIpv4Address()).append("\n");
+        config.append("  ipv6: '").append(prefs.getTunnelIpv6Address()).append("'\n");
     }
 
     private void appendSocks5Section() {
@@ -115,12 +110,26 @@ public class ConfigGenerator {
         config.append("\n");
     }
 
-    private void appendMapDnsSection() {
-        config.append("mapdns:\n");
-        config.append("  address: ").append(prefs.getMappedDns()).append("\n");
-        config.append("  port: 53\n");
-        config.append("  network: 240.0.0.0\n");
-        config.append("  netmask: 240.0.0.0\n");
-        config.append("  cache-size: 10000\n");
+    private void appendDnsSplitTunnelSection() {
+        config.append("dns-split-tunnel:\n");
+        config.append("  split-tunnel: true\n");
+        config.append("  foreign-dns:\n");
+        config.append("    - \"1.1.1.1\"\n");
+        config.append("    - \"8.8.8.8\"\n");
+        config.append("    - \"2606:4700:4700::1111\"\n");
+        config.append("    - \"2001:4860:4860::8888\"\n");
+    }
+
+    private void appendChnroutesSection() {
+        config.append("chnroutes:\n");
+        config.append("  enabled: true\n");
+        config.append("  file-path: \"conf/chnroutes.txt\"\n");
+    }
+
+    private void appendMiscSection() {
+        config.append("misc:\n");
+        config.append("  task-stack-size: ").append(prefs.getTaskStackSize()).append("\n");
+        config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
+        config.append("  log-level: debug\n");
     }
 }
