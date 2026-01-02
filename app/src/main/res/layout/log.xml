@@ -34,6 +34,7 @@
 			android:textColor="#00FF00"
 			android:textSize="10sp"
 			android:typeface="monospace"
+			android:textIsSelectable="true"
 			android:text="Loading logs..."/>
 	</ScrollView>
 </LinearLayout>

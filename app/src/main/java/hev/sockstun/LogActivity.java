@@ -88,12 +88,26 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				final String config = readConfigFile();
 				final String logs = readLogsFromFile();
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
+						StringBuilder display = new StringBuilder();
+
+						// Show config at the top
+						if (config != null && !config.isEmpty()) {
+							display.append("========== tproxy.conf ==========\n");
+							display.append(config);
+							display.append("\n========== End of Config ==========\n\n");
+						}
+
+						// Show logs below
 						if (logs != null && !logs.isEmpty()) {
-							textview_log.setText(colorizeLog(logs));
+							display.append("========== tunnel.log ==========\n");
+							display.append(logs);
+							display.append("\n========== End of Logs ==========");
+							textview_log.setText(colorizeLog(display.toString()));
 							// Scroll to bottom
 							scrollview_log.post(new Runnable() {
 								@Override
@@ -101,8 +115,12 @@ public class LogActivity extends Activity implements View.OnClickListener {
 									scrollview_log.fullScroll(ScrollView.FOCUS_DOWN);
 								}
 							});
+						} else if (config != null && !config.isEmpty()) {
+							display.append("========== tunnel.log ==========\n");
+							display.append("No logs available. Make sure VPN is running.");
+							textview_log.setText(colorizeLog(display.toString()));
 						} else {
-							textview_log.setText("No logs available. Make sure VPN is running.");
+							textview_log.setText("No logs or config available. Make sure VPN is running.");
 						}
 					}
 				});
@@ -135,6 +153,26 @@ public class LogActivity extends Activity implements View.OnClickListener {
 				}
 			}
 		}).start();
+	}
+
+	private String readConfigFile() {
+		File configFile = new File(getCacheDir(), "tproxy.conf");
+		if (!configFile.exists()) {
+			return null;
+		}
+
+		try {
+			StringBuilder sb = new StringBuilder();
+			String line;
+			BufferedReader reader = new BufferedReader(new FileReader(configFile));
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+			reader.close();
+			return sb.toString();
+		} catch (Exception e) {
+			return "Error reading config: " + e.getMessage();
+		}
 	}
 
 	private String readLogsFromFile() {
