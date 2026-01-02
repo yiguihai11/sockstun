@@ -65,15 +65,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("socks")
 			.setIndicator("SOCKS")
 			.setContent(R.id.tab_socks));
+		tabHost.addTab(tabHost.newTabSpec("misc")
+			.setIndicator("Misc")
+			.setContent(R.id.tab_misc));
 		tabHost.addTab(tabHost.newTabSpec("network")
 			.setIndicator("Network")
 			.setContent(R.id.tab_network));
 		tabHost.addTab(tabHost.newTabSpec("advanced")
 			.setIndicator("Advanced")
 			.setContent(R.id.tab_advanced));
-		tabHost.addTab(tabHost.newTabSpec("misc")
-			.setIndicator("Misc")
-			.setContent(R.id.tab_misc));
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
