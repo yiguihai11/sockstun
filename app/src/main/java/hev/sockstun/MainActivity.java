@@ -14,6 +14,8 @@ import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.Context;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,6 +35,7 @@ import android.text.style.ForegroundColorSpan;
 public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Preferences prefs;
 	private TabHost tabHost;
+	private BroadcastReceiver vpnStateReceiver;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
 	private EditText edittext_socks_udp_port;
@@ -172,6 +175,18 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_control.setOnClickListener(this);
 		updateUI();
 
+		// Register VPN state receiver
+		vpnStateReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if ("hev.sockstun.VPN_STOPPED".equals(intent.getAction())) {
+					updateUI();
+				}
+			}
+		};
+		IntentFilter filter = new IntentFilter("hev.sockstun.VPN_STOPPED");
+		registerReceiver(vpnStateReceiver, filter);
+
 		/* Request VPN permission */
 		Intent intent = VpnService.prepare(MainActivity.this);
 		if (intent != null)
@@ -185,6 +200,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		if ((result == RESULT_OK) && prefs.getEnable()) {
 			Intent intent = new Intent(this, TProxyService.class);
 			startService(intent.setAction(TProxyService.ACTION_CONNECT));
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (vpnStateReceiver != null) {
+			unregisterReceiver(vpnStateReceiver);
+			vpnStateReceiver = null;
 		}
 	}
 

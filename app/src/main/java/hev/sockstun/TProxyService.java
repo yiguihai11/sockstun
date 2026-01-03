@@ -195,7 +195,11 @@ public class TProxyService extends VpnService {
 		Preferences prefs = new Preferences(this);
 		prefs.setEnable(false);
 
-		System.exit(0);
+		// Send broadcast to notify MainActivity
+		Intent intent = new Intent("hev.sockstun.VPN_STOPPED");
+		sendBroadcast(intent);
+
+		stopSelf();
 	}
 
 	private void createNotification(String channelName) {
