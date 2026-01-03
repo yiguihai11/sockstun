@@ -45,11 +45,10 @@ public class ConfigGenerator {
 
     private void appendTunnelSection() {
         config.append("tunnel:\n");
-        config.append("  name: tun0\n");
+        config.append("  name: ").append(prefs.getTunnelName()).append("\n");
         config.append("  mtu: ").append(prefs.getTunnelMtu()).append("\n");
         // multi-queue: Android not supported, always false
         config.append("  multi-queue: false\n");
-        // ipv4/ipv6: Managed by Android VPN Service
         config.append("  ipv4: ").append(prefs.getTunnelIpv4()).append("\n");
         config.append("  ipv6: '").append(prefs.getTunnelIpv6()).append("'\n");
 

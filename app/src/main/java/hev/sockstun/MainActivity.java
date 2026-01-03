@@ -235,11 +235,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		// Tunnel options
 		edittext_tunnel_mtu.setEnabled(editable);
-		// Tunnel options: always disabled (managed by Android or not supported)
-		edittext_tunnel_name.setEnabled(false);
+		edittext_tunnel_name.setEnabled(editable);
+		// Tunnel options: always disabled (not supported)
 		checkbox_tunnel_multi_queue.setEnabled(false);
-		edittext_tunnel_ipv4.setEnabled(false);
-		edittext_tunnel_ipv6.setEnabled(false);
+		edittext_tunnel_ipv4.setEnabled(editable);
+		edittext_tunnel_ipv6.setEnabled(editable);
 		edittext_tunnel_post_up_script.setEnabled(false);
 		edittext_tunnel_pre_down_script.setEnabled(false);
 
