@@ -52,11 +52,9 @@ public class TProxyService extends VpnService {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (intent != null && ACTION_DISCONNECT.equals(intent.getAction())) {
-			LogActivity.i(this, "TProxyService", "onStartCommand: ACTION_DISCONNECT received, calling stopService()");
 			stopService();
 			return START_NOT_STICKY;
 		}
-		LogActivity.i(this, "TProxyService", "onStartCommand: calling startService()");
 		startService();
 		return START_STICKY;
 	}
@@ -68,17 +66,13 @@ public class TProxyService extends VpnService {
 
 	@Override
 	public void onRevoke() {
-		LogActivity.w(this, "TProxyService", "onRevoke: VPN permission revoked by system, calling stopService()");
 		stopService();
 		super.onRevoke();
 	}
 
 	public void startService() {
-		LogActivity.i(this, "TProxyService", "startService() called");
-		if (tunFd != null) {
-			LogActivity.d(this, "TProxyService", "startService: tunFd already exists, returning");
+		if (tunFd != null)
 		  return;
-		}
 
 		Preferences prefs = new Preferences(this);
 
@@ -135,11 +129,9 @@ public class TProxyService extends VpnService {
 		builder.setSession(session);
 		tunFd = builder.establish();
 		if (tunFd == null) {
-			LogActivity.e(this, "TProxyService", "startService: builder.establish() returned null, stopping");
 			stopSelf();
 			return;
 		}
-		LogActivity.i(this, "TProxyService", "startService: VPN established successfully, fd=" + tunFd.getFd());
 
 		/* TProxy */
 		File log_file = new File(getCacheDir(), "tunnel.log");
@@ -154,27 +146,11 @@ public class TProxyService extends VpnService {
 			fos.write(tproxy_conf.getBytes());
 			fos.close();
 		} catch (IOException e) {
-			LogActivity.e(this, "TProxyService", "startService: failed to write config: " + e.getMessage());
 			return;
 		}
-		// Start native process in monitoring thread
-		LogActivity.i(this, "TProxyService", "startService: starting native thread with config=" + tproxy_file.getAbsolutePath());
-		nativeThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				LogActivity.i(TProxyService.this, "TProxyService", "nativeThread: calling TProxyStartService with fd=" + tunFd.getFd());
-				// This blocks until native process exits
-				TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
 
-				// Native process exited, stop VPN
-				LogActivity.w(TProxyService.this, "TProxyService", "nativeThread: TProxyStartService returned, calling stopService()");
-				if (tunFd != null) {
-					stopService();
-				}
-			}
-		});
-		nativeThread.start();
-		LogActivity.i(this, "TProxyService", "startService: nativeThread started");
+		// Start native process directly (blocks until exit)
+		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
 
 		prefs.setEnable(true);
 
@@ -184,47 +160,31 @@ public class TProxyService extends VpnService {
 	}
 
 	public void stopService() {
-		LogActivity.i(this, "TProxyService", "stopService() called");
-		if (tunFd == null) {
-			LogActivity.d(this, "TProxyService", "stopService: tunFd is null, returning");
+		if (tunFd == null)
 			return;
-		}
-
-		// Interrupt monitoring thread if still running
-		if (nativeThread != null && nativeThread.isAlive()) {
-			LogActivity.d(this, "TProxyService", "stopService: interrupting nativeThread");
-			nativeThread.interrupt();
-		}
 
 		stopForeground(true);
 
 		/* TProxy */
-		LogActivity.i(this, "TProxyService", "stopService: calling TProxyStopService()");
 		TProxyStopService();
 
 		/* VPN */
 		try {
-			LogActivity.d(this, "TProxyService", "stopService: closing tunFd");
 			tunFd.close();
 		} catch (IOException e) {
-			LogActivity.e(this, "TProxyService", "stopService: error closing tunFd: " + e.getMessage());
 		}
 		tunFd = null;
-		LogActivity.i(this, "TProxyService", "stopService: tunFd set to null");
 
 		// Update enable state
 		Preferences prefs = new Preferences(this);
 		prefs.setEnable(false);
-		LogActivity.d(this, "TProxyService", "stopService: prefs.setEnable(false) called");
 
 		// Send broadcast to notify MainActivity
 		Intent intent = new Intent("hev.sockstun.VPN_STOPPED");
 		intent.setPackage(getPackageName());
 		sendBroadcast(intent);
-		LogActivity.d(this, "TProxyService", "stopService: VPN_STOPPED broadcast sent");
 
-		LogActivity.i(this, "TProxyService", "stopService: calling stopSelf()");
-		stopSelf();
+		System.exit(0);
 	}
 
 	private void createNotification(String channelName) {
