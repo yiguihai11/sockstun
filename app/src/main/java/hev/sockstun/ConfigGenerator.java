@@ -47,21 +47,23 @@ public class ConfigGenerator {
         config.append("tunnel:\n");
         config.append("  name: tun0\n");
         config.append("  mtu: ").append(prefs.getTunnelMtu()).append("\n");
-        config.append("  multi-queue: ").append(prefs.getTunnelMultiQueue() ? "true" : "false").append("\n");
+        // multi-queue: Android not supported, always false
+        config.append("  multi-queue: false\n");
+        // ipv4/ipv6: Managed by Android VPN Service
         config.append("  ipv4: ").append(prefs.getTunnelIpv4()).append("\n");
         config.append("  ipv6: '").append(prefs.getTunnelIpv6()).append("'\n");
 
-        // Post up script (optional)
-        String postUpScript = prefs.getTunnelPostUpScript();
-        if (!postUpScript.isEmpty()) {
-            config.append("  post-up-script: '").append(postUpScript).append("'\n");
-        }
+        // Post up script (optional, Android not supported)
+        // String postUpScript = prefs.getTunnelPostUpScript();
+        // if (!postUpScript.isEmpty()) {
+        //     config.append("  post-up-script: '").append(postUpScript).append("'\n");
+        // }
 
-        // Pre down script (optional)
-        String preDownScript = prefs.getTunnelPreDownScript();
-        if (!preDownScript.isEmpty()) {
-            config.append("  pre-down-script: '").append(preDownScript).append("'\n");
-        }
+        // Pre down script (optional, Android not supported)
+        // String preDownScript = prefs.getTunnelPreDownScript();
+        // if (!preDownScript.isEmpty()) {
+        //     config.append("  pre-down-script: '").append(preDownScript).append("'\n");
+        // }
     }
 
     private void appendSocks5Section() {
@@ -141,25 +143,34 @@ public class ConfigGenerator {
     private void appendMiscSection() {
         config.append("misc:\n");
         config.append("  task-stack-size: ").append(prefs.getTaskStackSize()).append("\n");
-        config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
-        config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
-        config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
-        int maxSessionCount = prefs.getMaxSessionCount();
-        if (maxSessionCount > 0) {
-            config.append("  max-session-count: ").append(maxSessionCount).append("\n");
-        }
-        config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
-        config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
-        config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
+
+        // Disabled options (not recommended to modify on Android)
+        // config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
+        // config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
+        // config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
+
+        // int maxSessionCount = prefs.getMaxSessionCount();
+        // if (maxSessionCount > 0) {
+        //     config.append("  max-session-count: ").append(maxSessionCount).append("\n");
+        // }
+
+        // config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
+        // config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
+        // config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
+
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
         config.append("  log-level: debug\n");
-        String pidFile = prefs.getPidFile();
-        if (!pidFile.isEmpty()) {
-            config.append("  pid-file: '").append(pidFile).append("'\n");
-        }
-        int limitNofile = prefs.getLimitNofile();
-        if (limitNofile > 0) {
-            config.append("  limit-nofile: ").append(limitNofile).append("\n");
-        }
+
+        // PID File: Not supported on Android
+        // String pidFile = prefs.getPidFile();
+        // if (!pidFile.isEmpty()) {
+        //     config.append("  pid-file: '").append(pidFile).append("'\n");
+        // }
+
+        // Limit Nofile: Limited by Android sandbox
+        // int limitNofile = prefs.getLimitNofile();
+        // if (limitNofile > 0) {
+        //     config.append("  limit-nofile: ").append(limitNofile).append("\n");
+        // }
     }
 }
