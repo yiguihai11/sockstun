@@ -32,6 +32,7 @@ import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.content.res.AssetManager;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
