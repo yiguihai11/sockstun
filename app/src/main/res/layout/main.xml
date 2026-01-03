@@ -9,6 +9,7 @@
 		android:layout_height="fill_parent">
 		<HorizontalScrollView
 			android:id="@+id/tab_scroller"
+			android:scrollbars="none"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content">
 			<TabWidget
