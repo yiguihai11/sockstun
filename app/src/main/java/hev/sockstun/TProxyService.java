@@ -34,6 +34,8 @@ public class TProxyService extends VpnService {
 	private static native long[] TProxyGetStats();
 	private static native String TProxyGetLogs(int max_lines);
 
+	private Thread nativeThread;
+
 	public static String getLogs(int maxLines) {
 		return TProxyGetLogs(maxLines);
 	}
@@ -146,7 +148,21 @@ public class TProxyService extends VpnService {
 		} catch (IOException e) {
 			return;
 		}
-		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
+		// Start native process in monitoring thread
+		nativeThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// This blocks until native process exits
+				TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
+
+				// Native process exited, stop VPN
+				if (tunFd != null) {
+					stopService();
+				}
+			}
+		});
+		nativeThread.start();
+
 		prefs.setEnable(true);
 
 		String channelName = "socks5";
@@ -156,7 +172,12 @@ public class TProxyService extends VpnService {
 
 	public void stopService() {
 		if (tunFd == null)
-		  return;
+			return;
+
+		// Interrupt monitoring thread if still running
+		if (nativeThread != null && nativeThread.isAlive()) {
+			nativeThread.interrupt();
+		}
 
 		stopForeground(true);
 
@@ -169,6 +190,10 @@ public class TProxyService extends VpnService {
 		} catch (IOException e) {
 		}
 		tunFd = null;
+
+		// Update enable state
+		Preferences prefs = new Preferences(this);
+		prefs.setEnable(false);
 
 		System.exit(0);
 	}
