@@ -128,6 +128,4 @@
 			android:textSize="12sp"
 			android:textColor="@color/hint_text"
 			android:padding="8dp"/>
-
-	</LinearLayout>
 </LinearLayout>
