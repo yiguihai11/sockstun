@@ -47,24 +47,7 @@ public class ConfigGenerator {
 
     private void appendTunnelSection() {
         config.append("tunnel:\n");
-        //config.append("  name: ").append(prefs.getTunnelName()).append("\n");
         config.append("  mtu: ").append(prefs.getTunnelMtu()).append("\n");
-        // multi-queue: Android not supported, always false
-        //config.append("  multi-queue: false\n");
-        //config.append("  ipv4: ").append(prefs.getTunnelIpv4()).append("\n");
-        //config.append("  ipv6: '").append(prefs.getTunnelIpv6()).append("'\n");
-
-        // Post up script (optional, Android not supported)
-        // String postUpScript = prefs.getTunnelPostUpScript();
-        // if (!postUpScript.isEmpty()) {
-        //     config.append("  post-up-script: '").append(postUpScript).append("'\n");
-        // }
-
-        // Pre down script (optional, Android not supported)
-        // String preDownScript = prefs.getTunnelPreDownScript();
-        // if (!preDownScript.isEmpty()) {
-        //     config.append("  pre-down-script: '").append(preDownScript).append("'\n");
-        // }
     }
 
     private void appendSocks5Section() {
