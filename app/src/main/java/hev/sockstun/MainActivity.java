@@ -234,15 +234,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_save.setEnabled(editable);
 
 		edittext_task_stack_size.setEnabled(editable);
-		edittext_tcp_buffer_size.setEnabled(editable);
-		edittext_udp_recv_buffer_size.setEnabled(editable);
-		edittext_udp_copy_buffer_nums.setEnabled(editable);
-		edittext_connect_timeout.setEnabled(editable);
-		edittext_tcp_read_write_timeout.setEnabled(editable);
-		edittext_udp_read_write_timeout.setEnabled(editable);
-		edittext_max_session_count.setEnabled(editable);
-		edittext_pid_file.setEnabled(editable);
-		edittext_limit_nofile.setEnabled(editable);
+		// Misc options: always disabled except task_stack_size
+		edittext_tcp_buffer_size.setEnabled(false);
+		edittext_udp_recv_buffer_size.setEnabled(false);
+		edittext_udp_copy_buffer_nums.setEnabled(false);
+		edittext_connect_timeout.setEnabled(false);
+		edittext_tcp_read_write_timeout.setEnabled(false);
+		edittext_udp_read_write_timeout.setEnabled(false);
+		edittext_max_session_count.setEnabled(false);
+		edittext_pid_file.setEnabled(false);
+		edittext_limit_nofile.setEnabled(false);
 
 		if (editable)
 		  button_control.setText(R.string.control_enable);
