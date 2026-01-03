@@ -76,10 +76,22 @@
 			android:textSize="16sp"
 			android:paddingTop="16dp"
 			android:paddingBottom="4dp"/>
-		<CheckBox
-			android:id="@+id/global"
+		<LinearLayout
+			android:orientation="horizontal"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/global"/>
+			android:layout_height="wrap_content">
+			<CheckBox
+				android:id="@+id/global"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/global"/>
+			<Button
+				android:id="@+id/apps"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/apps"/>
+		</LinearLayout>
 	</LinearLayout>
 </ScrollView>

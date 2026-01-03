@@ -8,7 +8,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:padding="8dp">
-		<TextView
+			<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="Tools"
@@ -16,23 +16,11 @@
 			android:textSize="16sp"
 			android:paddingTop="8dp"
 			android:paddingBottom="4dp"/>
-		<LinearLayout
-			android:orientation="horizontal"
+		<Button
+			android:id="@+id/logs"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button
-				android:id="@+id/apps"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/apps"/>
-			<Button
-				android:id="@+id/logs"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/logs"/>
-		</LinearLayout>
+			android:layout_height="wrap_content"
+			android:text="@string/logs"/>
 
 		<TextView
 			android:layout_width="wrap_content"
