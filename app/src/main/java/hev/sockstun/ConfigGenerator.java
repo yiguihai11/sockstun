@@ -47,9 +47,21 @@ public class ConfigGenerator {
         config.append("tunnel:\n");
         config.append("  name: tun0\n");
         config.append("  mtu: ").append(prefs.getTunnelMtu()).append("\n");
-        config.append("  multi-queue: false\n");
-        config.append("  ipv4: ").append(prefs.getTunnelIpv4Address()).append("\n");
-        config.append("  ipv6: '").append(prefs.getTunnelIpv6Address()).append("'\n");
+        config.append("  multi-queue: ").append(prefs.getTunnelMultiQueue() ? "true" : "false").append("\n");
+        config.append("  ipv4: ").append(prefs.getTunnelIpv4()).append("\n");
+        config.append("  ipv6: '").append(prefs.getTunnelIpv6()).append("'\n");
+
+        // Post up script (optional)
+        String postUpScript = prefs.getTunnelPostUpScript();
+        if (!postUpScript.isEmpty()) {
+            config.append("  post-up-script: '").append(postUpScript).append("'\n");
+        }
+
+        // Pre down script (optional)
+        String preDownScript = prefs.getTunnelPreDownScript();
+        if (!preDownScript.isEmpty()) {
+            config.append("  pre-down-script: '").append(preDownScript).append("'\n");
+        }
     }
 
     private void appendSocks5Section() {

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="8dp">
+
+		<!-- Tunnel MTU -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_mtu"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tunnel_mtu"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="8500"/>
+		</LinearLayout>
+
+		<!-- Interface Name (Not applicable for Android) -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_name"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tunnel_name"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:text="tun0"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Managed by Android VPN Service"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- Multi-Queue (Not applicable for Android) -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_multi_queue"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<CheckBox
+				android:id="@+id/tunnel_multi_queue"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:checked="false"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not supported on Android"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- IPv4 Address (Not applicable for Android) -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_ipv4"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tunnel_ipv4"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:text="198.18.0.1"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Managed by Android VPN Service"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- IPv6 Address (Not applicable for Android) -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_ipv6"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tunnel_ipv6"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:text="fc00::1"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Managed by Android VPN Service"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- Post Up Script (Not applicable for Android) -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_post_up_script"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tunnel_post_up_script"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="up.sh"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not supported on Android (sandbox restriction)"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- Pre Down Script (Not applicable for Android) -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/tunnel_pre_down_script"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/tunnel_pre_down_script"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="down.sh"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not supported on Android (sandbox restriction)"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+	</LinearLayout>
+</ScrollView>

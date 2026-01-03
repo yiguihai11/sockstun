@@ -18,6 +18,7 @@
 			android:layout_height="0dp"
 			android:layout_weight="1">
 			<include layout="@layout/tab_socks" android:id="@+id/tab_socks"/>
+			<include layout="@layout/tab_tunnel" android:id="@+id/tab_tunnel"/>
 			<include layout="@layout/tab_network" android:id="@+id/tab_network"/>
 			<include layout="@layout/tab_advanced" android:id="@+id/tab_advanced"/>
 			<include layout="@layout/tab_misc" android:id="@+id/tab_misc"/>

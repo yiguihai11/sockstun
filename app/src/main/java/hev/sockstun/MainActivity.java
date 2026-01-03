@@ -54,6 +54,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_max_session_count;
 	private EditText edittext_pid_file;
 	private EditText edittext_limit_nofile;
+	private EditText edittext_tunnel_mtu;
+	private EditText edittext_tunnel_name;
+	private CheckBox checkbox_tunnel_multi_queue;
+	private EditText edittext_tunnel_ipv4;
+	private EditText edittext_tunnel_ipv6;
+	private EditText edittext_tunnel_post_up_script;
+	private EditText edittext_tunnel_pre_down_script;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,15 +75,18 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("socks")
 			.setIndicator("SOCKS")
 			.setContent(R.id.tab_socks));
-		tabHost.addTab(tabHost.newTabSpec("misc")
-			.setIndicator("Misc")
-			.setContent(R.id.tab_misc));
+		tabHost.addTab(tabHost.newTabSpec("tunnel")
+			.setIndicator("Tunnel")
+			.setContent(R.id.tab_tunnel));
 		tabHost.addTab(tabHost.newTabSpec("network")
 			.setIndicator("Network")
 			.setContent(R.id.tab_network));
 		tabHost.addTab(tabHost.newTabSpec("advanced")
 			.setIndicator("Advanced")
 			.setContent(R.id.tab_advanced));
+		tabHost.addTab(tabHost.newTabSpec("misc")
+			.setIndicator("Misc")
+			.setContent(R.id.tab_misc));
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
@@ -108,6 +118,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_max_session_count = (EditText) findViewById(R.id.max_session_count);
 		edittext_pid_file = (EditText) findViewById(R.id.pid_file);
 		edittext_limit_nofile = (EditText) findViewById(R.id.limit_nofile);
+		edittext_tunnel_mtu = (EditText) findViewById(R.id.tunnel_mtu);
+		edittext_tunnel_name = (EditText) findViewById(R.id.tunnel_name);
+		checkbox_tunnel_multi_queue = (CheckBox) findViewById(R.id.tunnel_multi_queue);
+		edittext_tunnel_ipv4 = (EditText) findViewById(R.id.tunnel_ipv4);
+		edittext_tunnel_ipv6 = (EditText) findViewById(R.id.tunnel_ipv6);
+		edittext_tunnel_post_up_script = (EditText) findViewById(R.id.tunnel_post_up_script);
+		edittext_tunnel_pre_down_script = (EditText) findViewById(R.id.tunnel_pre_down_script);
 
 		checkbox_udp_in_tcp.setOnClickListener(this);
 		checkbox_remote_dns.setOnClickListener(this);
@@ -189,6 +206,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_pid_file.setText(prefs.getPidFile());
 		edittext_limit_nofile.setText(Integer.toString(prefs.getLimitNofile()));
 
+		edittext_tunnel_mtu.setText(Integer.toString(prefs.getTunnelMtu()));
+		edittext_tunnel_name.setText(prefs.getTunnelName());
+		checkbox_tunnel_multi_queue.setChecked(prefs.getTunnelMultiQueue());
+		edittext_tunnel_ipv4.setText(prefs.getTunnelIpv4());
+		edittext_tunnel_ipv6.setText(prefs.getTunnelIpv6());
+		edittext_tunnel_post_up_script.setText(prefs.getTunnelPostUpScript());
+		edittext_tunnel_pre_down_script.setText(prefs.getTunnelPreDownScript());
+
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
@@ -259,5 +284,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setMaxSessionCount(Integer.parseInt(edittext_max_session_count.getText().toString()));
 		prefs.setPidFile(edittext_pid_file.getText().toString());
 		prefs.setLimitNofile(Integer.parseInt(edittext_limit_nofile.getText().toString()));
+
+		prefs.setTunnelMtu(Integer.parseInt(edittext_tunnel_mtu.getText().toString()));
+		prefs.setTunnelName(edittext_tunnel_name.getText().toString());
+		prefs.setTunnelMultiQueue(checkbox_tunnel_multi_queue.isChecked());
+		prefs.setTunnelIpv4(edittext_tunnel_ipv4.getText().toString());
+		prefs.setTunnelIpv6(edittext_tunnel_ipv6.getText().toString());
+		prefs.setTunnelPostUpScript(edittext_tunnel_post_up_script.getText().toString());
+		prefs.setTunnelPreDownScript(edittext_tunnel_pre_down_script.getText().toString());
 	}
 }

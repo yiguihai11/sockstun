@@ -31,4 +31,11 @@
 	<string name="max_session_count">Max Session Count (0 = unlimited)</string>
 	<string name="pid_file">PID File Path (optional)</string>
 	<string name="limit_nofile">Limit Nofile</string>
+	<string name="tunnel_mtu">Tunnel MTU</string>
+	<string name="tunnel_name">Interface Name</string>
+	<string name="tunnel_multi_queue">Multi-Queue</string>
+	<string name="tunnel_ipv4">IPv4 Address</string>
+	<string name="tunnel_ipv6">IPv6 Address</string>
+	<string name="tunnel_post_up_script">Post Up Script</string>
+	<string name="tunnel_pre_down_script">Pre Down Script</string>
 </resources>

@@ -44,6 +44,13 @@ public class Preferences
 	public static final String MAX_SESSION_COUNT = "MaxSessionCount";
 	public static final String PID_FILE = "PidFile";
 	public static final String LIMIT_NOFILE = "LimitNofile";
+	public static final String TUNNEL_MTU = "TunnelMtu";
+	public static final String TUNNEL_NAME = "TunnelName";
+	public static final String TUNNEL_MULTI_QUEUE = "TunnelMultiQueue";
+	public static final String TUNNEL_IPV4 = "TunnelIpv4";
+	public static final String TUNNEL_IPV6 = "TunnelIpv6";
+	public static final String TUNNEL_POST_UP_SCRIPT = "TunnelPostUpScript";
+	public static final String TUNNEL_PRE_DOWN_SCRIPT = "TunnelPreDownScript";
 
 	private SharedPreferences prefs;
 
@@ -196,7 +203,73 @@ public class Preferences
 	}
 
 	public int getTunnelMtu() {
-		return 8500;
+		return prefs.getInt(TUNNEL_MTU, 8500);
+	}
+
+	public void setTunnelMtu(int mtu) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(TUNNEL_MTU, mtu);
+		editor.commit();
+	}
+
+	public String getTunnelName() {
+		return prefs.getString(TUNNEL_NAME, "tun0");
+	}
+
+	public void setTunnelName(String name) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(TUNNEL_NAME, name);
+		editor.commit();
+	}
+
+	public boolean getTunnelMultiQueue() {
+		return prefs.getBoolean(TUNNEL_MULTI_QUEUE, false);
+	}
+
+	public void setTunnelMultiQueue(boolean enable) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(TUNNEL_MULTI_QUEUE, enable);
+		editor.commit();
+	}
+
+	public String getTunnelIpv4() {
+		return prefs.getString(TUNNEL_IPV4, "198.18.0.1");
+	}
+
+	public void setTunnelIpv4(String addr) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(TUNNEL_IPV4, addr);
+		editor.commit();
+	}
+
+	public String getTunnelIpv6() {
+		return prefs.getString(TUNNEL_IPV6, "fc00::1");
+	}
+
+	public void setTunnelIpv6(String addr) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(TUNNEL_IPV6, addr);
+		editor.commit();
+	}
+
+	public String getTunnelPostUpScript() {
+		return prefs.getString(TUNNEL_POST_UP_SCRIPT, "");
+	}
+
+	public void setTunnelPostUpScript(String script) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(TUNNEL_POST_UP_SCRIPT, script);
+		editor.commit();
+	}
+
+	public String getTunnelPreDownScript() {
+		return prefs.getString(TUNNEL_PRE_DOWN_SCRIPT, "");
+	}
+
+	public void setTunnelPreDownScript(String script) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(TUNNEL_PRE_DOWN_SCRIPT, script);
+		editor.commit();
 	}
 
 	public String getTunnelIpv4Address() {
