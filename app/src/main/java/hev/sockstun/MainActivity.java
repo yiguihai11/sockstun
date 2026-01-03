@@ -20,9 +20,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost;
 import android.net.VpnService;
+import android.net.Uri;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 
 public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Preferences prefs;
@@ -47,6 +53,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_save;
 	private Button button_control;
 	private Spinner spinner_log_level;
+	private TextView textview_github_link;
 	private EditText edittext_task_stack_size;
 	private EditText edittext_tcp_buffer_size;
 	private EditText edittext_udp_recv_buffer_size;
@@ -128,6 +135,26 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_tunnel_ipv6 = (EditText) findViewById(R.id.tunnel_ipv6);
 		edittext_tunnel_post_up_script = (EditText) findViewById(R.id.tunnel_post_up_script);
 		edittext_tunnel_pre_down_script = (EditText) findViewById(R.id.tunnel_pre_down_script);
+
+		// Setup clickable GitHub link
+		textview_github_link = (TextView) findViewById(R.id.github_link);
+		String fullText = textview_github_link.getText().toString();
+		SpannableString spannableString = new SpannableString(fullText);
+		String repoName = "yiguihai11/sockstun";
+		int startIndex = fullText.indexOf(repoName);
+		int endIndex = startIndex + repoName.length();
+
+		// Make repo name clickable and blue
+		spannableString.setSpan(new ClickableSpan() {
+			@Override
+			public void onClick(View widget) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yiguihai11/sockstun"));
+				startActivity(browserIntent);
+			}
+		}, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		spannableString.setSpan(new ForegroundColorSpan(0xFF2196F3), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		textview_github_link.setText(spannableString);
+		textview_github_link.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
 
 		// Setup log level spinner
 		spinner_log_level = (Spinner) findViewById(R.id.log_level);
