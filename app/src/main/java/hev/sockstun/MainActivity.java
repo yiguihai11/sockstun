@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import android.widget.TabHost;
 import android.net.VpnService;
@@ -44,6 +46,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_logs;
 	private Button button_save;
 	private Button button_control;
+	private Spinner spinner_log_level;
 	private EditText edittext_task_stack_size;
 	private EditText edittext_tcp_buffer_size;
 	private EditText edittext_udp_recv_buffer_size;
@@ -126,6 +129,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_tunnel_post_up_script = (EditText) findViewById(R.id.tunnel_post_up_script);
 		edittext_tunnel_pre_down_script = (EditText) findViewById(R.id.tunnel_pre_down_script);
 
+		// Setup log level spinner
+		spinner_log_level = (Spinner) findViewById(R.id.log_level);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+			R.array.log_level_entries, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner_log_level.setAdapter(adapter);
+
 		checkbox_udp_in_tcp.setOnClickListener(this);
 		checkbox_remote_dns.setOnClickListener(this);
 		checkbox_global.setOnClickListener(this);
@@ -196,6 +206,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_remote_dns.setChecked(prefs.getRemoteDns());
 
 		edittext_task_stack_size.setText(Integer.toString(prefs.getTaskStackSize()));
+
+		// Set log level spinner selection
+		String logLevel = prefs.getLogLevel();
+		String[] logLevelValues = getResources().getStringArray(R.array.log_level_values);
+		for (int i = 0; i < logLevelValues.length; i++) {
+			if (logLevelValues[i].equals(logLevel)) {
+				spinner_log_level.setSelection(i);
+				break;
+			}
+		}
 		edittext_tcp_buffer_size.setText(Integer.toString(prefs.getTcpBufferSize()));
 		edittext_udp_recv_buffer_size.setText(Integer.toString(prefs.getUdpRecvBufferSize()));
 		edittext_udp_copy_buffer_nums.setText(Integer.toString(prefs.getUdpCopyBufferNums()));
@@ -245,6 +265,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		// Misc options
 		edittext_task_stack_size.setEnabled(editable);
+		spinner_log_level.setEnabled(editable);
 		// Misc options: always disabled except task_stack_size
 		edittext_tcp_buffer_size.setEnabled(false);
 		edittext_udp_recv_buffer_size.setEnabled(false);
@@ -287,6 +308,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setRemoteDns(checkbox_remote_dns.isChecked());
 
 		prefs.setTaskStackSize(Integer.parseInt(edittext_task_stack_size.getText().toString()));
+
+		// Save log level from spinner
+		String[] logLevelValues = getResources().getStringArray(R.array.log_level_values);
+		int selectedPosition = spinner_log_level.getSelectedItemPosition();
+		prefs.setLogLevel(logLevelValues[selectedPosition]);
 		prefs.setTcpBufferSize(Integer.parseInt(edittext_tcp_buffer_size.getText().toString()));
 		prefs.setUdpRecvBufferSize(Integer.parseInt(edittext_udp_recv_buffer_size.getText().toString()));
 		prefs.setUdpCopyBufferNums(Integer.parseInt(edittext_udp_copy_buffer_nums.getText().toString()));

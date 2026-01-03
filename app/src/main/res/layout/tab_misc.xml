@@ -31,6 +31,26 @@
 				android:text="81920"/>
 		</LinearLayout>
 
+		<!-- Log Level -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/log_level"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<Spinner
+				android:id="@+id/log_level"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"/>
+		</LinearLayout>
+
 		<!-- TCP Buffer Size -->
 		<LinearLayout
 			android:orientation="vertical"

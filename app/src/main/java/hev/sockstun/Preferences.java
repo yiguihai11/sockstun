@@ -35,6 +35,7 @@ public class Preferences
 	public static final String APPS = "Apps";
 	public static final String ENABLE = "Enable";
 	public static final String TASK_STACK_SIZE = "TaskStackSize";
+	public static final String LOG_LEVEL = "LogLevel";
 	public static final String TCP_BUFFER_SIZE = "TcpBufferSize";
 	public static final String UDP_RECV_BUFFER_SIZE = "UdpRecvBufferSize";
 	public static final String UDP_COPY_BUFFER_NUMS = "UdpCopyBufferNums";
@@ -295,6 +296,16 @@ public class Preferences
 	public void setTaskStackSize(int size) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(TASK_STACK_SIZE, size);
+		editor.commit();
+	}
+
+	public String getLogLevel() {
+		return prefs.getString(LOG_LEVEL, "debug");
+	}
+
+	public void setLogLevel(String level) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(LOG_LEVEL, level);
 		editor.commit();
 	}
 

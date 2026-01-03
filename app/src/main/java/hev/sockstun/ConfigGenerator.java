@@ -158,7 +158,7 @@ public class ConfigGenerator {
         // config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
 
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
-        config.append("  log-level: debug\n");
+        config.append("  log-level: ").append(prefs.getLogLevel()).append("\n");
 
         // PID File: Not supported on Android
         // String pidFile = prefs.getPidFile();

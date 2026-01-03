@@ -22,6 +22,17 @@
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>
 	<string name="task_stack_size">Task Stack Size (bytes)</string>
+	<string name="log_level">Log Level</string>
+	<string-array name="log_level_entries">
+		<item>Debug</item>
+		<item>Info</item>
+		<item>Error</item>
+	</string-array>
+	<string-array name="log_level_values">
+		<item>debug</item>
+		<item>info</item>
+		<item>error</item>
+	</string-array>
 	<string name="tcp_buffer_size">TCP Buffer Size (bytes)</string>
 	<string name="udp_recv_buffer_size">UDP Recv Buffer Size (bytes)</string>
 	<string name="udp_copy_buffer_nums">UDP Copy Buffer Nums</string>
