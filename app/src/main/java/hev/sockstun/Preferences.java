@@ -41,6 +41,9 @@ public class Preferences
 	public static final String CONNECT_TIMEOUT = "ConnectTimeout";
 	public static final String TCP_READ_WRITE_TIMEOUT = "TcpReadWriteTimeout";
 	public static final String UDP_READ_WRITE_TIMEOUT = "UdpReadWriteTimeout";
+	public static final String MAX_SESSION_COUNT = "MaxSessionCount";
+	public static final String PID_FILE = "PidFile";
+	public static final String LIMIT_NOFILE = "LimitNofile";
 
 	private SharedPreferences prefs;
 
@@ -309,6 +312,36 @@ public class Preferences
 	public void setSocksUdpPassword(String pass) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_UDP_PASS, pass);
+		editor.commit();
+	}
+
+	public int getMaxSessionCount() {
+		return prefs.getInt(MAX_SESSION_COUNT, 0);
+	}
+
+	public void setMaxSessionCount(int count) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(MAX_SESSION_COUNT, count);
+		editor.commit();
+	}
+
+	public String getPidFile() {
+		return prefs.getString(PID_FILE, "");
+	}
+
+	public void setPidFile(String path) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(PID_FILE, path);
+		editor.commit();
+	}
+
+	public int getLimitNofile() {
+		return prefs.getInt(LIMIT_NOFILE, 65535);
+	}
+
+	public void setLimitNofile(int limit) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(LIMIT_NOFILE, limit);
 		editor.commit();
 	}
 }

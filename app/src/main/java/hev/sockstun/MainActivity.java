@@ -51,6 +51,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_connect_timeout;
 	private EditText edittext_tcp_read_write_timeout;
 	private EditText edittext_udp_read_write_timeout;
+	private EditText edittext_max_session_count;
+	private EditText edittext_pid_file;
+	private EditText edittext_limit_nofile;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +105,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_connect_timeout = (EditText) findViewById(R.id.connect_timeout);
 		edittext_tcp_read_write_timeout = (EditText) findViewById(R.id.tcp_read_write_timeout);
 		edittext_udp_read_write_timeout = (EditText) findViewById(R.id.udp_read_write_timeout);
+		edittext_max_session_count = (EditText) findViewById(R.id.max_session_count);
+		edittext_pid_file = (EditText) findViewById(R.id.pid_file);
+		edittext_limit_nofile = (EditText) findViewById(R.id.limit_nofile);
 
 		checkbox_udp_in_tcp.setOnClickListener(this);
 		checkbox_remote_dns.setOnClickListener(this);
@@ -179,6 +185,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_connect_timeout.setText(Integer.toString(prefs.getConnectTimeout()));
 		edittext_tcp_read_write_timeout.setText(Integer.toString(prefs.getTcpReadWriteTimeout()));
 		edittext_udp_read_write_timeout.setText(Integer.toString(prefs.getUdpReadWriteTimeout()));
+		edittext_max_session_count.setText(Integer.toString(prefs.getMaxSessionCount()));
+		edittext_pid_file.setText(prefs.getPidFile());
+		edittext_limit_nofile.setText(Integer.toString(prefs.getLimitNofile()));
 
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
@@ -206,6 +215,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_connect_timeout.setEnabled(editable);
 		edittext_tcp_read_write_timeout.setEnabled(editable);
 		edittext_udp_read_write_timeout.setEnabled(editable);
+		edittext_max_session_count.setEnabled(editable);
+		edittext_pid_file.setEnabled(editable);
+		edittext_limit_nofile.setEnabled(editable);
 
 		if (editable)
 		  button_control.setText(R.string.control_enable);
@@ -244,5 +256,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setConnectTimeout(Integer.parseInt(edittext_connect_timeout.getText().toString()));
 		prefs.setTcpReadWriteTimeout(Integer.parseInt(edittext_tcp_read_write_timeout.getText().toString()));
 		prefs.setUdpReadWriteTimeout(Integer.parseInt(edittext_udp_read_write_timeout.getText().toString()));
+		prefs.setMaxSessionCount(Integer.parseInt(edittext_max_session_count.getText().toString()));
+		prefs.setPidFile(edittext_pid_file.getText().toString());
+		prefs.setLimitNofile(Integer.parseInt(edittext_limit_nofile.getText().toString()));
 	}
 }

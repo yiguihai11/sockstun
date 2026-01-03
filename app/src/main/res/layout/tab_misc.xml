@@ -163,5 +163,83 @@
 				android:text="60000"/>
 		</LinearLayout>
 
+		<!-- Max Session Count -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/max_session_count"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/max_session_count"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="0"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="0 = unlimited"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- PID File -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/pid_file"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/pid_file"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:text=""/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Leave empty to disable"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
+		</LinearLayout>
+
+		<!-- Limit Nofile -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/limit_nofile"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<EditText
+				android:id="@+id/limit_nofile"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="65535"/>
+		</LinearLayout>
+
 	</LinearLayout>
 </ScrollView>

@@ -132,10 +132,22 @@ public class ConfigGenerator {
         config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
         config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
         config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
+        int maxSessionCount = prefs.getMaxSessionCount();
+        if (maxSessionCount > 0) {
+            config.append("  max-session-count: ").append(maxSessionCount).append("\n");
+        }
         config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
         config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
         config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
         config.append("  log-level: debug\n");
+        String pidFile = prefs.getPidFile();
+        if (!pidFile.isEmpty()) {
+            config.append("  pid-file: '").append(pidFile).append("'\n");
+        }
+        int limitNofile = prefs.getLimitNofile();
+        if (limitNofile > 0) {
+            config.append("  limit-nofile: ").append(limitNofile).append("\n");
+        }
     }
 }

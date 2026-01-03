@@ -28,4 +28,7 @@
 	<string name="connect_timeout">Connect Timeout (ms)</string>
 	<string name="tcp_read_write_timeout">TCP Read Write Timeout (ms)</string>
 	<string name="udp_read_write_timeout">UDP Read Write Timeout (ms)</string>
+	<string name="max_session_count">Max Session Count (0 = unlimited)</string>
+	<string name="pid_file">PID File Path (optional)</string>
+	<string name="limit_nofile">Limit Nofile</string>
 </resources>
