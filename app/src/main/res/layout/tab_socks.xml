@@ -64,6 +64,13 @@
 				android:layout_height="wrap_content"
 				android:singleLine="true"
 				android:inputType="textPassword"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="UDP configuration below will use TCP settings if left empty"
+				android:textSize="12sp"
+				android:textColor="#888888"
+				android:paddingTop="8dp"/>
 		</LinearLayout>
 
 		<!-- UDP Configuration Card -->
