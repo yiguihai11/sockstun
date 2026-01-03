@@ -3,7 +3,7 @@
  Name        : LogActivity.java
  Author      : hev <r@hev.cc>
  Copyright   : Copyright (c) 2024 xyz
- Description : Log Viewer Activity
+ Description : Log Viewer Activity with Java and Native logs
  ============================================================================
  */
 
@@ -11,10 +11,13 @@ package hev.sockstun;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.TabActivity;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.TabHost;
 import android.os.Handler;
 import android.os.Looper;
 import android.content.Context;
@@ -25,15 +28,29 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.RandomAccessFile;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-public class LogActivity extends Activity implements View.OnClickListener {
+public class LogActivity extends TabActivity implements View.OnClickListener {
 	private static final int MAX_LOG_SIZE = 100 * 1024; // 100KB max
-	private TextView textview_log;
-	private ScrollView scrollview_log;
-	private Button button_refresh;
-	private Button button_clear;
+
+	// Java log UI elements
+	private TextView textview_java_log;
+	private ScrollView scrollview_java_log;
+	private Button button_java_refresh;
+	private Button button_java_clear;
+
+	// Native log UI elements
+	private TextView textview_native_log;
+	private ScrollView scrollview_native_log;
+	private Button button_native_refresh;
+	private Button button_native_clear;
+
+	private TabHost tabHost;
 	private Handler handler;
-	private Runnable refreshRunnable;
 
 	// Log colors
 	private static final int COLOR_DEBUG = 0xFFAAAAAA; // Gray
@@ -47,49 +64,88 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.log);
 
-		textview_log = (TextView) findViewById(R.id.log_text);
-		scrollview_log = (ScrollView) findViewById(R.id.log_scroll);
-		button_refresh = (Button) findViewById(R.id.log_refresh);
-		button_clear = (Button) findViewById(R.id.log_clear);
+		tabHost = getTabHost();
 
-		button_refresh.setOnClickListener(this);
-		button_clear.setOnClickListener(this);
+		// Setup Java log tab
+		tabHost.addTab(tabHost.newTabSpec("java_log")
+			.setIndicator("Java Log")
+			.setContent(R.id.tab_java_log));
+
+		// Setup Native log tab
+		tabHost.addTab(tabHost.newTabSpec("native_log")
+			.setIndicator("Native Log")
+			.setContent(R.id.tab_native_log));
+
+		// Java log UI elements
+		textview_java_log = (TextView) findViewById(R.id.java_log_text);
+		scrollview_java_log = (ScrollView) findViewById(R.id.java_log_scroll);
+		button_java_refresh = (Button) findViewById(R.id.java_log_refresh);
+		button_java_clear = (Button) findViewById(R.id.java_log_clear);
+
+		// Native log UI elements
+		textview_native_log = (TextView) findViewById(R.id.native_log_text);
+		scrollview_native_log = (ScrollView) findViewById(R.id.native_log_scroll);
+		button_native_refresh = (Button) findViewById(R.id.native_log_refresh);
+		button_native_clear = (Button) findViewById(R.id.native_log_clear);
+
+		// Setup click listeners
+		button_java_refresh.setOnClickListener(this);
+		button_java_clear.setOnClickListener(this);
+		button_native_refresh.setOnClickListener(this);
+		button_native_clear.setOnClickListener(this);
 
 		handler = new Handler(Looper.getMainLooper());
-		refreshRunnable = new Runnable() {
-			@Override
-			public void run() {
-				refreshLogs();
-			}
-		};
 
 		// Initial load
-		refreshLogs();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (handler != null) {
-			handler.removeCallbacks(refreshRunnable);
-		}
+		refreshJavaLogs();
+		refreshNativeLogs();
 	}
 
 	@Override
 	public void onClick(View view) {
-		if (view == button_refresh) {
-			refreshLogs();
-		} else if (view == button_clear) {
-			clearLogs();
+		if (view == button_java_refresh) {
+			refreshJavaLogs();
+		} else if (view == button_java_clear) {
+			clearJavaLogs();
+		} else if (view == button_native_refresh) {
+			refreshNativeLogs();
+		} else if (view == button_native_clear) {
+			clearNativeLogs();
 		}
 	}
 
-	private void refreshLogs() {
+	private void refreshJavaLogs() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final String logs = readLogsFromFile("java.log");
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						if (logs != null && !logs.isEmpty()) {
+							textview_java_log.setText(colorizeLog(logs));
+							// Scroll to bottom
+							scrollview_java_log.post(new Runnable() {
+								@Override
+								public void run() {
+									scrollview_java_log.fullScroll(ScrollView.FOCUS_DOWN);
+								}
+							});
+						} else {
+							textview_java_log.setText("No Java logs available yet.");
+						}
+					}
+				});
+			}
+		}).start();
+	}
+
+	private void refreshNativeLogs() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				final String config = readConfigFile();
-				final String logs = readLogsFromFile();
+				final String logs = readLogsFromFile("tunnel.log");
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
@@ -107,20 +163,20 @@ public class LogActivity extends Activity implements View.OnClickListener {
 							display.append("========== tunnel.log ==========\n");
 							display.append(logs);
 							display.append("\n========== End of Logs ==========");
-							textview_log.setText(colorizeLog(display.toString()));
+							textview_native_log.setText(colorizeLog(display.toString()));
 							// Scroll to bottom
-							scrollview_log.post(new Runnable() {
+							scrollview_native_log.post(new Runnable() {
 								@Override
 								public void run() {
-									scrollview_log.fullScroll(ScrollView.FOCUS_DOWN);
+									scrollview_native_log.fullScroll(ScrollView.FOCUS_DOWN);
 								}
 							});
 						} else if (config != null && !config.isEmpty()) {
 							display.append("========== tunnel.log ==========\n");
 							display.append("No logs available. Make sure VPN is running.");
-							textview_log.setText(colorizeLog(display.toString()));
+							textview_native_log.setText(colorizeLog(display.toString()));
 						} else {
-							textview_log.setText("No logs or config available. Make sure VPN is running.");
+							textview_native_log.setText("No logs or config available. Make sure VPN is running.");
 						}
 					}
 				});
@@ -128,7 +184,34 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		}).start();
 	}
 
-	private void clearLogs() {
+	private void clearJavaLogs() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					File logFile = new File(getCacheDir(), "java.log");
+					if (logFile.exists()) {
+						logFile.delete();
+					}
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							textview_java_log.setText("Java logs cleared.");
+						}
+					});
+				} catch (Exception e) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							textview_java_log.setText("Failed to clear logs: " + e.getMessage());
+						}
+					});
+				}
+			}
+		}).start();
+	}
+
+	private void clearNativeLogs() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -140,14 +223,14 @@ public class LogActivity extends Activity implements View.OnClickListener {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							textview_log.setText("Logs cleared.");
+							textview_native_log.setText("Native logs cleared.");
 						}
 					});
 				} catch (Exception e) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							textview_log.setText("Failed to clear logs: " + e.getMessage());
+							textview_native_log.setText("Failed to clear logs: " + e.getMessage());
 						}
 					});
 				}
@@ -175,8 +258,8 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		}
 	}
 
-	private String readLogsFromFile() {
-		File logFile = new File(getCacheDir(), "tunnel.log");
+	private String readLogsFromFile(String filename) {
+		File logFile = new File(getCacheDir(), filename);
 		if (!logFile.exists()) {
 			return null;
 		}
@@ -258,5 +341,54 @@ public class LogActivity extends Activity implements View.OnClickListener {
 		}
 
 		return spannable;
+	}
+
+	/**
+	 * Static method to write Java log entries
+	 * Can be called from TProxyService and other components
+	 */
+	public static void log(Context context, String level, String tag, String message) {
+		if (context == null) return;
+
+		try {
+			File logFile = new File(context.getCacheDir(), "java.log");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+			String timestamp = sdf.format(new Date());
+			String logLine = String.format("[%s] %s: %s\n", timestamp, tag, message);
+
+			FileWriter writer = new FileWriter(logFile, true);
+			writer.write(logLine);
+			writer.close();
+		} catch (IOException e) {
+			// Silently fail if logging fails
+		}
+	}
+
+	/**
+	 * Convenience method for debug logs
+	 */
+	public static void d(Context context, String tag, String message) {
+		log(context, "D", tag, message);
+	}
+
+	/**
+	 * Convenience method for info logs
+	 */
+	public static void i(Context context, String tag, String message) {
+		log(context, "I", tag, message);
+	}
+
+	/**
+	 * Convenience method for warning logs
+	 */
+	public static void w(Context context, String tag, String message) {
+		log(context, "W", tag, message);
+	}
+
+	/**
+	 * Convenience method for error logs
+	 */
+	public static void e(Context context, String tag, String message) {
+		log(context, "E", tag, message);
 	}
 }

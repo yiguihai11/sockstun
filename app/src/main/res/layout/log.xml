@@ -4,37 +4,109 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:padding="4dp">
-	<LinearLayout
-		android:orientation="horizontal"
+
+	<!-- Tab Host for switching between Java and Native logs -->
+	<TabHost
+		android:id="@android:id/tabhost"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<Button
-			android:id="@+id/log_refresh"
+		android:layout_height="fill_parent">
+		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="Refresh"/>
-		<Button
-			android:id="@+id/log_clear"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="Clear"/>
-	</LinearLayout>
-	<ScrollView
-		android:id="@+id/log_scroll"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:background="@color/log_background"
-		android:padding="4dp">
-		<TextView
-			android:id="@+id/log_text"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textColor="@color/log_text"
-			android:textSize="10sp"
-			android:typeface="monospace"
-			android:textIsSelectable="true"
-			android:text="Loading logs..."/>
-	</ScrollView>
+			android:layout_height="fill_parent">
+			<TabWidget
+				android:id="@android:id/tabs"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:background="@color/tab_background"/>
+			<FrameLayout
+				android:id="@android:id/tabcontent"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+
+				<!-- Java Log Tab -->
+				<LinearLayout
+					android:id="@+id/tab_java_log"
+					android:orientation="vertical"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent">
+					<LinearLayout
+						android:orientation="horizontal"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content">
+						<Button
+							android:id="@+id/java_log_refresh"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:text="Refresh"/>
+						<Button
+							android:id="@+id/java_log_clear"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:text="Clear"/>
+					</LinearLayout>
+					<ScrollView
+						android:id="@+id/java_log_scroll"
+						android:layout_width="fill_parent"
+						android:layout_height="fill_parent"
+						android:background="@color/log_background"
+						android:padding="4dp">
+						<TextView
+							android:id="@+id/java_log_text"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:textColor="@color/log_text"
+							android:textSize="10sp"
+							android:typeface="monospace"
+							android:textIsSelectable="true"
+							android:text="Loading Java logs..."/>
+					</ScrollView>
+				</LinearLayout>
+
+				<!-- Native Log Tab -->
+				<LinearLayout
+					android:id="@+id/tab_native_log"
+					android:orientation="vertical"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent">
+					<LinearLayout
+						android:orientation="horizontal"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content">
+						<Button
+							android:id="@+id/native_log_refresh"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:text="Refresh"/>
+						<Button
+							android:id="@+id/native_log_clear"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:text="Clear"/>
+					</LinearLayout>
+					<ScrollView
+						android:id="@+id/native_log_scroll"
+						android:layout_width="fill_parent"
+						android:layout_height="fill_parent"
+						android:background="@color/log_background"
+						android:padding="4dp">
+						<TextView
+							android:id="@+id/native_log_text"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:textColor="@color/log_text"
+							android:textSize="10sp"
+							android:typeface="monospace"
+							android:textIsSelectable="true"
+							android:text="Loading Native logs..."/>
+					</ScrollView>
+				</LinearLayout>
+
+			</FrameLayout>
+		</LinearLayout>
+	</TabHost>
 </LinearLayout>
