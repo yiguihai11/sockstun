@@ -9,4 +9,6 @@
     <color name="log_text">#00FF00</color>
     <color name="info_background">#333333</color>
     <color name="info_text">#FFFFFF</color>
+    <color name="edit_text_background">#1A1A1A</color>
+    <color name="edit_text_color">#FFFFFF</color>
 </resources>
