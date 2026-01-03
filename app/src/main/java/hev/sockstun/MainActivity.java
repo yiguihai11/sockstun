@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.view.View;
+import android.widget.TabWidget;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost;
+import android.widget.HorizontalScrollView;
 import android.net.VpnService;
 import android.net.Uri;
 import android.text.SpannableString;
@@ -43,6 +45,8 @@ import java.io.IOException;
 public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Preferences prefs;
 	private TabHost tabHost;
+	private HorizontalScrollView tabScroller;
+	private TabWidget tabWidget;
 	private BroadcastReceiver vpnStateReceiver;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
@@ -121,6 +125,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("chnroutes")
 			.setIndicator("Chnroutes")
 			.setContent(R.id.tab_chnroutes));
+
+		// Setup tab scroller for auto-scroll on tab change
+		tabScroller = (HorizontalScrollView) findViewById(R.id.tab_scroller);
+		tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+			@Override
+			public void onTabChanged(String tabId) {
+				scrollTabToView(tabId);
+			}
+		});
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
@@ -545,5 +558,25 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		writer.close();
 		loadChnroutesContent();
 		Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * Scroll the selected tab into view
+	 */
+	private void scrollTabToView(String tabId) {
+		if (tabScroller == null) return;
+
+		tabWidget = tabHost.getTabWidget();
+		if (tabWidget == null) return;
+
+		int currentTab = tabHost.getCurrentTab();
+		if (currentTab >= 0 && currentTab < tabWidget.getTabCount()) {
+			View tabView = tabWidget.getChildTabViewAt(currentTab);
+			if (tabView != null) {
+				// Scroll to position the selected tab at the left
+				int scrollX = tabView.getLeft();
+				tabScroller.smoothScrollTo(scrollX, 0);
+			}
+		}
 	}
 }
