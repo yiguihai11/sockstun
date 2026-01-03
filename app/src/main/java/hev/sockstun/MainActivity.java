@@ -31,6 +31,13 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.content.res.AssetManager;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.OutputStreamWriter;
+import java.io.IOException;
 
 public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Preferences prefs;
@@ -74,6 +81,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_tunnel_ipv6;
 	private EditText edittext_tunnel_post_up_script;
 	private EditText edittext_tunnel_pre_down_script;
+	// Chnroutes
+	private CheckBox checkbox_chnroutes_enabled;
+	private Button button_chnroutes_upload;
+	private Button button_chnroutes_extract;
+	private Button button_chnroutes_clear;
+	private Button button_chnroutes_refresh;
+	private Button button_chnroutes_save;
+	private EditText edittext_chnroutes_content;
+	private TextView textview_chnroutes_path_info;
+	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +117,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("advanced")
 			.setIndicator("Advanced")
 			.setContent(R.id.tab_advanced));
+		tabHost.addTab(tabHost.newTabSpec("chnroutes")
+			.setIndicator("Chnroutes")
+			.setContent(R.id.tab_chnroutes));
 
 		edittext_socks_addr = (EditText) findViewById(R.id.socks_addr);
 		edittext_socks_udp_addr = (EditText) findViewById(R.id.socks_udp_addr);
@@ -138,6 +158,30 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_tunnel_ipv6 = (EditText) findViewById(R.id.tunnel_ipv6);
 		edittext_tunnel_post_up_script = (EditText) findViewById(R.id.tunnel_post_up_script);
 		edittext_tunnel_pre_down_script = (EditText) findViewById(R.id.tunnel_pre_down_script);
+
+		// Chnroutes UI elements
+		checkbox_chnroutes_enabled = (CheckBox) findViewById(R.id.chnroutes_enabled);
+		button_chnroutes_upload = (Button) findViewById(R.id.chnroutes_upload);
+		button_chnroutes_extract = (Button) findViewById(R.id.chnroutes_extract);
+		button_chnroutes_clear = (Button) findViewById(R.id.chnroutes_clear);
+		button_chnroutes_refresh = (Button) findViewById(R.id.chnroutes_refresh);
+		button_chnroutes_save = (Button) findViewById(R.id.chnroutes_save);
+		edittext_chnroutes_content = (EditText) findViewById(R.id.chnroutes_content);
+		textview_chnroutes_path_info = (TextView) findViewById(R.id.chnroutes_path_info);
+
+		// Setup chnroutes path info
+		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
+
+		// Load chnroutes content into editor
+		loadChnroutesContent();
+
+		// Setup chnroutes button listeners
+		checkbox_chnroutes_enabled.setOnClickListener(this);
+		button_chnroutes_upload.setOnClickListener(this);
+		button_chnroutes_extract.setOnClickListener(this);
+		button_chnroutes_clear.setOnClickListener(this);
+		button_chnroutes_refresh.setOnClickListener(this);
+		button_chnroutes_save.setOnClickListener(this);
 
 		// Setup clickable GitHub link
 		textview_github_link = (TextView) findViewById(R.id.github_link);
@@ -201,6 +245,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			Intent intent = new Intent(this, TProxyService.class);
 			startService(intent.setAction(TProxyService.ACTION_CONNECT));
 		}
+		// Handle chnroutes file upload
+		if (request == CHNROUTES_UPLOAD_REQUEST_CODE && result == RESULT_OK && data != null) {
+			Uri uri = data.getData();
+			try {
+				copyFileFromUri(uri);
+			} catch (IOException e) {
+				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 
 	@Override
@@ -214,7 +267,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 	@Override
 	public void onClick(View view) {
-		if (view == checkbox_global || view == checkbox_remote_dns) {
+		if (view == checkbox_global || view == checkbox_remote_dns || view == checkbox_chnroutes_enabled) {
 			savePrefs();
 			updateUI();
 		} else if (view == button_apps) {
@@ -235,6 +288,23 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			  startService(intent.setAction(TProxyService.ACTION_DISCONNECT));
 			else
 			  startService(intent.setAction(TProxyService.ACTION_CONNECT));
+		} else if (view == button_chnroutes_upload) {
+			// Open file picker for uploading chnroutes file
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("*/*");
+			startActivityForResult(intent, CHNROUTES_UPLOAD_REQUEST_CODE);
+		} else if (view == button_chnroutes_extract) {
+			// Extract chnroutes.txt from APK assets
+			extractChnroutesFromAssets();
+		} else if (view == button_chnroutes_clear) {
+			// Clear the editor
+			edittext_chnroutes_content.setText("");
+		} else if (view == button_chnroutes_refresh) {
+			// Refresh content from file
+			loadChnroutesContent();
+		} else if (view == button_chnroutes_save) {
+			// Save content to file
+			saveChnroutesContent();
 		}
 	}
 
@@ -285,6 +355,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_tunnel_post_up_script.setText(prefs.getTunnelPostUpScript());
 		edittext_tunnel_pre_down_script.setText(prefs.getTunnelPreDownScript());
 
+		checkbox_chnroutes_enabled.setChecked(prefs.getChnroutesEnabled());
+
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
@@ -327,6 +399,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_max_session_count.setEnabled(false);
 		edittext_pid_file.setEnabled(false);
 		edittext_limit_nofile.setEnabled(false);
+
+		// Chnroutes elements
+		checkbox_chnroutes_enabled.setEnabled(editable);
+		button_chnroutes_upload.setEnabled(editable);
+		button_chnroutes_extract.setEnabled(editable);
+		button_chnroutes_clear.setEnabled(editable);
+		button_chnroutes_refresh.setEnabled(editable);
+		button_chnroutes_save.setEnabled(editable);
+		edittext_chnroutes_content.setEnabled(editable);
 
 		if (editable)
 		  button_control.setText(R.string.control_enable);
@@ -381,5 +462,87 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setTunnelIpv6(edittext_tunnel_ipv6.getText().toString());
 		prefs.setTunnelPostUpScript(edittext_tunnel_post_up_script.getText().toString());
 		prefs.setTunnelPreDownScript(edittext_tunnel_pre_down_script.getText().toString());
+
+		prefs.setChnroutesEnabled(checkbox_chnroutes_enabled.isChecked());
+	}
+
+	/**
+	 * Load chnroutes content from cache directory file
+	 */
+	private void loadChnroutesContent() {
+		File chnroutesFile = new File(getCacheDir(), "chnroutes.txt");
+		if (!chnroutesFile.exists()) {
+			// File doesn't exist, try to extract from assets
+			extractChnroutesFromAssets();
+			return;
+		}
+		StringBuilder content = new StringBuilder();
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(chnroutesFile), "UTF-8"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				content.append(line).append("\n");
+			}
+			reader.close();
+			edittext_chnroutes_content.setText(content.toString());
+		} catch (IOException e) {
+			edittext_chnroutes_content.setText("Unable to read file: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Save chnroutes content to cache directory file
+	 */
+	private void saveChnroutesContent() {
+		File chnroutesFile = new File(getCacheDir(), "chnroutes.txt");
+		try {
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(chnroutesFile), "UTF-8");
+			writer.write(edittext_chnroutes_content.getText().toString());
+			writer.close();
+			Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * Extract chnroutes.txt from APK assets
+	 */
+	private void extractChnroutesFromAssets() {
+		AssetManager assetManager = getAssets();
+		File chnroutesFile = new File(getCacheDir(), "chnroutes.txt");
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("chnroutes.txt"), "UTF-8"));
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(chnroutesFile), "UTF-8");
+			String line;
+			while ((line = reader.readLine()) != null) {
+				writer.write(line);
+				writer.write("\n");
+			}
+			reader.close();
+			writer.close();
+			loadChnroutesContent();
+			Toast.makeText(this, "Extracted successfully", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			Toast.makeText(this, "Extract failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * Copy file from URI to chnroutes.txt
+	 */
+	private void copyFileFromUri(Uri uri) throws IOException {
+		File chnroutesFile = new File(getCacheDir(), "chnroutes.txt");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getContentResolver().openInputStream(uri), "UTF-8"));
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(chnroutesFile), "UTF-8");
+		String line;
+		while ((line = reader.readLine()) != null) {
+			writer.write(line);
+			writer.write("\n");
+		}
+		reader.close();
+		writer.close();
+		loadChnroutesContent();
+		Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
 	}
 }

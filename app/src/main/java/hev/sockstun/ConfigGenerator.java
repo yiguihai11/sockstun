@@ -19,11 +19,13 @@ public class ConfigGenerator {
 
     private final Preferences prefs;
     private final File logFile;
+    private final File cacheDir;
     private final StringBuilder config;
 
-    public ConfigGenerator(Preferences prefs, File logFile) {
+    public ConfigGenerator(Preferences prefs, File logFile, File cacheDir) {
         this.prefs = prefs;
         this.logFile = logFile;
+        this.cacheDir = cacheDir;
         this.config = new StringBuilder();
     }
 
@@ -135,8 +137,8 @@ public class ConfigGenerator {
 
     private void appendChnroutesSection() {
         config.append("chnroutes:\n");
-        config.append("  enabled: true\n");
-        config.append("  file-path: \"conf/chnroutes.txt\"\n");
+        config.append("  enabled: ").append(prefs.getChnroutesEnabled() ? "true" : "false").append("\n");
+        config.append("  file-path: \"").append(new File(cacheDir, "chnroutes.txt").getAbsolutePath()).append("\"\n");
     }
 
     private void appendMiscSection() {

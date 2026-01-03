@@ -52,6 +52,7 @@ public class Preferences
 	public static final String TUNNEL_IPV6 = "TunnelIpv6";
 	public static final String TUNNEL_POST_UP_SCRIPT = "TunnelPostUpScript";
 	public static final String TUNNEL_PRE_DOWN_SCRIPT = "TunnelPreDownScript";
+	public static final String CHNROUTES_ENABLED = "ChnroutesEnabled";
 
 	private SharedPreferences prefs;
 
@@ -426,6 +427,16 @@ public class Preferences
 	public void setLimitNofile(int limit) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(LIMIT_NOFILE, limit);
+		editor.commit();
+	}
+
+	public boolean getChnroutesEnabled() {
+		return prefs.getBoolean(CHNROUTES_ENABLED, true);
+	}
+
+	public void setChnroutesEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(CHNROUTES_ENABLED, enabled);
 		editor.commit();
 	}
 }

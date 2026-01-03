@@ -140,7 +140,7 @@ public class TProxyService extends VpnService {
 			tproxy_file.createNewFile();
 			FileOutputStream fos = new FileOutputStream(tproxy_file, false);
 
-			ConfigGenerator configGen = new ConfigGenerator(prefs, log_file);
+			ConfigGenerator configGen = new ConfigGenerator(prefs, log_file, getCacheDir());
 			String tproxy_conf = configGen.generate();
 
 			fos.write(tproxy_conf.getBytes());

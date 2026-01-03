@@ -49,4 +49,15 @@
 	<string name="tunnel_ipv6">IPv6 Address</string>
 	<string name="tunnel_post_up_script">Post Up Script</string>
 	<string name="tunnel_pre_down_script">Pre Down Script</string>
+	<string name="chnroutes_title">China Routes (Chnroutes)</string>
+	<string name="chnroutes_description">Enable split routing based on Chinese IP ranges</string>
+	<string name="chnroutes_enabled">Enabled</string>
+	<string name="chnroutes_upload">Upload</string>
+	<string name="chnroutes_extract">Extract</string>
+	<string name="chnroutes_content_title">chnroutes.txt Content</string>
+	<string name="chnroutes_content_hint">chnroutes.txt file content...</string>
+	<string name="chnroutes_clear">Clear</string>
+	<string name="chnroutes_refresh">Refresh</string>
+	<string name="chnroutes_save">Save</string>
+	<string name="chnroutes_path_info">File path: /data/data/.../cache/chnroutes.txt</string>
 </resources>
