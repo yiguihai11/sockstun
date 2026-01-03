@@ -38,19 +38,33 @@ jobs:
             ref_name="${{ github.ref_name }}"
           fi
           echo "ref_name=${ref_name}" >> $GITHUB_ENV
-          # Copy all ABI-specific APKs
-          mkdir -p artifacts
-          for apk in app/build/outputs/apk/release/*-release.apk; do
-            if [ -f "$apk" ]; then
-              cp "$apk" artifacts/
-            fi
-          done
-      - name: Upload
+      - name: Upload armeabi-v7a
         uses: actions/upload-artifact@v4
         with:
-          name: hev.sockstun-${{ env.ref_name }}-release
-          path: artifacts/
-          if-no-files-found: error
+          name: hev.sockstun-${{ env.ref_name }}-armeabi-v7a-release
+          path: app/build/outputs/apk/release/*-armeabi-v7a-release.apk
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload arm64-v8a
+        uses: actions/upload-artifact@v4
+        with:
+          name: hev.sockstun-${{ env.ref_name }}-arm64-v8a-release
+          path: app/build/outputs/apk/release/*-arm64-v8a-release.apk
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload x86
+        uses: actions/upload-artifact@v4
+        with:
+          name: hev.sockstun-${{ env.ref_name }}-x86-release
+          path: app/build/outputs/apk/release/*-x86-release.apk
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload x86_64
+        uses: actions/upload-artifact@v4
+        with:
+          name: hev.sockstun-${{ env.ref_name }}-x86_64-release
+          path: app/build/outputs/apk/release/*-x86_64-release.apk
+          if-no-files-found: ignore
           retention-days: 1
 
   release:
