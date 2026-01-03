@@ -185,7 +185,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			}
 		};
 		IntentFilter filter = new IntentFilter("hev.sockstun.VPN_STOPPED");
-		registerReceiver(vpnStateReceiver, filter);
+		registerReceiver(vpnStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
 		/* Request VPN permission */
 		Intent intent = VpnService.prepare(MainActivity.this);
