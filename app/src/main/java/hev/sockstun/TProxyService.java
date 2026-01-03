@@ -198,7 +198,7 @@ public class TProxyService extends VpnService {
 		// Send broadcast to notify MainActivity
 		Intent intent = new Intent("hev.sockstun.VPN_STOPPED");
 		intent.setPackage(getPackageName());
-		sendBroadcast(intent, Context.RECEIVER_NOT_EXPORTED);
+		sendBroadcast(intent);
 
 		stopSelf();
 	}
