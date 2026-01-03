@@ -38,12 +38,18 @@ jobs:
             ref_name="${{ github.ref_name }}"
           fi
           echo "ref_name=${ref_name}" >> $GITHUB_ENV
-          cp app/build/outputs/apk/release/hev.sockstun-*-release.apk hev.sockstun-${ref_name}-release.apk
+          # Copy all ABI-specific APKs
+          mkdir -p artifacts
+          for apk in app/build/outputs/apk/release/*-release.apk; do
+            if [ -f "$apk" ]; then
+              cp "$apk" artifacts/
+            fi
+          done
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: hev.sockstun-${{ env.ref_name }}-release.apk
-          path: hev.sockstun-${{ env.ref_name }}-release.apk
+          name: hev.sockstun-${{ env.ref_name }}-release
+          path: artifacts/
           if-no-files-found: error
           retention-days: 1
 
