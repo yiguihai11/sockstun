@@ -96,6 +96,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_chnroutes_content;
 	private TextView textview_chnroutes_path_info;
 	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
+	private boolean chnroutesLoaded = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -132,6 +133,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			@Override
 			public void onTabChanged(String tabId) {
 				scrollTabToView(tabId);
+				// Lazy load chnroutes content when tab is first selected
+				if ("chnroutes".equals(tabId) && !chnroutesLoaded) {
+					chnroutesLoaded = true;
+					loadChnroutesContent();
+				}
 			}
 		});
 
@@ -186,8 +192,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		// Setup chnroutes path info
 		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
 
-		// Load chnroutes content into editor
-		loadChnroutesContent();
+		// Don't load chnroutes content on startup - lazy load when tab is selected
 
 		// Setup chnroutes button listeners
 		checkbox_chnroutes_enabled.setOnClickListener(this);
