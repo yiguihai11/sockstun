@@ -9,8 +9,8 @@ android {
 		applicationId "hev.sockstun"
 		minSdkVersion 24
 		targetSdkVersion 34
-		versionCode 10
-		versionName "6.0"
+		versionCode 1
+		versionName "1.0"
 		setProperty("archivesBaseName", "$applicationId-$versionName")
 		externalNativeBuild {
 			ndkBuild {
