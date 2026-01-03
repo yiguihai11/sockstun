@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme colors -->
+    <color name="tab_background">#DDDDDD</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_border">#CCCCCC</color>
+    <color name="hint_text">#666666</color>
+    <color name="log_background">#FFFFFF</color>
+    <color name="log_text">#000000</color>
+    <color name="info_background">#EEEEEE</color>
+    <color name="info_text">#000000</color>
+</resources>

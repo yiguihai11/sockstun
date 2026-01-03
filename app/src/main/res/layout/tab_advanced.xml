@@ -36,7 +36,7 @@
 			android:text="SocksTun v6.0\n\nSOCKS5 VPN Tunnel Client\n\nGitHub: yiguihai11/sockstun"
 			android:textSize="14sp"
 			android:padding="8dp"
-			android:background="#333333"
-			android:textColor="#FFFFFF"/>
+			android:background="@color/info_background"
+			android:textColor="@color/info_text"/>
 	</LinearLayout>
 </ScrollView>

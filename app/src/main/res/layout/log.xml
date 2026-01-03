@@ -25,13 +25,13 @@
 		android:id="@+id/log_scroll"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:background="#000000"
+		android:background="@color/log_background"
 		android:padding="4dp">
 		<TextView
 			android:id="@+id/log_text"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textColor="#00FF00"
+			android:textColor="@color/log_text"
 			android:textSize="10sp"
 			android:typeface="monospace"
 			android:textIsSelectable="true"

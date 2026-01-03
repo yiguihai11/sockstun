@@ -77,7 +77,7 @@
 				android:layout_height="wrap_content"
 				android:text="Not supported on Android"
 				android:textSize="12sp"
-				android:textColor="#888888"/>
+				android:textColor="@color/hint_text"/>
 		</LinearLayout>
 
 		<!-- IPv4 Address -->
@@ -149,7 +149,7 @@
 				android:layout_height="wrap_content"
 				android:text="Not supported on Android (sandbox restriction)"
 				android:textSize="12sp"
-				android:textColor="#888888"/>
+				android:textColor="@color/hint_text"/>
 		</LinearLayout>
 
 		<!-- Pre Down Script (Not applicable for Android) -->
@@ -177,7 +177,7 @@
 				android:layout_height="wrap_content"
 				android:text="Not supported on Android (sandbox restriction)"
 				android:textSize="12sp"
-				android:textColor="#888888"/>
+				android:textColor="@color/hint_text"/>
 		</LinearLayout>
 
 	</LinearLayout>
