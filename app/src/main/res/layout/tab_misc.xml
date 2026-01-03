@@ -50,7 +50,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="65536"/>
+				android:text="65536"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not recommended to modify"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 		<!-- UDP Recv Buffer Size -->
@@ -72,7 +79,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="524288"/>
+				android:text="524288"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not recommended to modify"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 		<!-- UDP Copy Buffer Nums -->
@@ -94,7 +108,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="10"/>
+				android:text="10"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not recommended to modify"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 		<!-- Connect Timeout -->
@@ -116,7 +137,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="10000"/>
+				android:text="10000"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not recommended to modify"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 		<!-- TCP Read Write Timeout -->
@@ -138,7 +166,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="300000"/>
+				android:text="300000"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not recommended to modify"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 		<!-- UDP Read Write Timeout -->
@@ -160,7 +195,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="60000"/>
+				android:text="60000"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not recommended to modify"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 		<!-- Max Session Count -->
@@ -182,11 +224,12 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="0"/>
+				android:text="0"
+				android:enabled="false"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="0 = unlimited"
+				android:text="0 = unlimited (Not recommended to modify)"
 				android:textSize="12sp"
 				android:textColor="#888888"/>
 		</LinearLayout>
@@ -210,11 +253,12 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:text=""/>
+				android:text=""
+				android:enabled="false"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Leave empty to disable"
+				android:text="Not supported on Android"
 				android:textSize="12sp"
 				android:textColor="#888888"/>
 		</LinearLayout>
@@ -238,7 +282,14 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="65535"/>
+				android:text="65535"
+				android:enabled="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Limited by Android sandbox"
+				android:textSize="12sp"
+				android:textColor="#888888"/>
 		</LinearLayout>
 
 	</LinearLayout>
