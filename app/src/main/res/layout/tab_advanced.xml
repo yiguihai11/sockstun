@@ -33,10 +33,11 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="SocksTun v6.0\n\nSOCKS5 VPN Tunnel Client\n\nGitHub: yiguihai11/sockstun"
+			android:text="SocksTun v1.0\n\nSOCKS5 VPN Tunnel Client\n\nGitHub: yiguihai11/sockstun\n点击访问 https://github.com/yiguihai11/sockstun"
 			android:textSize="14sp"
 			android:padding="8dp"
 			android:background="@color/info_background"
-			android:textColor="@color/info_text"/>
+			android:textColor="@color/info_text"
+			android:autoLink="web"/>
 	</LinearLayout>
 </ScrollView>
