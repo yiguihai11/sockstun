@@ -162,12 +162,12 @@ public class TProxyService extends VpnService {
 		nativeThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				LogActivity.i(this, "TProxyService", "nativeThread: calling TProxyStartService with fd=" + tunFd.getFd());
+				LogActivity.i(TProxyService.this, "TProxyService", "nativeThread: calling TProxyStartService with fd=" + tunFd.getFd());
 				// This blocks until native process exits
 				TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
 
 				// Native process exited, stop VPN
-				LogActivity.w(this, "TProxyService", "nativeThread: TProxyStartService returned, calling stopService()");
+				LogActivity.w(TProxyService.this, "TProxyService", "nativeThread: TProxyStartService returned, calling stopService()");
 				if (tunFd != null) {
 					stopService();
 				}
