@@ -38,8 +38,8 @@ public class ConfigGenerator {
 
         appendTunnelSection();
         appendSocks5Section();
-        appendDnsSplitTunnelSection();
-        appendChnroutesSection();
+        // appendDnsSplitTunnelSection();
+        // appendChnroutesSection();
         appendMiscSection();
 
         return config.toString();
