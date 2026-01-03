@@ -233,6 +233,17 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_apps.setEnabled(editable && !prefs.getGlobal());
 		button_save.setEnabled(editable);
 
+		// Tunnel options
+		edittext_tunnel_mtu.setEnabled(editable);
+		// Tunnel options: always disabled (managed by Android or not supported)
+		edittext_tunnel_name.setEnabled(false);
+		checkbox_tunnel_multi_queue.setEnabled(false);
+		edittext_tunnel_ipv4.setEnabled(false);
+		edittext_tunnel_ipv6.setEnabled(false);
+		edittext_tunnel_post_up_script.setEnabled(false);
+		edittext_tunnel_pre_down_script.setEnabled(false);
+
+		// Misc options
 		edittext_task_stack_size.setEnabled(editable);
 		// Misc options: always disabled except task_stack_size
 		edittext_tcp_buffer_size.setEnabled(false);

@@ -50,8 +50,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:text="tun0"
-				android:enabled="false"/>
+				android:text="tun0"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -78,8 +77,7 @@
 				android:id="@+id/tunnel_multi_queue"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:checked="false"
-				android:enabled="false"/>
+				android:checked="false"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -107,8 +105,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:text="198.18.0.1"
-				android:enabled="false"/>
+				android:text="198.18.0.1"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -136,8 +133,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:text="fc00::1"
-				android:enabled="false"/>
+				android:text="fc00::1"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -165,8 +161,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:hint="up.sh"
-				android:enabled="false"/>
+				android:hint="up.sh"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -194,8 +189,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:hint="down.sh"
-				android:enabled="false"/>
+				android:hint="down.sh"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

@@ -50,8 +50,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="65536"
-				android:enabled="false"/>
+				android:text="65536"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -79,8 +78,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="524288"
-				android:enabled="false"/>
+				android:text="524288"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -108,8 +106,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="10"
-				android:enabled="false"/>
+				android:text="10"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -137,8 +134,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="10000"
-				android:enabled="false"/>
+				android:text="10000"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -166,8 +162,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="300000"
-				android:enabled="false"/>
+				android:text="300000"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -195,8 +190,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="60000"
-				android:enabled="false"/>
+				android:text="60000"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -224,8 +218,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="0"
-				android:enabled="false"/>
+				android:text="0"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -253,8 +246,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="text"
-				android:text=""
-				android:enabled="false"/>
+				android:text=""/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -282,8 +274,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:inputType="number"
-				android:text="65535"
-				android:enabled="false"/>
+				android:text="65535"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
