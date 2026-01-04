@@ -177,12 +177,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("acl")
 			.setIndicator("ACL")
 			.setContent(R.id.tab_acl));
-		tabHost.addTab(tabHost.newTabSpec("about")
-			.setIndicator("关于")
-			.setContent(R.id.tab_about));
 		tabHost.addTab(tabHost.newTabSpec("misc")
 			.setIndicator("Misc")
 			.setContent(R.id.tab_misc));
+		tabHost.addTab(tabHost.newTabSpec("about")
+			.setIndicator("关于")
+			.setContent(R.id.tab_about));
 
 		// Setup tab scroller for auto-scroll on tab change
 		tabScroller = (HorizontalScrollView) findViewById(R.id.tab_scroller);

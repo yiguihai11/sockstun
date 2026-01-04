@@ -30,8 +30,8 @@
 			<include layout="@layout/tab_dns" android:id="@+id/tab_dns"/>
 			<include layout="@layout/tab_chnroutes" android:id="@+id/tab_chnroutes"/>
 			<include layout="@layout/tab_acl" android:id="@+id/tab_acl"/>
-			<include layout="@layout/tab_about" android:id="@+id/tab_about"/>
 			<include layout="@layout/tab_misc" android:id="@+id/tab_misc"/>
+			<include layout="@layout/tab_about" android:id="@+id/tab_about"/>
 		</FrameLayout>
 		<LinearLayout
 			android:orientation="horizontal"
