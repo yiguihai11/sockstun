@@ -53,6 +53,8 @@ public class Preferences
 	public static final String TUNNEL_POST_UP_SCRIPT = "TunnelPostUpScript";
 	public static final String TUNNEL_PRE_DOWN_SCRIPT = "TunnelPreDownScript";
 	public static final String CHNROUTES_ENABLED = "ChnroutesEnabled";
+	public static final String DNS_SPLIT_TUNNEL_ENABLE = "DnsSplitTunnelEnable";
+	public static final String DNS_FOREIGN_SERVERS = "DnsForeignServers";
 
 	private SharedPreferences prefs;
 
@@ -438,5 +440,75 @@ public class Preferences
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(CHNROUTES_ENABLED, enabled);
 		editor.commit();
+	}
+
+	public boolean getDnsSplitTunnelEnable() {
+		return prefs.getBoolean(DNS_SPLIT_TUNNEL_ENABLE, true);
+	}
+
+	public void setDnsSplitTunnelEnable(boolean enable) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(DNS_SPLIT_TUNNEL_ENABLE, enable);
+		editor.commit();
+	}
+
+	/**
+	 * Get foreign DNS servers list as a JSON array string
+	 * Default: ["1.1.1.1", "8.8.8.8", "2606:4700:4700::1111", "2001:4860:4860::8888"]
+	 */
+	public String getDnsForeignServersJson() {
+		return prefs.getString(DNS_FOREIGN_SERVERS, "[\"1.1.1.1\",\"8.8.8.8\",\"2606:4700:4700::1111\",\"2001:4860:4860::8888\"]");
+	}
+
+	/**
+	 * Set foreign DNS servers list as a JSON array string
+	 */
+	public void setDnsForeignServersJson(String json) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(DNS_FOREIGN_SERVERS, json);
+		editor.commit();
+	}
+
+	/**
+	 * Get foreign DNS servers as a List<String>
+	 * Default: ["1.1.1.1", "8.8.8.8", "2606:4700:4700::1111", "2001:4860:4860::8888"]
+	 */
+	public java.util.List<String> getDnsForeignServersList() {
+		String json = getDnsForeignServersJson();
+		java.util.List<String> result = new java.util.ArrayList<String>();
+		try {
+			org.json.JSONArray jsonArray = new org.json.JSONArray(json);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				String server = jsonArray.optString(i);
+				if (!server.isEmpty()) {
+					result.add(server);
+				}
+			}
+		} catch (Exception e) {
+			// If JSON parsing fails, return default list
+			result.add("1.1.1.1");
+			result.add("8.8.8.8");
+			result.add("2606:4700:4700::1111");
+			result.add("2001:4860:4860::8888");
+		}
+		return result;
+	}
+
+	/**
+	 * Set foreign DNS servers from a List<String>
+	 */
+	public void setDnsForeignServersList(java.util.List<String> servers) {
+		try {
+			org.json.JSONArray jsonArray = new org.json.JSONArray();
+			for (String server : servers) {
+				if (server != null && !server.trim().isEmpty()) {
+					jsonArray.put(server.trim());
+				}
+			}
+			setDnsForeignServersJson(jsonArray.toString());
+		} catch (Exception e) {
+			// If JSON creation fails, save empty array
+			setDnsForeignServersJson("[]");
+		}
 	}
 }

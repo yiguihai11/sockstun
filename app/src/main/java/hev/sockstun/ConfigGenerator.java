@@ -110,12 +110,16 @@ public class ConfigGenerator {
 
     private void appendDnsSplitTunnelSection() {
         config.append("dns-split-tunnel:\n");
-        config.append("  split-tunnel: true\n");
+        config.append("  split-tunnel: ").append(prefs.getDnsSplitTunnelEnable() ? "true" : "false").append("\n");
         config.append("  foreign-dns:\n");
-        config.append("    - \"1.1.1.1\"\n");
-        config.append("    - \"8.8.8.8\"\n");
-        config.append("    - \"2606:4700:4700::1111\"\n");
-        config.append("    - \"2001:4860:4860::8888\"\n");
+
+        // Get DNS servers list (can contain both IPv4 and IPv6)
+        java.util.List<String> servers = prefs.getDnsForeignServersList();
+        for (String server : servers) {
+            if (!server.isEmpty()) {
+                config.append("    - \"").append(server).append("\"\n");
+            }
+        }
     }
 
     private void appendChnroutesSection() {

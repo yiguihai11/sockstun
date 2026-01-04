@@ -60,4 +60,11 @@
 	<string name="chnroutes_refresh">Refresh</string>
 	<string name="chnroutes_save">Save</string>
 	<string name="chnroutes_path_info">File path: /data/data/.../cache/chnroutes.txt</string>
+	<string name="dns_split_tunnel_enable">Enable DNS Split Tunnel</string>
+	<string name="dns_split_tunnel_enable_desc">Route DNS queries based on destination (foreign/China)</string>
+	<string name="dns_foreign_servers">Foreign DNS Servers</string>
+	<string name="dns_foreign_servers_desc">Add DNS servers (IPv4 or IPv6) for foreign domains. Use + to add, - to remove.</string>
+	<string name="dns_add_entry">Add DNS Server</string>
+	<string name="dns_split_tunnel_info">About DNS Split Tunnel</string>
+	<string name="dns_split_tunnel_info_desc">When enabled, DNS queries are routed based on the destination domain. Foreign domains use the DNS servers configured above, while Chinese domains use local DNS servers.</string>
 </resources>

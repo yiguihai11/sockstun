@@ -95,6 +95,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_chnroutes_save;
 	private EditText edittext_chnroutes_content;
 	private TextView textview_chnroutes_path_info;
+
+	// DNS Split Tunnel UI elements
+	private CheckBox checkbox_dns_split_tunnel_enable;
+	private LinearLayout dns_entries_container;
+	private Button dns_add_button;
+	private java.util.List<EditText> dns_entry_edit_texts = new java.util.ArrayList<EditText>();
 	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
 	private boolean chnroutesLoaded = false;
 
@@ -126,6 +132,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("chnroutes")
 			.setIndicator("Chnroutes")
 			.setContent(R.id.tab_chnroutes));
+		tabHost.addTab(tabHost.newTabSpec("dnssplittunnel")
+			.setIndicator("DNS Split")
+			.setContent(R.id.tab_dnssplittunnel));
 
 		// Setup tab scroller for auto-scroll on tab change
 		tabScroller = (HorizontalScrollView) findViewById(R.id.tab_scroller);
@@ -188,6 +197,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_chnroutes_save = (Button) findViewById(R.id.chnroutes_save);
 		edittext_chnroutes_content = (EditText) findViewById(R.id.chnroutes_content);
 		textview_chnroutes_path_info = (TextView) findViewById(R.id.chnroutes_path_info);
+
+		// DNS Split Tunnel UI elements
+		checkbox_dns_split_tunnel_enable = (CheckBox) findViewById(R.id.dns_split_tunnel_enable);
+		dns_entries_container = (LinearLayout) findViewById(R.id.dns_entries_container);
+		dns_add_button = (Button) findViewById(R.id.dns_add_button);
+		dns_add_button.setOnClickListener(this);
 
 		// Setup chnroutes path info
 		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
@@ -324,6 +339,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		} else if (view == button_chnroutes_save) {
 			// Save content to file
 			saveChnroutesContent();
+		} else if (view == dns_add_button) {
+			// Add new DNS entry
+			addDnsEntryView("", true);
 		}
 	}
 
@@ -375,6 +393,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_tunnel_pre_down_script.setText(prefs.getTunnelPreDownScript());
 
 		checkbox_chnroutes_enabled.setChecked(prefs.getChnroutesEnabled());
+
+		// DNS Split Tunnel preferences
+		checkbox_dns_split_tunnel_enable.setChecked(prefs.getDnsSplitTunnelEnable());
+		loadDnsEntries();
 
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
@@ -428,6 +450,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_chnroutes_refresh.setEnabled(editable);
 		button_chnroutes_save.setEnabled(editable);
 		edittext_chnroutes_content.setEnabled(editable);
+
+		// DNS Split Tunnel enable/disable
+		checkbox_dns_split_tunnel_enable.setEnabled(editable);
+		dns_add_button.setEnabled(editable);
+		for (EditText edit : dns_entry_edit_texts) {
+			edit.setEnabled(editable);
+		}
 
 		if (editable)
 		  button_control.setText(R.string.control_enable);
@@ -484,6 +513,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setTunnelPreDownScript(edittext_tunnel_pre_down_script.getText().toString());
 
 		prefs.setChnroutesEnabled(checkbox_chnroutes_enabled.isChecked());
+
+		// DNS Split Tunnel preferences
+		prefs.setDnsSplitTunnelEnable(checkbox_dns_split_tunnel_enable.isChecked());
+		saveDnsEntries();
 	}
 
 	/**
@@ -583,6 +616,89 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				int scrollX = tabView.getLeft();
 				tabScroller.smoothScrollTo(scrollX, 0);
 			}
+		}
+	}
+
+	/**
+	 * Load DNS entries from preferences into the UI
+	 */
+	private void loadDnsEntries() {
+		dns_entries_container.removeAllViews();
+		dns_entry_edit_texts.clear();
+
+		java.util.List<String> servers = prefs.getDnsForeignServersList();
+		for (String server : servers) {
+			addDnsEntryView(server, false);
+		}
+	}
+
+	/**
+	 * Save DNS entries from UI to preferences
+	 */
+	private void saveDnsEntries() {
+		java.util.List<String> servers = new java.util.ArrayList<String>();
+		for (EditText edit : dns_entry_edit_texts) {
+			String value = edit.getText().toString().trim();
+			if (!value.isEmpty()) {
+				servers.add(value);
+			}
+		}
+		prefs.setDnsForeignServersList(servers);
+	}
+
+	/**
+	 * Add a new DNS entry view to the container
+	 * @param value Initial value for the entry
+	 * @param focus Whether to focus the new entry
+	 */
+	private void addDnsEntryView(String value, boolean focus) {
+		LinearLayout entryRow = new LinearLayout(this);
+		entryRow.setOrientation(LinearLayout.HORIZONTAL);
+		entryRow.setLayoutParams(new LinearLayout.LayoutParams(
+			LinearLayout.LayoutParams.FILL_PARENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(
+			0,
+			LinearLayout.LayoutParams.WRAP_CONTENT,
+			1.0f);
+
+		EditText editText = new EditText(this);
+		editText.setLayoutParams(editParams);
+		editText.setText(value);
+		editText.setHint("1.1.1.1 or 2606:4700:4700::1111");
+		editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+		editText.setSingleLine(true);
+
+		boolean editable = !prefs.getEnable();
+		editText.setEnabled(editable);
+
+		Button removeButton = new Button(this);
+		LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+			LinearLayout.LayoutParams.WRAP_CONTENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT);
+		buttonParams.setMargins(8, 0, 0, 0);
+		removeButton.setLayoutParams(buttonParams);
+		removeButton.setText("-");
+		removeButton.setEnabled(editable);
+
+		final EditText thisEdit = editText;
+		final View thisRow = entryRow;
+		removeButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dns_entries_container.removeView(thisRow);
+				dns_entry_edit_texts.remove(thisEdit);
+			}
+		});
+
+		entryRow.addView(editText);
+		entryRow.addView(removeButton);
+		dns_entries_container.addView(entryRow);
+		dns_entry_edit_texts.add(editText);
+
+		if (focus) {
+			editText.requestFocus();
 		}
 	}
 }
