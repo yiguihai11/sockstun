@@ -103,6 +103,8 @@
 	<string name="dns_latency_optimize_timeout_desc">Total timeout for speed testing all IPs. Returns original DNS response if all IPs timeout.</string>
 	<string name="smart_proxy_title">Smart Proxy</string>
 	<string name="smart_proxy_desc">Intelligent fallback for non-domestic TCP traffic. Direct connection with timeout, then fallback to proxy.</string>
+	<string name="smart_proxy_info_desc">When enabled, automatically determines the best routing method for each connection based on network conditions.</string>
+	<string name="smart_proxy_config_title">Configuration</string>
 	<string name="smart_proxy_timeout">Timeout (ms):</string>
 	<string name="smart_proxy_timeout_desc">Timeout for direct connection attempts. Set to 0 to disable.</string>
 	<string name="smart_proxy_blocked_ip_expiry">Blocked IP Expiry (minutes):</string>
