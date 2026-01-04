@@ -27,6 +27,14 @@ public class Preferences
 	public static final String SOCKS_PASS = "SocksPass";
 	public static final String DNS_IPV4 = "DnsIpv4";
 	public static final String DNS_IPV6 = "DnsIpv6";
+	public static final String MAPDNS_ADDRESS = "MapdnsAddress";
+	public static final String MAPDNS_ADDRESS6 = "MapdnsAddress6";
+	public static final String MAPDNS_PORT = "MapdnsPort";
+	public static final String MAPDNS_NETWORK = "MapdnsNetwork";
+	public static final String MAPDNS_NETMASK = "MapdnsNetmask";
+	public static final String MAPDNS_NETWORK6 = "MapdnsNetwork6";
+	public static final String MAPDNS_PREFIXLEN = "MapdnsPrefixlen";
+	public static final String MAPDNS_CACHE_SIZE = "MapdnsCacheSize";
 	public static final String IPV4 = "Ipv4";
 	public static final String IPV6 = "Ipv6";
 	public static final String GLOBAL = "Global";
@@ -137,7 +145,93 @@ public class Preferences
 	}
 
 	public String getMappedDns() {
-		return "198.18.0.2";
+		return prefs.getString(MAPDNS_ADDRESS, "198.18.0.2");
+	}
+
+	public void setMappedDns(String addr) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(MAPDNS_ADDRESS, addr);
+		editor.commit();
+	}
+
+	public String getMapdnsAddress() {
+		return prefs.getString(MAPDNS_ADDRESS, "198.18.0.2");
+	}
+
+	public void setMapdnsAddress(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(MAPDNS_ADDRESS, value);
+		editor.commit();
+	}
+
+	public String getMapdnsAddress6() {
+		return prefs.getString(MAPDNS_ADDRESS6, "fd00::1");
+	}
+
+	public void setMapdnsAddress6(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(MAPDNS_ADDRESS6, value);
+		editor.commit();
+	}
+
+	public int getMapdnsPort() {
+		return prefs.getInt(MAPDNS_PORT, 53);
+	}
+
+	public void setMapdnsPort(int port) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(MAPDNS_PORT, port);
+		editor.commit();
+	}
+
+	public String getMapdnsNetwork() {
+		return prefs.getString(MAPDNS_NETWORK, "240.0.0.0");
+	}
+
+	public void setMapdnsNetwork(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(MAPDNS_NETWORK, value);
+		editor.commit();
+	}
+
+	public String getMapdnsNetmask() {
+		return prefs.getString(MAPDNS_NETMASK, "240.0.0.0");
+	}
+
+	public void setMapdnsNetmask(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(MAPDNS_NETMASK, value);
+		editor.commit();
+	}
+
+	public String getMapdnsNetwork6() {
+		return prefs.getString(MAPDNS_NETWORK6, "fd00::");
+	}
+
+	public void setMapdnsNetwork6(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(MAPDNS_NETWORK6, value);
+		editor.commit();
+	}
+
+	public int getMapdnsPrefixlen() {
+		return prefs.getInt(MAPDNS_PREFIXLEN, 96);
+	}
+
+	public void setMapdnsPrefixlen(int value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(MAPDNS_PREFIXLEN, value);
+		editor.commit();
+	}
+
+	public int getMapdnsCacheSize() {
+		return prefs.getInt(MAPDNS_CACHE_SIZE, 10000);
+	}
+
+	public void setMapdnsCacheSize(int value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(MAPDNS_CACHE_SIZE, value);
+		editor.commit();
 	}
 
 	public boolean getUdpInTcp() {

@@ -73,4 +73,15 @@
 	<string name="dns_virtual_ip6">Virtual IPv6 (hijack address):</string>
 	<string name="dns_target_ip4">Target IPv4 (forward to):</string>
 	<string name="dns_target_ip6">Target IPv6 (forward to):</string>
+	<string name="mapdns_title">Mapped DNS</string>
+	<string name="mapdns_desc">DNS mapping configuration for Remote DNS mode. Used when Remote DNS is enabled.</string>
+	<string name="mapdns_address">Listen Address (IPv4):</string>
+	<string name="mapdns_address6">Listen Address (IPv6):</string>
+	<string name="mapdns_port">Port:</string>
+	<string name="mapdns_network">Network (IPv4):</string>
+	<string name="mapdns_netmask">Netmask (IPv4):</string>
+	<string name="mapdns_network6">Network Prefix (IPv6):</string>
+	<string name="mapdns_prefixlen">Prefix Length (IPv6):</string>
+	<string name="mapdns_prefixlen_desc">Default: 96 (/96 = 4.2B entries, /112 = 65K entries, /120 = 256 entries)</string>
+	<string name="mapdns_cache_size">Cache Size:</string>
 </resources>

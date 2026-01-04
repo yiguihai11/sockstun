@@ -153,6 +153,144 @@
 				android:text=""/>
 		</LinearLayout>
 
+		<!-- Mapped DNS -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_title"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"
+				android:layout_marginBottom="8dp"/>
+
+			<!-- Mapped DNS IPv4 Address -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_address"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_address"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="198.18.0.2"
+				android:text="198.18.0.2"/>
+
+			<!-- Mapped DNS IPv6 Address -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_address6"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_address6"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="fd00::1"
+				android:text="fd00::1"/>
+
+			<!-- Mapped DNS Port -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_port"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_port"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="53"/>
+
+			<!-- Mapped DNS Network -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_network"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_network"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="240.0.0.0"
+				android:text="240.0.0.0"/>
+
+			<!-- Mapped DNS Netmask -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_netmask"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_netmask"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="240.0.0.0"
+				android:text="240.0.0.0"/>
+
+			<!-- Mapped DNS Network6 -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_network6"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_network6"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="fd00::"
+				android:text="fd00::"/>
+
+			<!-- Mapped DNS Prefix Length -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_prefixlen"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_prefixlen"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="96"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_prefixlen_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"/>
+
+			<!-- Mapped DNS Cache Size -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mapdns_cache_size"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/mapdns_cache_size"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="10000"/>
+		</LinearLayout>
+
 		<!-- Info Section -->
 		<LinearLayout
 			android:orientation="vertical"

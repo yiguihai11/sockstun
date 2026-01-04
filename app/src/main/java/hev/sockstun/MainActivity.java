@@ -109,6 +109,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_dns_target_ip4;
 	private EditText edittext_dns_target_ip6;
 
+	// Mapped DNS UI elements
+	private EditText edittext_mapdns_address;
+	private EditText edittext_mapdns_address6;
+	private EditText edittext_mapdns_port;
+	private EditText edittext_mapdns_network;
+	private EditText edittext_mapdns_netmask;
+	private EditText edittext_mapdns_network6;
+	private EditText edittext_mapdns_prefixlen;
+	private EditText edittext_mapdns_cache_size;
+
 	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
 	private boolean chnroutesLoaded = false;
 
@@ -217,6 +227,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_virtual_ip6 = (EditText) findViewById(R.id.dns_virtual_ip6);
 		edittext_dns_target_ip4 = (EditText) findViewById(R.id.dns_target_ip4);
 		edittext_dns_target_ip6 = (EditText) findViewById(R.id.dns_target_ip6);
+
+		// Mapped DNS UI elements
+		edittext_mapdns_address = (EditText) findViewById(R.id.mapdns_address);
+		edittext_mapdns_address6 = (EditText) findViewById(R.id.mapdns_address6);
+		edittext_mapdns_port = (EditText) findViewById(R.id.mapdns_port);
+		edittext_mapdns_network = (EditText) findViewById(R.id.mapdns_network);
+		edittext_mapdns_netmask = (EditText) findViewById(R.id.mapdns_netmask);
+		edittext_mapdns_network6 = (EditText) findViewById(R.id.mapdns_network6);
+		edittext_mapdns_prefixlen = (EditText) findViewById(R.id.mapdns_prefixlen);
+		edittext_mapdns_cache_size = (EditText) findViewById(R.id.mapdns_cache_size);
 
 		// Setup chnroutes path info
 		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
@@ -418,6 +438,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_target_ip4.setText(prefs.getDnsTargetIp4());
 		edittext_dns_target_ip6.setText(prefs.getDnsTargetIp6());
 
+		// Mapped DNS preferences
+		edittext_mapdns_address.setText(prefs.getMapdnsAddress());
+		edittext_mapdns_address6.setText(prefs.getMapdnsAddress6());
+		edittext_mapdns_port.setText(Integer.toString(prefs.getMapdnsPort()));
+		edittext_mapdns_network.setText(prefs.getMapdnsNetwork());
+		edittext_mapdns_netmask.setText(prefs.getMapdnsNetmask());
+		edittext_mapdns_network6.setText(prefs.getMapdnsNetwork6());
+		edittext_mapdns_prefixlen.setText(Integer.toString(prefs.getMapdnsPrefixlen()));
+		edittext_mapdns_cache_size.setText(Integer.toString(prefs.getMapdnsCacheSize()));
+
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
@@ -484,6 +514,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_target_ip4.setEnabled(editable);
 		edittext_dns_target_ip6.setEnabled(editable);
 
+		// Mapped DNS enable/disable
+		edittext_mapdns_address.setEnabled(editable);
+		edittext_mapdns_address6.setEnabled(editable);
+		edittext_mapdns_port.setEnabled(editable);
+		edittext_mapdns_network.setEnabled(editable);
+		edittext_mapdns_netmask.setEnabled(editable);
+		edittext_mapdns_network6.setEnabled(editable);
+		edittext_mapdns_prefixlen.setEnabled(editable);
+		edittext_mapdns_cache_size.setEnabled(editable);
+
 		if (editable)
 		  button_control.setText(R.string.control_enable);
 		else
@@ -549,6 +589,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setDnsVirtualIp6(edittext_dns_virtual_ip6.getText().toString());
 		prefs.setDnsTargetIp4(edittext_dns_target_ip4.getText().toString());
 		prefs.setDnsTargetIp6(edittext_dns_target_ip6.getText().toString());
+
+		// Mapped DNS preferences
+		prefs.setMapdnsAddress(edittext_mapdns_address.getText().toString());
+		prefs.setMapdnsAddress6(edittext_mapdns_address6.getText().toString());
+		prefs.setMapdnsPort(Integer.parseInt(edittext_mapdns_port.getText().toString()));
+		prefs.setMapdnsNetwork(edittext_mapdns_network.getText().toString());
+		prefs.setMapdnsNetmask(edittext_mapdns_netmask.getText().toString());
+		prefs.setMapdnsNetwork6(edittext_mapdns_network6.getText().toString());
+		prefs.setMapdnsPrefixlen(Integer.parseInt(edittext_mapdns_prefixlen.getText().toString()));
+		prefs.setMapdnsCacheSize(Integer.parseInt(edittext_mapdns_cache_size.getText().toString()));
 	}
 
 	/**

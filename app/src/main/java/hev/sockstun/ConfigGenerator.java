@@ -40,6 +40,7 @@ public class ConfigGenerator {
         appendSocks5Section();
         appendDnsSplitTunnelSection();
         appendDnsForwarderSection();
+        appendMapdnsSection();
         appendChnroutesSection();
         appendMiscSection();
 
@@ -151,6 +152,18 @@ public class ConfigGenerator {
             config.append("  virtual-ip6: '").append(virtualIp6).append("'\n");
             config.append("  target-ip6: '").append(targetIp6).append("'\n");
         }
+    }
+
+    private void appendMapdnsSection() {
+        config.append("mapdns:\n");
+        config.append("  address: ").append(prefs.getMapdnsAddress()).append("\n");
+        config.append("  address6: '").append(prefs.getMapdnsAddress6()).append("'\n");
+        config.append("  port: ").append(prefs.getMapdnsPort()).append("\n");
+        config.append("  network: ").append(prefs.getMapdnsNetwork()).append("\n");
+        config.append("  netmask: ").append(prefs.getMapdnsNetmask()).append("\n");
+        config.append("  network6: '").append(prefs.getMapdnsNetwork6()).append("'\n");
+        config.append("  prefixlen: ").append(prefs.getMapdnsPrefixlen()).append("\n");
+        config.append("  cache-size: ").append(prefs.getMapdnsCacheSize()).append("\n");
     }
 
     private void appendChnroutesSection() {

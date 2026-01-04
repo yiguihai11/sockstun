@@ -104,7 +104,16 @@ public class TProxyService extends VpnService {
 			session += "IPv6";
 		}
 		if (prefs.getRemoteDns()) {
-			builder.addDnsServer(prefs.getMappedDns());
+			// Add mapped DNS servers based on enabled IP versions
+			if (prefs.getIpv4()) {
+				builder.addDnsServer(prefs.getMappedDns());
+			}
+			if (prefs.getIpv6()) {
+				String mappedDns6 = prefs.getMapdnsAddress6();
+				if (!mappedDns6.isEmpty()) {
+					builder.addDnsServer(mappedDns6);
+				}
+			}
 		}
 		boolean disallowSelf = true;
 		if (prefs.getGlobal()) {
