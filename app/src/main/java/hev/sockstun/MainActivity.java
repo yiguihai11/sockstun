@@ -458,7 +458,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_chnroutes_enabled.setChecked(prefs.getChnroutesEnabled());
 
 		// DNS Split Tunnel preferences
-		checkbox_dns_split_tunnel_enable.setChecked(prefs.getDnsSplitTunnelEnable());
+		checkbox_dns_split_tunnel_enable.setChecked(prefs.getDnsSplitTunnelEnabled());
 		loadDnsEntries();
 
 		// DNS Forwarder preferences
@@ -635,7 +635,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setChnroutesEnabled(checkbox_chnroutes_enabled.isChecked());
 
 		// DNS Split Tunnel preferences
-		prefs.setDnsSplitTunnelEnable(checkbox_dns_split_tunnel_enable.isChecked());
+		prefs.setDnsSplitTunnelEnabled(checkbox_dns_split_tunnel_enable.isChecked());
 		saveDnsEntries();
 
 		// DNS Forwarder preferences

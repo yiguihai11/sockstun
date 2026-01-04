@@ -557,19 +557,6 @@ public class Preferences
 		editor.commit();
 	}
 
-	// Migration helper: read old preference name
-	public boolean getDnsSplitTunnelEnable() {
-		if (prefs.contains(DNS_SPLIT_TUNNEL_ENABLE)) {
-			return prefs.getBoolean(DNS_SPLIT_TUNNEL_ENABLE, false);
-		}
-		return getDnsSplitTunnelEnabled();
-	}
-
-	// Migration helper: write to new preference name
-	public void setDnsSplitTunnelEnable(boolean enable) {
-		setDnsSplitTunnelEnabled(enable);
-	}
-
 	/**
 	 * Get foreign DNS servers list as a JSON array string
 	 * Default: ["1.1.1.1", "8.8.8.8", "2606:4700:4700::1111", "2001:4860:4860::8888"]
