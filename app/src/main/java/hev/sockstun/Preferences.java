@@ -67,6 +67,8 @@ public class Preferences
 	public static final String DNS_VIRTUAL_IP6 = "DnsVirtualIp6";
 	public static final String DNS_TARGET_IP4 = "DnsTargetIp4";
 	public static final String DNS_TARGET_IP6 = "DnsTargetIp6";
+	public static final String DNS_LATENCY_OPTIMIZE_ENABLED = "DnsLatencyOptimizeEnabled";
+	public static final String DNS_LATENCY_OPTIMIZE_TIMEOUT = "DnsLatencyOptimizeTimeout";
 
 	private SharedPreferences prefs;
 
@@ -648,6 +650,27 @@ public class Preferences
 	public void setDnsTargetIp6(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_TARGET_IP6, value);
+		editor.commit();
+	}
+
+	// DNS Latency Optimize preferences
+	public boolean getDnsLatencyOptimizeEnabled() {
+		return prefs.getBoolean(DNS_LATENCY_OPTIMIZE_ENABLED, false);
+	}
+
+	public void setDnsLatencyOptimizeEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(DNS_LATENCY_OPTIMIZE_ENABLED, enabled);
+		editor.commit();
+	}
+
+	public int getDnsLatencyOptimizeTimeout() {
+		return prefs.getInt(DNS_LATENCY_OPTIMIZE_TIMEOUT, 3000);
+	}
+
+	public void setDnsLatencyOptimizeTimeout(int timeout) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(DNS_LATENCY_OPTIMIZE_TIMEOUT, timeout);
 		editor.commit();
 	}
 }

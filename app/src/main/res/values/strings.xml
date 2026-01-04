@@ -84,4 +84,9 @@
 	<string name="mapdns_prefixlen">Prefix Length (IPv6):</string>
 	<string name="mapdns_prefixlen_desc">Default: 96 (/96 = 4.2B entries, /112 = 65K entries, /120 = 256 entries)</string>
 	<string name="mapdns_cache_size">Cache Size:</string>
+	<string name="dns_latency_optimize_title">DNS Latency Optimize</string>
+	<string name="dns_latency_optimize_desc">When DNS response contains multiple IPs, automatically test and select the one with lowest latency.</string>
+	<string name="dns_latency_optimize_enable">Enable DNS Latency Optimization</string>
+	<string name="dns_latency_optimize_timeout">Timeout (ms):</string>
+	<string name="dns_latency_optimize_timeout_desc">Total timeout for speed testing all IPs. Returns original DNS response if all IPs timeout.</string>
 </resources>

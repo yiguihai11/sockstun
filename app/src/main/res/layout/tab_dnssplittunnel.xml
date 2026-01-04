@@ -291,6 +291,56 @@
 				android:text="10000"/>
 		</LinearLayout>
 
+		<!-- DNS Latency Optimize -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_latency_optimize_title"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_latency_optimize_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"
+				android:layout_marginBottom="8dp"/>
+
+			<!-- Enable -->
+			<CheckBox
+				android:id="@+id/dns_latency_optimize_enabled"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_latency_optimize_enable"
+				android:checked="false"/>
+
+			<!-- Timeout -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_latency_optimize_timeout"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/dns_latency_optimize_timeout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:text="3000"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_latency_optimize_timeout_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"/>
+		</LinearLayout>
+
 		<!-- Info Section -->
 		<LinearLayout
 			android:orientation="vertical"

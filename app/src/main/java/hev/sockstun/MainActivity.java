@@ -119,6 +119,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_mapdns_prefixlen;
 	private EditText edittext_mapdns_cache_size;
 
+	// DNS Latency Optimize UI elements
+	private CheckBox checkbox_dns_latency_optimize_enabled;
+	private EditText edittext_dns_latency_optimize_timeout;
+
 	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
 	private boolean chnroutesLoaded = false;
 
@@ -237,6 +241,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_mapdns_network6 = (EditText) findViewById(R.id.mapdns_network6);
 		edittext_mapdns_prefixlen = (EditText) findViewById(R.id.mapdns_prefixlen);
 		edittext_mapdns_cache_size = (EditText) findViewById(R.id.mapdns_cache_size);
+
+		// DNS Latency Optimize UI elements
+		checkbox_dns_latency_optimize_enabled = (CheckBox) findViewById(R.id.dns_latency_optimize_enabled);
+		edittext_dns_latency_optimize_timeout = (EditText) findViewById(R.id.dns_latency_optimize_timeout);
 
 		// Setup chnroutes path info
 		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
@@ -448,6 +456,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_mapdns_prefixlen.setText(Integer.toString(prefs.getMapdnsPrefixlen()));
 		edittext_mapdns_cache_size.setText(Integer.toString(prefs.getMapdnsCacheSize()));
 
+		// DNS Latency Optimize preferences
+		checkbox_dns_latency_optimize_enabled.setChecked(prefs.getDnsLatencyOptimizeEnabled());
+		edittext_dns_latency_optimize_timeout.setText(Integer.toString(prefs.getDnsLatencyOptimizeTimeout()));
+
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
@@ -524,6 +536,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_mapdns_prefixlen.setEnabled(editable);
 		edittext_mapdns_cache_size.setEnabled(editable);
 
+		// DNS Latency Optimize enable/disable
+		checkbox_dns_latency_optimize_enabled.setEnabled(editable);
+		edittext_dns_latency_optimize_timeout.setEnabled(editable);
+
 		if (editable)
 		  button_control.setText(R.string.control_enable);
 		else
@@ -599,6 +615,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setMapdnsNetwork6(edittext_mapdns_network6.getText().toString());
 		prefs.setMapdnsPrefixlen(Integer.parseInt(edittext_mapdns_prefixlen.getText().toString()));
 		prefs.setMapdnsCacheSize(Integer.parseInt(edittext_mapdns_cache_size.getText().toString()));
+
+		// DNS Latency Optimize preferences
+		prefs.setDnsLatencyOptimizeEnabled(checkbox_dns_latency_optimize_enabled.isChecked());
+		prefs.setDnsLatencyOptimizeTimeout(Integer.parseInt(edittext_dns_latency_optimize_timeout.getText().toString()));
 	}
 
 	/**

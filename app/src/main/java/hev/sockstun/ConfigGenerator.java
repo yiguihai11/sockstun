@@ -41,6 +41,7 @@ public class ConfigGenerator {
         appendDnsSplitTunnelSection();
         appendDnsForwarderSection();
         appendMapdnsSection();
+        appendDnsLatencyOptimizeSection();
         appendChnroutesSection();
         appendMiscSection();
 
@@ -164,6 +165,12 @@ public class ConfigGenerator {
         config.append("  network6: '").append(prefs.getMapdnsNetwork6()).append("'\n");
         config.append("  prefixlen: ").append(prefs.getMapdnsPrefixlen()).append("\n");
         config.append("  cache-size: ").append(prefs.getMapdnsCacheSize()).append("\n");
+    }
+
+    private void appendDnsLatencyOptimizeSection() {
+        config.append("dns-latency-optimize:\n");
+        config.append("  enabled: ").append(prefs.getDnsLatencyOptimizeEnabled() ? "true" : "false").append("\n");
+        config.append("  timeout-ms: ").append(prefs.getDnsLatencyOptimizeTimeout()).append("\n");
     }
 
     private void appendChnroutesSection() {
