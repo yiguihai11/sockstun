@@ -123,6 +123,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private CheckBox checkbox_dns_latency_optimize_enabled;
 	private EditText edittext_dns_latency_optimize_timeout;
 
+	// Smart Proxy UI elements
+	private EditText edittext_smart_proxy_timeout;
+	private EditText edittext_smart_proxy_blocked_ip_expiry;
+	private LinearLayout probe_ports_container;
+	private Button probe_port_add_button;
+	private java.util.List<EditText> probe_port_edit_texts = new java.util.ArrayList<EditText>();
+
 	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
 	private boolean chnroutesLoaded = false;
 
@@ -245,6 +252,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		// DNS Latency Optimize UI elements
 		checkbox_dns_latency_optimize_enabled = (CheckBox) findViewById(R.id.dns_latency_optimize_enabled);
 		edittext_dns_latency_optimize_timeout = (EditText) findViewById(R.id.dns_latency_optimize_timeout);
+
+		// Smart Proxy UI elements
+		edittext_smart_proxy_timeout = (EditText) findViewById(R.id.smart_proxy_timeout);
+		edittext_smart_proxy_blocked_ip_expiry = (EditText) findViewById(R.id.smart_proxy_blocked_ip_expiry);
+		probe_ports_container = (LinearLayout) findViewById(R.id.probe_ports_container);
+		probe_port_add_button = (Button) findViewById(R.id.probe_port_add_button);
+		probe_port_add_button.setOnClickListener(this);
 
 		// Setup chnroutes path info
 		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
@@ -384,6 +398,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		} else if (view == dns_add_button) {
 			// Add new DNS entry
 			addDnsEntryView("", true);
+		} else if (view == probe_port_add_button) {
+			// Add new probe port entry
+			addProbePortEntryView(0, true);
 		}
 	}
 
@@ -459,6 +476,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		// DNS Latency Optimize preferences
 		checkbox_dns_latency_optimize_enabled.setChecked(prefs.getDnsLatencyOptimizeEnabled());
 		edittext_dns_latency_optimize_timeout.setText(Integer.toString(prefs.getDnsLatencyOptimizeTimeout()));
+
+		// Smart Proxy preferences
+		edittext_smart_proxy_timeout.setText(Integer.toString(prefs.getSmartProxyTimeout()));
+		edittext_smart_proxy_blocked_ip_expiry.setText(Integer.toString(prefs.getSmartProxyBlockedIpExpiry()));
+		loadProbePortEntries();
 
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
@@ -540,6 +562,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_dns_latency_optimize_enabled.setEnabled(editable);
 		edittext_dns_latency_optimize_timeout.setEnabled(editable);
 
+		// Smart Proxy enable/disable
+		edittext_smart_proxy_timeout.setEnabled(editable);
+		edittext_smart_proxy_blocked_ip_expiry.setEnabled(editable);
+		probe_port_add_button.setEnabled(editable);
+		for (EditText edit : probe_port_edit_texts) {
+			edit.setEnabled(editable);
+		}
+
 		if (editable)
 		  button_control.setText(R.string.control_enable);
 		else
@@ -619,6 +649,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		// DNS Latency Optimize preferences
 		prefs.setDnsLatencyOptimizeEnabled(checkbox_dns_latency_optimize_enabled.isChecked());
 		prefs.setDnsLatencyOptimizeTimeout(Integer.parseInt(edittext_dns_latency_optimize_timeout.getText().toString()));
+
+		// Smart Proxy preferences
+		prefs.setSmartProxyTimeout(Integer.parseInt(edittext_smart_proxy_timeout.getText().toString()));
+		prefs.setSmartProxyBlockedIpExpiry(Integer.parseInt(edittext_smart_proxy_blocked_ip_expiry.getText().toString()));
+		saveProbePortEntries();
 	}
 
 	/**
@@ -798,6 +833,96 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		entryRow.addView(removeButton);
 		dns_entries_container.addView(entryRow);
 		dns_entry_edit_texts.add(editText);
+
+		if (focus) {
+			editText.requestFocus();
+		}
+	}
+
+	/**
+	 * Load probe port entries from preferences into the UI
+	 */
+	private void loadProbePortEntries() {
+		probe_ports_container.removeAllViews();
+		probe_port_edit_texts.clear();
+
+		java.util.List<Integer> ports = prefs.getSmartProxyProbePortsList();
+		for (int port : ports) {
+			addProbePortEntryView(port, false);
+		}
+	}
+
+	/**
+	 * Save probe port entries from UI to preferences
+	 */
+	private void saveProbePortEntries() {
+		java.util.List<Integer> ports = new java.util.ArrayList<Integer>();
+		for (EditText edit : probe_port_edit_texts) {
+			String value = edit.getText().toString().trim();
+			if (!value.isEmpty()) {
+				try {
+					int port = Integer.parseInt(value);
+					if (port > 0 && port <= 65535) {
+						ports.add(port);
+					}
+				} catch (NumberFormatException e) {
+					// Skip invalid port numbers
+				}
+			}
+		}
+		prefs.setSmartProxyProbePortsList(ports);
+	}
+
+	/**
+	 * Add a new probe port entry view to the container
+	 * @param port Initial port value
+	 * @param focus Whether to focus the new entry
+	 */
+	private void addProbePortEntryView(int port, boolean focus) {
+		LinearLayout entryRow = new LinearLayout(this);
+		entryRow.setOrientation(LinearLayout.HORIZONTAL);
+		entryRow.setLayoutParams(new LinearLayout.LayoutParams(
+			LinearLayout.LayoutParams.FILL_PARENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(
+			0,
+			LinearLayout.LayoutParams.WRAP_CONTENT,
+			1.0f);
+
+		EditText editText = new EditText(this);
+		editText.setLayoutParams(editParams);
+		editText.setText(port > 0 ? Integer.toString(port) : "");
+		editText.setHint("80");
+		editText.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+		editText.setSingleLine(true);
+
+		boolean editable = !prefs.getEnable();
+		editText.setEnabled(editable);
+
+		Button removeButton = new Button(this);
+		LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+			LinearLayout.LayoutParams.WRAP_CONTENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT);
+		buttonParams.setMargins(8, 0, 0, 0);
+		removeButton.setLayoutParams(buttonParams);
+		removeButton.setText("-");
+		removeButton.setEnabled(editable);
+
+		final EditText thisEdit = editText;
+		final View thisRow = entryRow;
+		removeButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				probe_ports_container.removeView(thisRow);
+				probe_port_edit_texts.remove(thisEdit);
+			}
+		});
+
+		entryRow.addView(editText);
+		entryRow.addView(removeButton);
+		probe_ports_container.addView(entryRow);
+		probe_port_edit_texts.add(editText);
 
 		if (focus) {
 			editText.requestFocus();

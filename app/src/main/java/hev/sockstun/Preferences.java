@@ -69,6 +69,9 @@ public class Preferences
 	public static final String DNS_TARGET_IP6 = "DnsTargetIp6";
 	public static final String DNS_LATENCY_OPTIMIZE_ENABLED = "DnsLatencyOptimizeEnabled";
 	public static final String DNS_LATENCY_OPTIMIZE_TIMEOUT = "DnsLatencyOptimizeTimeout";
+	public static final String SMART_PROXY_TIMEOUT = "SmartProxyTimeout";
+	public static final String SMART_PROXY_BLOCKED_IP_EXPIRY = "SmartProxyBlockedIpExpiry";
+	public static final String SMART_PROXY_PROBE_PORTS = "SmartProxyProbePorts";
 
 	private SharedPreferences prefs;
 
@@ -672,5 +675,70 @@ public class Preferences
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(DNS_LATENCY_OPTIMIZE_TIMEOUT, timeout);
 		editor.commit();
+	}
+
+	// Smart Proxy preferences
+	public int getSmartProxyTimeout() {
+		return prefs.getInt(SMART_PROXY_TIMEOUT, 0);
+	}
+
+	public void setSmartProxyTimeout(int timeout) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(SMART_PROXY_TIMEOUT, timeout);
+		editor.commit();
+	}
+
+	public int getSmartProxyBlockedIpExpiry() {
+		return prefs.getInt(SMART_PROXY_BLOCKED_IP_EXPIRY, 0);
+	}
+
+	public void setSmartProxyBlockedIpExpiry(int expiry) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(SMART_PROXY_BLOCKED_IP_EXPIRY, expiry);
+		editor.commit();
+	}
+
+	public String getSmartProxyProbePortsJson() {
+		return prefs.getString(SMART_PROXY_PROBE_PORTS, "[80,443]");
+	}
+
+	public void setSmartProxyProbePortsJson(String json) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(SMART_PROXY_PROBE_PORTS, json);
+		editor.commit();
+	}
+
+	public java.util.List<Integer> getSmartProxyProbePortsList() {
+		String json = getSmartProxyProbePortsJson();
+		java.util.List<Integer> result = new java.util.ArrayList<Integer>();
+		try {
+			org.json.JSONArray jsonArray = new org.json.JSONArray(json);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				int port = jsonArray.optInt(i, 0);
+				if (port > 0) {
+					result.add(port);
+				}
+			}
+		} catch (Exception e) {
+			// If JSON parsing fails, return default list
+			result.add(80);
+			result.add(443);
+		}
+		return result;
+	}
+
+	public void setSmartProxyProbePortsList(java.util.List<Integer> ports) {
+		try {
+			org.json.JSONArray jsonArray = new org.json.JSONArray();
+			for (int port : ports) {
+				if (port > 0) {
+					jsonArray.put(port);
+				}
+			}
+			setSmartProxyProbePortsJson(jsonArray.toString());
+		} catch (Exception e) {
+			// If JSON creation fails, save empty array
+			setSmartProxyProbePortsJson("[]");
+		}
 	}
 }

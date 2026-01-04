@@ -42,6 +42,7 @@ public class ConfigGenerator {
         appendDnsForwarderSection();
         appendMapdnsSection();
         appendDnsLatencyOptimizeSection();
+        appendSmartProxySection();
         appendChnroutesSection();
         appendMiscSection();
 
@@ -171,6 +172,17 @@ public class ConfigGenerator {
         config.append("dns-latency-optimize:\n");
         config.append("  enabled: ").append(prefs.getDnsLatencyOptimizeEnabled() ? "true" : "false").append("\n");
         config.append("  timeout-ms: ").append(prefs.getDnsLatencyOptimizeTimeout()).append("\n");
+    }
+
+    private void appendSmartProxySection() {
+        config.append("smart-proxy:\n");
+        config.append("  timeout-ms: ").append(prefs.getSmartProxyTimeout()).append("\n");
+        config.append("  blocked-ip-expiry-minutes: ").append(prefs.getSmartProxyBlockedIpExpiry()).append("\n");
+        config.append("  probe-ports:\n");
+        java.util.List<Integer> ports = prefs.getSmartProxyProbePortsList();
+        for (int port : ports) {
+            config.append("    - ").append(port).append("\n");
+        }
     }
 
     private void appendChnroutesSection() {
