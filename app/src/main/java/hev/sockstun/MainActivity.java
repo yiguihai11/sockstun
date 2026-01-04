@@ -161,9 +161,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("chnroutes")
 			.setIndicator("Chnroutes")
 			.setContent(R.id.tab_chnroutes));
-		tabHost.addTab(tabHost.newTabSpec("dnssplittunnel")
-			.setIndicator("DNS Split")
-			.setContent(R.id.tab_dnssplittunnel));
+		tabHost.addTab(tabHost.newTabSpec("dns")
+			.setIndicator("DNS")
+			.setContent(R.id.tab_dns));
 
 		// Setup tab scroller for auto-scroll on tab change
 		tabScroller = (HorizontalScrollView) findViewById(R.id.tab_scroller);
