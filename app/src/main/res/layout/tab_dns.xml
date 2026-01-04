@@ -9,7 +9,7 @@
 		android:layout_height="fill_parent"
 		android:padding="8dp">
 
-		<!-- Split Tunnel Enable -->
+		<!-- DNS Split Tunnel -->
 		<LinearLayout
 			android:orientation="vertical"
 			android:layout_width="fill_parent"
@@ -27,23 +27,16 @@
 				android:id="@+id/dns_split_tunnel_enable"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:checked="true"/>
+				android:checked="false"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/dns_split_tunnel_enable_desc"
 				android:textSize="12sp"
-				android:textColor="@color/hint_text"/>
-		</LinearLayout>
+				android:textColor="@color/hint_text"
+				android:layout_marginBottom="16dp"/>
 
-		<!-- Foreign DNS Servers -->
-		<LinearLayout
-			android:orientation="vertical"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:background="@drawable/card_background"
-			android:padding="16dp"
-			android:layout_marginBottom="8dp">
+			<!-- Foreign DNS Servers -->
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -72,6 +65,22 @@
 				android:layout_height="wrap_content"
 				android:text="@string/dns_add_entry"
 				android:layout_marginTop="8dp"/>
+
+			<!-- Info Section -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_split_tunnel_info"
+				android:textStyle="bold"
+				android:textSize="14sp"
+				android:layout_marginTop="16dp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_split_tunnel_info_desc"
+				android:textSize="12sp"
+				android:paddingTop="4dp"
+				android:textColor="@color/hint_text"/>
 		</LinearLayout>
 
 		<!-- DNS Forwarder -->
@@ -88,6 +97,11 @@
 				android:text="@string/dns_forwarder_title"
 				android:textStyle="bold"
 				android:textSize="16sp"/>
+			<CheckBox
+				android:id="@+id/dns_forwarder_enabled"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:checked="false"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -341,29 +355,6 @@
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
 
-		<!-- Info Section -->
-		<LinearLayout
-			android:orientation="vertical"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:background="@drawable/card_background"
-			android:padding="16dp"
-			android:layout_marginBottom="8dp">
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/dns_split_tunnel_info"
-				android:textStyle="bold"
-				android:textSize="14sp"/>
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/dns_split_tunnel_info_desc"
-				android:textSize="12sp"
-				android:paddingTop="4dp"
-				android:textColor="@color/hint_text"/>
-		</LinearLayout>
-
 		<!-- Smart Proxy -->
 		<LinearLayout
 			android:orientation="vertical"
@@ -378,6 +369,11 @@
 				android:text="@string/smart_proxy_title"
 				android:textStyle="bold"
 				android:textSize="16sp"/>
+			<CheckBox
+				android:id="@+id/smart_proxy_enabled"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:checked="false"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

@@ -13,6 +13,7 @@
 	<string name="dns_ipv6">DNS IPv6:</string>
 	<string name="udp_in_tcp">UDP relay over TCP</string>
 	<string name="remote_dns">Remote DNS</string>
+	<string name="remote_dns_desc">Enable to use mapdns virtual DNS server for domain resolution, mapping DNS query results to virtual IP addresses</string>
 	<string name="ipv4">IPv4</string>
 	<string name="ipv6">IPv6</string>
 	<string name="global">Global</string>

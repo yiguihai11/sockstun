@@ -104,6 +104,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private java.util.List<EditText> dns_entry_edit_texts = new java.util.ArrayList<EditText>();
 
 	// DNS Forwarder UI elements
+	private CheckBox checkbox_dns_forwarder_enabled;
 	private EditText edittext_dns_virtual_ip4;
 	private EditText edittext_dns_virtual_ip6;
 	private EditText edittext_dns_target_ip4;
@@ -124,6 +125,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_dns_latency_optimize_timeout;
 
 	// Smart Proxy UI elements
+	private CheckBox checkbox_smart_proxy_enabled;
 	private EditText edittext_smart_proxy_timeout;
 	private EditText edittext_smart_proxy_blocked_ip_expiry;
 	private LinearLayout probe_ports_container;
@@ -234,6 +236,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		dns_add_button.setOnClickListener(this);
 
 		// DNS Forwarder UI elements
+		checkbox_dns_forwarder_enabled = (CheckBox) findViewById(R.id.dns_forwarder_enabled);
 		edittext_dns_virtual_ip4 = (EditText) findViewById(R.id.dns_virtual_ip4);
 		edittext_dns_virtual_ip6 = (EditText) findViewById(R.id.dns_virtual_ip6);
 		edittext_dns_target_ip4 = (EditText) findViewById(R.id.dns_target_ip4);
@@ -254,6 +257,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_latency_optimize_timeout = (EditText) findViewById(R.id.dns_latency_optimize_timeout);
 
 		// Smart Proxy UI elements
+		checkbox_smart_proxy_enabled = (CheckBox) findViewById(R.id.smart_proxy_enabled);
 		edittext_smart_proxy_timeout = (EditText) findViewById(R.id.smart_proxy_timeout);
 		edittext_smart_proxy_blocked_ip_expiry = (EditText) findViewById(R.id.smart_proxy_blocked_ip_expiry);
 		probe_ports_container = (LinearLayout) findViewById(R.id.probe_ports_container);
@@ -458,6 +462,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		loadDnsEntries();
 
 		// DNS Forwarder preferences
+		checkbox_dns_forwarder_enabled.setChecked(prefs.getDnsForwarderEnabled());
 		edittext_dns_virtual_ip4.setText(prefs.getDnsVirtualIp4());
 		edittext_dns_virtual_ip6.setText(prefs.getDnsVirtualIp6());
 		edittext_dns_target_ip4.setText(prefs.getDnsTargetIp4());
@@ -478,6 +483,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_latency_optimize_timeout.setText(Integer.toString(prefs.getDnsLatencyOptimizeTimeout()));
 
 		// Smart Proxy preferences
+		checkbox_smart_proxy_enabled.setChecked(prefs.getSmartProxyEnabled());
 		edittext_smart_proxy_timeout.setText(Integer.toString(prefs.getSmartProxyTimeout()));
 		edittext_smart_proxy_blocked_ip_expiry.setText(Integer.toString(prefs.getSmartProxyBlockedIpExpiry()));
 		loadProbePortEntries();
@@ -543,6 +549,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		}
 
 		// DNS Forwarder enable/disable
+		checkbox_dns_forwarder_enabled.setEnabled(editable);
 		edittext_dns_virtual_ip4.setEnabled(editable);
 		edittext_dns_virtual_ip6.setEnabled(editable);
 		edittext_dns_target_ip4.setEnabled(editable);
@@ -563,6 +570,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_latency_optimize_timeout.setEnabled(editable);
 
 		// Smart Proxy enable/disable
+		checkbox_smart_proxy_enabled.setEnabled(editable);
 		edittext_smart_proxy_timeout.setEnabled(editable);
 		edittext_smart_proxy_blocked_ip_expiry.setEnabled(editable);
 		probe_port_add_button.setEnabled(editable);
@@ -631,6 +639,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		saveDnsEntries();
 
 		// DNS Forwarder preferences
+		prefs.setDnsForwarderEnabled(checkbox_dns_forwarder_enabled.isChecked());
 		prefs.setDnsVirtualIp4(edittext_dns_virtual_ip4.getText().toString());
 		prefs.setDnsVirtualIp6(edittext_dns_virtual_ip6.getText().toString());
 		prefs.setDnsTargetIp4(edittext_dns_target_ip4.getText().toString());
@@ -651,6 +660,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setDnsLatencyOptimizeTimeout(Integer.parseInt(edittext_dns_latency_optimize_timeout.getText().toString()));
 
 		// Smart Proxy preferences
+		prefs.setSmartProxyEnabled(checkbox_smart_proxy_enabled.isChecked());
 		prefs.setSmartProxyTimeout(Integer.parseInt(edittext_smart_proxy_timeout.getText().toString()));
 		prefs.setSmartProxyBlockedIpExpiry(Integer.parseInt(edittext_smart_proxy_blocked_ip_expiry.getText().toString()));
 		saveProbePortEntries();

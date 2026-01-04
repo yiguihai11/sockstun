@@ -61,14 +61,16 @@ public class Preferences
 	public static final String TUNNEL_POST_UP_SCRIPT = "TunnelPostUpScript";
 	public static final String TUNNEL_PRE_DOWN_SCRIPT = "TunnelPreDownScript";
 	public static final String CHNROUTES_ENABLED = "ChnroutesEnabled";
-	public static final String DNS_SPLIT_TUNNEL_ENABLE = "DnsSplitTunnelEnable";
+	public static final String DNS_SPLIT_TUNNEL_ENABLED = "DnsSplitTunnelEnabled";
 	public static final String DNS_FOREIGN_SERVERS = "DnsForeignServers";
+	public static final String DNS_FORWARDER_ENABLED = "DnsForwarderEnabled";
 	public static final String DNS_VIRTUAL_IP4 = "DnsVirtualIp4";
 	public static final String DNS_VIRTUAL_IP6 = "DnsVirtualIp6";
 	public static final String DNS_TARGET_IP4 = "DnsTargetIp4";
 	public static final String DNS_TARGET_IP6 = "DnsTargetIp6";
 	public static final String DNS_LATENCY_OPTIMIZE_ENABLED = "DnsLatencyOptimizeEnabled";
 	public static final String DNS_LATENCY_OPTIMIZE_TIMEOUT = "DnsLatencyOptimizeTimeout";
+	public static final String SMART_PROXY_ENABLED = "SmartProxyEnabled";
 	public static final String SMART_PROXY_TIMEOUT = "SmartProxyTimeout";
 	public static final String SMART_PROXY_BLOCKED_IP_EXPIRY = "SmartProxyBlockedIpExpiry";
 	public static final String SMART_PROXY_PROBE_PORTS = "SmartProxyProbePorts";
@@ -536,7 +538,7 @@ public class Preferences
 	}
 
 	public boolean getChnroutesEnabled() {
-		return prefs.getBoolean(CHNROUTES_ENABLED, true);
+		return prefs.getBoolean(CHNROUTES_ENABLED, false);
 	}
 
 	public void setChnroutesEnabled(boolean enabled) {
@@ -545,14 +547,27 @@ public class Preferences
 		editor.commit();
 	}
 
-	public boolean getDnsSplitTunnelEnable() {
-		return prefs.getBoolean(DNS_SPLIT_TUNNEL_ENABLE, true);
+	public boolean getDnsSplitTunnelEnabled() {
+		return prefs.getBoolean(DNS_SPLIT_TUNNEL_ENABLED, false);
 	}
 
-	public void setDnsSplitTunnelEnable(boolean enable) {
+	public void setDnsSplitTunnelEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean(DNS_SPLIT_TUNNEL_ENABLE, enable);
+		editor.putBoolean(DNS_SPLIT_TUNNEL_ENABLED, enabled);
 		editor.commit();
+	}
+
+	// Migration helper: read old preference name
+	public boolean getDnsSplitTunnelEnable() {
+		if (prefs.contains(DNS_SPLIT_TUNNEL_ENABLE)) {
+			return prefs.getBoolean(DNS_SPLIT_TUNNEL_ENABLE, false);
+		}
+		return getDnsSplitTunnelEnabled();
+	}
+
+	// Migration helper: write to new preference name
+	public void setDnsSplitTunnelEnable(boolean enable) {
+		setDnsSplitTunnelEnabled(enable);
 	}
 
 	/**
@@ -656,6 +671,17 @@ public class Preferences
 		editor.commit();
 	}
 
+	// DNS Forwarder preferences
+	public boolean getDnsForwarderEnabled() {
+		return prefs.getBoolean(DNS_FORWARDER_ENABLED, false);
+	}
+
+	public void setDnsForwarderEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(DNS_FORWARDER_ENABLED, enabled);
+		editor.commit();
+	}
+
 	// DNS Latency Optimize preferences
 	public boolean getDnsLatencyOptimizeEnabled() {
 		return prefs.getBoolean(DNS_LATENCY_OPTIMIZE_ENABLED, false);
@@ -678,6 +704,16 @@ public class Preferences
 	}
 
 	// Smart Proxy preferences
+	public boolean getSmartProxyEnabled() {
+		return prefs.getBoolean(SMART_PROXY_ENABLED, false);
+	}
+
+	public void setSmartProxyEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(SMART_PROXY_ENABLED, enabled);
+		editor.commit();
+	}
+
 	public int getSmartProxyTimeout() {
 		return prefs.getInt(SMART_PROXY_TIMEOUT, 0);
 	}

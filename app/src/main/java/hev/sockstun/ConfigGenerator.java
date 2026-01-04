@@ -114,7 +114,7 @@ public class ConfigGenerator {
 
     private void appendDnsSplitTunnelSection() {
         config.append("dns-split-tunnel:\n");
-        config.append("  split-tunnel: ").append(prefs.getDnsSplitTunnelEnable() ? "true" : "false").append("\n");
+        config.append("  enabled: ").append(prefs.getDnsSplitTunnelEnabled() ? "true" : "false").append("\n");
         config.append("  foreign-dns:\n");
 
         // Get DNS servers list (can contain both IPv4 and IPv6)
@@ -127,30 +127,23 @@ public class ConfigGenerator {
     }
 
     private void appendDnsForwarderSection() {
+        config.append("dns-forwarder:\n");
+        config.append("  enabled: ").append(prefs.getDnsForwarderEnabled() ? "true" : "false").append("\n");
+
         // Check if any dns-forwarder options are set
         String virtualIp4 = prefs.getDnsVirtualIp4();
         String virtualIp6 = prefs.getDnsVirtualIp6();
         String targetIp4 = prefs.getDnsTargetIp4();
         String targetIp6 = prefs.getDnsTargetIp6();
 
-        // Only add dns-forwarder section if at least one pair is complete
-        boolean hasIp4Pair = !virtualIp4.isEmpty() && !targetIp4.isEmpty();
-        boolean hasIp6Pair = !virtualIp6.isEmpty() && !targetIp6.isEmpty();
-
-        if (!hasIp4Pair && !hasIp6Pair) {
-            return;
-        }
-
-        config.append("dns-forwarder:\n");
-
         // IPv4 pair - both must be set
-        if (hasIp4Pair) {
+        if (!virtualIp4.isEmpty() && !targetIp4.isEmpty()) {
             config.append("  virtual-ip4: ").append(virtualIp4).append("\n");
             config.append("  target-ip4: ").append(targetIp4).append("\n");
         }
 
         // IPv6 pair - both must be set
-        if (hasIp6Pair) {
+        if (!virtualIp6.isEmpty() && !targetIp6.isEmpty()) {
             config.append("  virtual-ip6: '").append(virtualIp6).append("'\n");
             config.append("  target-ip6: '").append(targetIp6).append("'\n");
         }
@@ -176,6 +169,7 @@ public class ConfigGenerator {
 
     private void appendSmartProxySection() {
         config.append("smart-proxy:\n");
+        config.append("  enabled: ").append(prefs.getSmartProxyEnabled() ? "true" : "false").append("\n");
         config.append("  timeout-ms: ").append(prefs.getSmartProxyTimeout()).append("\n");
         config.append("  blocked-ip-expiry-minutes: ").append(prefs.getSmartProxyBlockedIpExpiry()).append("\n");
         config.append("  probe-ports:\n");
