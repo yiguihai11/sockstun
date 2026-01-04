@@ -61,6 +61,17 @@
 	<string name="chnroutes_refresh">Refresh</string>
 	<string name="chnroutes_save">Save</string>
 	<string name="chnroutes_path_info">File path: /data/data/.../cache/chnroutes.txt</string>
+	<string name="acl_title">Access Control List (ACL)</string>
+	<string name="acl_description">Block IP addresses and hostnames/SNI listed in the ACL file</string>
+	<string name="acl_enabled">Enabled</string>
+	<string name="acl_upload">Upload</string>
+	<string name="acl_extract">Extract</string>
+	<string name="acl_content_title">acl.txt Content</string>
+	<string name="acl_content_hint">acl.txt file content...</string>
+	<string name="acl_clear">Clear</string>
+	<string name="acl_refresh">Refresh</string>
+	<string name="acl_save">Save</string>
+	<string name="acl_path_info">File path: /data/data/.../cache/acl.txt</string>
 	<string name="dns_split_tunnel_enable">Enable DNS Split Tunnel</string>
 	<string name="dns_split_tunnel_enable_desc">Route DNS queries based on destination (foreign/China)</string>
 	<string name="dns_foreign_servers">Foreign DNS Servers</string>

@@ -61,6 +61,7 @@ public class Preferences
 	public static final String TUNNEL_POST_UP_SCRIPT = "TunnelPostUpScript";
 	public static final String TUNNEL_PRE_DOWN_SCRIPT = "TunnelPreDownScript";
 	public static final String CHNROUTES_ENABLED = "ChnroutesEnabled";
+	public static final String ACL_ENABLED = "AclEnabled";
 	public static final String DNS_SPLIT_TUNNEL_ENABLED = "DnsSplitTunnelEnabled";
 	public static final String DNS_FOREIGN_SERVERS = "DnsForeignServers";
 	public static final String DNS_FORWARDER_ENABLED = "DnsForwarderEnabled";
@@ -544,6 +545,16 @@ public class Preferences
 	public void setChnroutesEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(CHNROUTES_ENABLED, enabled);
+		editor.commit();
+	}
+
+	public boolean getAclEnabled() {
+		return prefs.getBoolean(ACL_ENABLED, false);
+	}
+
+	public void setAclEnabled(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(ACL_ENABLED, enabled);
 		editor.commit();
 	}
 

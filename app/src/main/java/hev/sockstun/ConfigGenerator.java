@@ -44,6 +44,7 @@ public class ConfigGenerator {
         appendDnsLatencyOptimizeSection();
         appendSmartProxySection();
         appendChnroutesSection();
+        appendAclSection();
         appendMiscSection();
 
         return config.toString();
@@ -183,6 +184,12 @@ public class ConfigGenerator {
         config.append("chnroutes:\n");
         config.append("  enabled: ").append(prefs.getChnroutesEnabled() ? "true" : "false").append("\n");
         config.append("  file-path: \"").append(new File(cacheDir, "chnroutes.txt").getAbsolutePath()).append("\"\n");
+    }
+
+    private void appendAclSection() {
+        config.append("acl:\n");
+        config.append("  enabled: ").append(prefs.getAclEnabled() ? "true" : "false").append("\n");
+        config.append("  file-path: \"").append(new File(cacheDir, "acl.txt").getAbsolutePath()).append("\"\n");
     }
 
     private void appendMiscSection() {

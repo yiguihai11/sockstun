@@ -96,6 +96,20 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_chnroutes_save;
 	private EditText edittext_chnroutes_content;
 	private TextView textview_chnroutes_path_info;
+	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
+	private boolean chnroutesLoaded = false;
+
+	// ACL
+	private CheckBox checkbox_acl_enabled;
+	private Button button_acl_upload;
+	private Button button_acl_extract;
+	private Button button_acl_clear;
+	private Button button_acl_refresh;
+	private Button button_acl_save;
+	private EditText edittext_acl_content;
+	private TextView textview_acl_path_info;
+	private static final int ACL_UPLOAD_REQUEST_CODE = 101;
+	private boolean aclLoaded = false;
 
 	// DNS Split Tunnel UI elements
 	private CheckBox checkbox_dns_split_tunnel_enable;
@@ -132,9 +146,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button probe_port_add_button;
 	private java.util.List<EditText> probe_port_edit_texts = new java.util.ArrayList<EditText>();
 
-	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
-	private boolean chnroutesLoaded = false;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -163,6 +174,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("chnroutes")
 			.setIndicator("Chnroutes")
 			.setContent(R.id.tab_chnroutes));
+		tabHost.addTab(tabHost.newTabSpec("acl")
+			.setIndicator("ACL")
+			.setContent(R.id.tab_acl));
 		tabHost.addTab(tabHost.newTabSpec("dns")
 			.setIndicator("DNS")
 			.setContent(R.id.tab_dns));
@@ -177,6 +191,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				if ("chnroutes".equals(tabId) && !chnroutesLoaded) {
 					chnroutesLoaded = true;
 					loadChnroutesContent();
+				}
+				// Lazy load acl content when tab is first selected
+				if ("acl".equals(tabId) && !aclLoaded) {
+					aclLoaded = true;
+					loadAclContent();
 				}
 			}
 		});
@@ -229,6 +248,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_chnroutes_content = (EditText) findViewById(R.id.chnroutes_content);
 		textview_chnroutes_path_info = (TextView) findViewById(R.id.chnroutes_path_info);
 
+		// ACL UI elements
+		checkbox_acl_enabled = (CheckBox) findViewById(R.id.acl_enabled);
+		button_acl_upload = (Button) findViewById(R.id.acl_upload);
+		button_acl_extract = (Button) findViewById(R.id.acl_extract);
+		button_acl_clear = (Button) findViewById(R.id.acl_clear);
+		button_acl_refresh = (Button) findViewById(R.id.acl_refresh);
+		button_acl_save = (Button) findViewById(R.id.acl_save);
+		edittext_acl_content = (EditText) findViewById(R.id.acl_content);
+		textview_acl_path_info = (TextView) findViewById(R.id.acl_path_info);
+
 		// DNS Split Tunnel UI elements
 		checkbox_dns_split_tunnel_enable = (CheckBox) findViewById(R.id.dns_split_tunnel_enable);
 		dns_entries_container = (LinearLayout) findViewById(R.id.dns_entries_container);
@@ -276,6 +305,19 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_chnroutes_clear.setOnClickListener(this);
 		button_chnroutes_refresh.setOnClickListener(this);
 		button_chnroutes_save.setOnClickListener(this);
+
+		// Setup ACL path info
+		textview_acl_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/acl.txt");
+
+		// Don't load ACL content on startup - lazy load when tab is selected
+
+		// Setup ACL button listeners
+		checkbox_acl_enabled.setOnClickListener(this);
+		button_acl_upload.setOnClickListener(this);
+		button_acl_extract.setOnClickListener(this);
+		button_acl_clear.setOnClickListener(this);
+		button_acl_refresh.setOnClickListener(this);
+		button_acl_save.setOnClickListener(this);
 
 		// Setup clickable GitHub link
 		textview_github_link = (TextView) findViewById(R.id.github_link);
@@ -348,6 +390,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
 		}
+		// Handle ACL file upload
+		if (request == ACL_UPLOAD_REQUEST_CODE && result == RESULT_OK && data != null) {
+			Uri uri = data.getData();
+			try {
+				copyFileFromUriForAcl(uri);
+			} catch (IOException e) {
+				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 
 	@Override
@@ -399,6 +450,23 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		} else if (view == button_chnroutes_save) {
 			// Save content to file
 			saveChnroutesContent();
+		} else if (view == button_acl_upload) {
+			// Upload ACL file
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("*/*");
+			startActivityForResult(intent, ACL_UPLOAD_REQUEST_CODE);
+		} else if (view == button_acl_extract) {
+			// Extract acl.txt from APK assets
+			extractAclFromAssets();
+		} else if (view == button_acl_clear) {
+			// Clear the editor
+			edittext_acl_content.setText("");
+		} else if (view == button_acl_refresh) {
+			// Refresh content from file
+			loadAclContent();
+		} else if (view == button_acl_save) {
+			// Save content to file
+			saveAclContent();
 		} else if (view == dns_add_button) {
 			// Add new DNS entry
 			addDnsEntryView("", true);
@@ -456,6 +524,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_tunnel_pre_down_script.setText(prefs.getTunnelPreDownScript());
 
 		checkbox_chnroutes_enabled.setChecked(prefs.getChnroutesEnabled());
+		checkbox_acl_enabled.setChecked(prefs.getAclEnabled());
 
 		// DNS Split Tunnel preferences
 		checkbox_dns_split_tunnel_enable.setChecked(prefs.getDnsSplitTunnelEnabled());
@@ -540,6 +609,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_chnroutes_refresh.setEnabled(editable);
 		button_chnroutes_save.setEnabled(editable);
 		edittext_chnroutes_content.setEnabled(editable);
+
+		// ACL elements
+		checkbox_acl_enabled.setEnabled(editable);
+		button_acl_upload.setEnabled(editable);
+		button_acl_extract.setEnabled(editable);
+		button_acl_clear.setEnabled(editable);
+		button_acl_refresh.setEnabled(editable);
+		button_acl_save.setEnabled(editable);
+		edittext_acl_content.setEnabled(editable);
 
 		// DNS Split Tunnel enable/disable
 		checkbox_dns_split_tunnel_enable.setEnabled(editable);
@@ -633,6 +711,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setTunnelPreDownScript(edittext_tunnel_pre_down_script.getText().toString());
 
 		prefs.setChnroutesEnabled(checkbox_chnroutes_enabled.isChecked());
+		prefs.setAclEnabled(checkbox_acl_enabled.isChecked());
 
 		// DNS Split Tunnel preferences
 		prefs.setDnsSplitTunnelEnabled(checkbox_dns_split_tunnel_enable.isChecked());
@@ -743,6 +822,86 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		reader.close();
 		writer.close();
 		loadChnroutesContent();
+		Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * Load ACL content from cache directory file
+	 */
+	private void loadAclContent() {
+		File aclFile = new File(getCacheDir(), "acl.txt");
+		if (!aclFile.exists()) {
+			// File doesn't exist, try to extract from assets
+			extractAclFromAssets();
+			return;
+		}
+		StringBuilder content = new StringBuilder();
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(aclFile), "UTF-8"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				content.append(line).append("\n");
+			}
+			reader.close();
+			edittext_acl_content.setText(content.toString());
+		} catch (IOException e) {
+			edittext_acl_content.setText("Unable to read file: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Save ACL content to cache directory file
+	 */
+	private void saveAclContent() {
+		File aclFile = new File(getCacheDir(), "acl.txt");
+		try {
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(aclFile), "UTF-8");
+			writer.write(edittext_acl_content.getText().toString());
+			writer.close();
+			Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * Extract acl.txt from APK assets
+	 */
+	private void extractAclFromAssets() {
+		AssetManager assetManager = getAssets();
+		File aclFile = new File(getCacheDir(), "acl.txt");
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("acl.txt"), "UTF-8"));
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(aclFile), "UTF-8");
+			String line;
+			while ((line = reader.readLine()) != null) {
+				writer.write(line);
+				writer.write("\n");
+			}
+			reader.close();
+			writer.close();
+			loadAclContent();
+			Toast.makeText(this, "Extracted successfully", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			Toast.makeText(this, "Extract failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * Copy file from URI to acl.txt
+	 */
+	private void copyFileFromUriForAcl(Uri uri) throws IOException {
+		File aclFile = new File(getCacheDir(), "acl.txt");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getContentResolver().openInputStream(uri), "UTF-8"));
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(aclFile), "UTF-8");
+		String line;
+		while ((line = reader.readLine()) != null) {
+			writer.write(line);
+			writer.write("\n");
+		}
+		reader.close();
+		writer.close();
+		loadAclContent();
 		Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
 	}
 

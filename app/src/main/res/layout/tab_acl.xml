@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:padding="8dp">
+
+	<!-- ACL Control Buttons -->
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/card_background"
+		android:padding="16dp"
+		android:layout_marginBottom="8dp">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/acl_title"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:paddingBottom="8dp"/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/acl_description"
+			android:textSize="12sp"
+			android:textColor="@color/hint_text"
+			android:paddingBottom="8dp"/>
+
+		<!-- Horizontal button layout -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<CheckBox
+				android:id="@+id/acl_enabled"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/acl_enabled"
+				android:layout_marginEnd="8dp"/>
+			<Button
+				android:id="@+id/acl_upload"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:text="@string/acl_upload"
+				android:layout_weight="1"
+				android:layout_marginEnd="4dp"/>
+			<Button
+				android:id="@+id/acl_extract"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:text="@string/acl_extract"
+				android:layout_weight="1"/>
+		</LinearLayout>
+	</LinearLayout>
+
+	<!-- ACL File Editor -->
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/card_background"
+		android:padding="16dp"
+		android:layout_marginBottom="8dp">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/acl_content_title"
+			android:textStyle="bold"
+			android:textSize="16sp"
+			android:paddingBottom="8dp"/>
+		<ScrollView
+			android:layout_width="fill_parent"
+			android:layout_height="300dp"
+			android:background="@color/edit_text_background"
+			android:padding="4dp">
+			<EditText
+				android:id="@+id/acl_content"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:minLines="20"
+				android:gravity="top|start"
+				android:inputType="textMultiLine"
+				android:background="@null"
+				android:textColor="@color/edit_text_color"
+				android:textColorHint="@color/hint_text"
+				android:fontFamily="monospace"
+				android:textSize="12sp"
+				android:hint="@string/acl_content_hint"/>
+		</ScrollView>
+
+		<!-- Clear, Refresh and Save buttons -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp">
+			<Button
+				android:id="@+id/acl_clear"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/acl_clear"
+				android:layout_weight="1"
+				android:layout_marginEnd="4dp"/>
+			<Button
+				android:id="@+id/acl_refresh"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/acl_refresh"
+				android:layout_weight="1"
+				android:layout_marginEnd="4dp"/>
+			<Button
+				android:id="@+id/acl_save"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/acl_save"
+				android:layout_weight="1"/>
+		</LinearLayout>
+	</LinearLayout>
+
+	<!-- File Path Info -->
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/acl_path_info"
+		android:text="@string/acl_path_info"
+		android:textSize="12sp"
+		android:textColor="@color/hint_text"
+		android:padding="8dp"/>
+</LinearLayout>
