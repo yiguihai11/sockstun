@@ -408,14 +408,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		// Misc options
 		edittext_task_stack_size.setEnabled(editable);
 		spinner_log_level.setEnabled(editable);
-		// Misc options: always disabled except task_stack_size
-		edittext_tcp_buffer_size.setEnabled(false);
-		edittext_udp_recv_buffer_size.setEnabled(false);
-		edittext_udp_copy_buffer_nums.setEnabled(false);
-		edittext_connect_timeout.setEnabled(false);
-		edittext_tcp_read_write_timeout.setEnabled(false);
-		edittext_udp_read_write_timeout.setEnabled(false);
-		edittext_max_session_count.setEnabled(false);
+		// Misc options: enabled for user configuration
+		edittext_tcp_buffer_size.setEnabled(editable);
+		edittext_udp_recv_buffer_size.setEnabled(editable);
+		edittext_udp_copy_buffer_nums.setEnabled(editable);
+		edittext_connect_timeout.setEnabled(editable);
+		edittext_tcp_read_write_timeout.setEnabled(editable);
+		edittext_udp_read_write_timeout.setEnabled(editable);
+		edittext_max_session_count.setEnabled(editable);
+		// Not supported on Android
 		edittext_pid_file.setEnabled(false);
 		edittext_limit_nofile.setEnabled(false);
 
