@@ -74,7 +74,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Not recommended to modify"
+				android:text="Default: 65536"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
@@ -102,7 +102,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Not recommended to modify"
+				android:text="Default: 524288"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
@@ -130,7 +130,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Not recommended to modify"
+				android:text="Default: 10"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
@@ -158,7 +158,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Not recommended to modify"
+				android:text="Default: 10000 (ms)"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
@@ -186,7 +186,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Not recommended to modify"
+				android:text="Default: 300000 (ms)"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
@@ -214,7 +214,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Not recommended to modify"
+				android:text="Default: 60000 (ms)"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
@@ -242,7 +242,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="0 = unlimited (Not recommended to modify)"
+				android:text="0 = unlimited"
 				android:textSize="12sp"
 				android:textColor="@color/hint_text"/>
 		</LinearLayout>
