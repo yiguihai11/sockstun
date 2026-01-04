@@ -110,4 +110,6 @@
 	<string name="smart_proxy_probe_ports">Probe Ports</string>
 	<string name="smart_proxy_probe_ports_desc">Ports that trigger protocol detection (TLS SNI/HTTP Host). Use + to add, - to remove.</string>
 	<string name="probe_port_add_entry">Add Port</string>
+	<string name="smart_proxy_info">About Smart Proxy</string>
+	<string name="smart_proxy_full_desc">Smart Proxy automatically determines the best routing method for each connection. When enabled, TCP connections first attempt direct connection; if timeout occurs, they fall back to SOCKS5 proxy. Protocol detection (TLS SNI/HTTP Host) is performed on configured probe ports to improve connection accuracy.</string>
 </resources>

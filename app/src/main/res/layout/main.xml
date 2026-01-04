@@ -29,6 +29,7 @@
 			<include layout="@layout/tab_advanced" android:id="@+id/tab_advanced"/>
 			<include layout="@layout/tab_chnroutes" android:id="@+id/tab_chnroutes"/>
 			<include layout="@layout/tab_acl" android:id="@+id/tab_acl"/>
+			<include layout="@layout/tab_smartproxy" android:id="@+id/tab_smartproxy"/>
 			<include layout="@layout/tab_dns" android:id="@+id/tab_dns"/>
 			<include layout="@layout/tab_misc" android:id="@+id/tab_misc"/>
 		</FrameLayout>

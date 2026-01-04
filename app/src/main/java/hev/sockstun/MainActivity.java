@@ -177,6 +177,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		tabHost.addTab(tabHost.newTabSpec("acl")
 			.setIndicator("ACL")
 			.setContent(R.id.tab_acl));
+		tabHost.addTab(tabHost.newTabSpec("smartproxy")
+			.setIndicator("Smart Proxy")
+			.setContent(R.id.tab_smartproxy));
 		tabHost.addTab(tabHost.newTabSpec("dns")
 			.setIndicator("DNS")
 			.setContent(R.id.tab_dns));

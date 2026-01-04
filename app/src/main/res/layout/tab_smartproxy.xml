@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="8dp">
+
+		<!-- Smart Proxy Enable -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_title"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"
+				android:paddingBottom="8dp"/>
+			<CheckBox
+				android:id="@+id/smart_proxy_enabled"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:checked="false"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_info_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"/>
+		</LinearLayout>
+
+		<!-- Smart Proxy Configuration -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_config_title"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+
+			<!-- Timeout -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_timeout"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/smart_proxy_timeout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:hint="0 = disabled"
+				android:text="0"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_timeout_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"/>
+
+			<!-- Blocked IP Expiry -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_blocked_ip_expiry"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/smart_proxy_blocked_ip_expiry"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:hint="0 = disabled"
+				android:text="0"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_blocked_ip_expiry_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"/>
+
+			<!-- Probe Ports -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_probe_ports"
+				android:textStyle="bold"
+				android:textSize="14sp"
+				android:layout_marginTop="8dp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_probe_ports_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"
+				android:layout_marginBottom="8dp"/>
+
+			<!-- Container for dynamic probe port entries -->
+			<LinearLayout
+				android:id="@+id/probe_ports_container"
+				android:orientation="vertical"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"/>
+
+			<!-- Add Probe Port button -->
+			<Button
+				android:id="@+id/probe_port_add_button"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/probe_port_add_entry"
+				android:layout_marginTop="8dp"/>
+		</LinearLayout>
+
+		<!-- Info Section -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_info"
+				android:textStyle="bold"
+				android:textSize="14sp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/smart_proxy_full_desc"
+				android:textSize="12sp"
+				android:paddingTop="4dp"
+				android:textColor="@color/hint_text"/>
+		</LinearLayout>
+
+	</LinearLayout>
+</ScrollView>
