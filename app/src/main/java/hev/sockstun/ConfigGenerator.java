@@ -130,23 +130,25 @@ public class ConfigGenerator {
         String targetIp4 = prefs.getDnsTargetIp4();
         String targetIp6 = prefs.getDnsTargetIp6();
 
-        // Only add dns-forwarder section if at least one option is set
-        if (virtualIp4.isEmpty() && virtualIp6.isEmpty() && targetIp4.isEmpty() && targetIp6.isEmpty()) {
+        // Only add dns-forwarder section if at least one pair is complete
+        boolean hasIp4Pair = !virtualIp4.isEmpty() && !targetIp4.isEmpty();
+        boolean hasIp6Pair = !virtualIp6.isEmpty() && !targetIp6.isEmpty();
+
+        if (!hasIp4Pair && !hasIp6Pair) {
             return;
         }
 
         config.append("dns-forwarder:\n");
 
-        if (!virtualIp4.isEmpty()) {
+        // IPv4 pair - both must be set
+        if (hasIp4Pair) {
             config.append("  virtual-ip4: ").append(virtualIp4).append("\n");
-        }
-        if (!virtualIp6.isEmpty()) {
-            config.append("  virtual-ip6: '").append(virtualIp6).append("'\n");
-        }
-        if (!targetIp4.isEmpty()) {
             config.append("  target-ip4: ").append(targetIp4).append("\n");
         }
-        if (!targetIp6.isEmpty()) {
+
+        // IPv6 pair - both must be set
+        if (hasIp6Pair) {
+            config.append("  virtual-ip6: '").append(virtualIp6).append("'\n");
             config.append("  target-ip6: '").append(targetIp6).append("'\n");
         }
     }
