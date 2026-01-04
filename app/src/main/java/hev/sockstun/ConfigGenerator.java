@@ -39,6 +39,7 @@ public class ConfigGenerator {
         appendTunnelSection();
         appendSocks5Section();
         appendDnsSplitTunnelSection();
+        appendDnsForwarderSection();
         appendChnroutesSection();
         appendMiscSection();
 
@@ -119,6 +120,34 @@ public class ConfigGenerator {
             if (!server.isEmpty()) {
                 config.append("    - \"").append(server).append("\"\n");
             }
+        }
+    }
+
+    private void appendDnsForwarderSection() {
+        // Check if any dns-forwarder options are set
+        String virtualIp4 = prefs.getDnsVirtualIp4();
+        String virtualIp6 = prefs.getDnsVirtualIp6();
+        String targetIp4 = prefs.getDnsTargetIp4();
+        String targetIp6 = prefs.getDnsTargetIp6();
+
+        // Only add dns-forwarder section if at least one option is set
+        if (virtualIp4.isEmpty() && virtualIp6.isEmpty() && targetIp4.isEmpty() && targetIp6.isEmpty()) {
+            return;
+        }
+
+        config.append("dns-forwarder:\n");
+
+        if (!virtualIp4.isEmpty()) {
+            config.append("  virtual-ip4: ").append(virtualIp4).append("\n");
+        }
+        if (!virtualIp6.isEmpty()) {
+            config.append("  virtual-ip6: '").append(virtualIp6).append("'\n");
+        }
+        if (!targetIp4.isEmpty()) {
+            config.append("  target-ip4: ").append(targetIp4).append("\n");
+        }
+        if (!targetIp6.isEmpty()) {
+            config.append("  target-ip6: '").append(targetIp6).append("'\n");
         }
     }
 

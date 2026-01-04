@@ -55,6 +55,10 @@ public class Preferences
 	public static final String CHNROUTES_ENABLED = "ChnroutesEnabled";
 	public static final String DNS_SPLIT_TUNNEL_ENABLE = "DnsSplitTunnelEnable";
 	public static final String DNS_FOREIGN_SERVERS = "DnsForeignServers";
+	public static final String DNS_VIRTUAL_IP4 = "DnsVirtualIp4";
+	public static final String DNS_VIRTUAL_IP6 = "DnsVirtualIp6";
+	public static final String DNS_TARGET_IP4 = "DnsTargetIp4";
+	public static final String DNS_TARGET_IP6 = "DnsTargetIp6";
 
 	private SharedPreferences prefs;
 
@@ -510,5 +514,46 @@ public class Preferences
 			// If JSON creation fails, save empty array
 			setDnsForeignServersJson("[]");
 		}
+	}
+
+	// DNS Forwarder preferences
+	public String getDnsVirtualIp4() {
+		return prefs.getString(DNS_VIRTUAL_IP4, "");
+	}
+
+	public void setDnsVirtualIp4(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(DNS_VIRTUAL_IP4, value);
+		editor.commit();
+	}
+
+	public String getDnsVirtualIp6() {
+		return prefs.getString(DNS_VIRTUAL_IP6, "");
+	}
+
+	public void setDnsVirtualIp6(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(DNS_VIRTUAL_IP6, value);
+		editor.commit();
+	}
+
+	public String getDnsTargetIp4() {
+		return prefs.getString(DNS_TARGET_IP4, "");
+	}
+
+	public void setDnsTargetIp4(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(DNS_TARGET_IP4, value);
+		editor.commit();
+	}
+
+	public String getDnsTargetIp6() {
+		return prefs.getString(DNS_TARGET_IP6, "");
+	}
+
+	public void setDnsTargetIp6(String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(DNS_TARGET_IP6, value);
+		editor.commit();
 	}
 }

@@ -102,6 +102,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private LinearLayout dns_entries_container;
 	private Button dns_add_button;
 	private java.util.List<EditText> dns_entry_edit_texts = new java.util.ArrayList<EditText>();
+
+	// DNS Forwarder UI elements
+	private EditText edittext_dns_virtual_ip4;
+	private EditText edittext_dns_virtual_ip6;
+	private EditText edittext_dns_target_ip4;
+	private EditText edittext_dns_target_ip6;
+
 	private static final int CHNROUTES_UPLOAD_REQUEST_CODE = 100;
 	private boolean chnroutesLoaded = false;
 
@@ -204,6 +211,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		dns_entries_container = (LinearLayout) findViewById(R.id.dns_entries_container);
 		dns_add_button = (Button) findViewById(R.id.dns_add_button);
 		dns_add_button.setOnClickListener(this);
+
+		// DNS Forwarder UI elements
+		edittext_dns_virtual_ip4 = (EditText) findViewById(R.id.dns_virtual_ip4);
+		edittext_dns_virtual_ip6 = (EditText) findViewById(R.id.dns_virtual_ip6);
+		edittext_dns_target_ip4 = (EditText) findViewById(R.id.dns_target_ip4);
+		edittext_dns_target_ip6 = (EditText) findViewById(R.id.dns_target_ip6);
 
 		// Setup chnroutes path info
 		textview_chnroutes_path_info.setText("File path: " + getCacheDir().getAbsolutePath() + "/chnroutes.txt");
@@ -399,6 +412,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_dns_split_tunnel_enable.setChecked(prefs.getDnsSplitTunnelEnable());
 		loadDnsEntries();
 
+		// DNS Forwarder preferences
+		edittext_dns_virtual_ip4.setText(prefs.getDnsVirtualIp4());
+		edittext_dns_virtual_ip6.setText(prefs.getDnsVirtualIp6());
+		edittext_dns_target_ip4.setText(prefs.getDnsTargetIp4());
+		edittext_dns_target_ip6.setText(prefs.getDnsTargetIp6());
+
 		boolean editable = !prefs.getEnable();
 		edittext_socks_addr.setEnabled(editable);
 		edittext_socks_udp_addr.setEnabled(editable);
@@ -459,6 +478,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			edit.setEnabled(editable);
 		}
 
+		// DNS Forwarder enable/disable
+		edittext_dns_virtual_ip4.setEnabled(editable);
+		edittext_dns_virtual_ip6.setEnabled(editable);
+		edittext_dns_target_ip4.setEnabled(editable);
+		edittext_dns_target_ip6.setEnabled(editable);
+
 		if (editable)
 		  button_control.setText(R.string.control_enable);
 		else
@@ -518,6 +543,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		// DNS Split Tunnel preferences
 		prefs.setDnsSplitTunnelEnable(checkbox_dns_split_tunnel_enable.isChecked());
 		saveDnsEntries();
+
+		// DNS Forwarder preferences
+		prefs.setDnsVirtualIp4(edittext_dns_virtual_ip4.getText().toString());
+		prefs.setDnsVirtualIp6(edittext_dns_virtual_ip6.getText().toString());
+		prefs.setDnsTargetIp4(edittext_dns_target_ip4.getText().toString());
+		prefs.setDnsTargetIp6(edittext_dns_target_ip6.getText().toString());
 	}
 
 	/**

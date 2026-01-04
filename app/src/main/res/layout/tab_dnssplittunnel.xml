@@ -74,6 +74,85 @@
 				android:layout_marginTop="8dp"/>
 		</LinearLayout>
 
+		<!-- DNS Forwarder -->
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/card_background"
+			android:padding="16dp"
+			android:layout_marginBottom="8dp">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_forwarder_title"
+				android:textStyle="bold"
+				android:textSize="16sp"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_forwarder_desc"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"
+				android:layout_marginBottom="8dp"/>
+
+			<!-- Virtual IPv4 -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_virtual_ip4"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/dns_virtual_ip4"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="8.8.8.8"
+				android:text=""/>
+
+			<!-- Virtual IPv6 -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_virtual_ip6"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/dns_virtual_ip6"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="2001:4860:4860::8844"
+				android:text=""/>
+
+			<!-- Target IPv4 -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_target_ip4"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/dns_target_ip4"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="127.0.0.1:1053"
+				android:text=""/>
+
+			<!-- Target IPv6 -->
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/dns_target_ip6"
+				android:textSize="14sp"/>
+			<EditText
+				android:id="@+id/dns_target_ip6"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:inputType="text"
+				android:hint="[2606:4700:4700::1111]:53"
+				android:text=""/>
+		</LinearLayout>
+
 		<!-- Info Section -->
 		<LinearLayout
 			android:orientation="vertical"

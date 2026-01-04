@@ -67,4 +67,10 @@
 	<string name="dns_add_entry">Add DNS Server</string>
 	<string name="dns_split_tunnel_info">About DNS Split Tunnel</string>
 	<string name="dns_split_tunnel_info_desc">When enabled, DNS queries are routed based on the destination domain. Foreign domains use the DNS servers configured above, while Chinese domains use local DNS servers.</string>
+	<string name="dns_forwarder_title">DNS Forwarder</string>
+	<string name="dns_forwarder_desc">Hijack and forward DNS queries to custom targets. Leave empty to disable.</string>
+	<string name="dns_virtual_ip4">Virtual IPv4 (hijack address):</string>
+	<string name="dns_virtual_ip6">Virtual IPv6 (hijack address):</string>
+	<string name="dns_target_ip4">Target IPv4 (forward to):</string>
+	<string name="dns_target_ip6">Target IPv6 (forward to):</string>
 </resources>
