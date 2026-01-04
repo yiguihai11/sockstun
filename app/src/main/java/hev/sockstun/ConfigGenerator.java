@@ -38,8 +38,8 @@ public class ConfigGenerator {
 
         appendTunnelSection();
         appendSocks5Section();
-        // appendDnsSplitTunnelSection();
-        // appendChnroutesSection();
+        appendDnsSplitTunnelSection();
+        appendChnroutesSection();
         appendMiscSection();
 
         return config.toString();
@@ -128,19 +128,18 @@ public class ConfigGenerator {
         config.append("misc:\n");
         config.append("  task-stack-size: ").append(prefs.getTaskStackSize()).append("\n");
 
-        // Disabled options (not recommended to modify on Android)
-        // config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
-        // config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
-        // config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
+        config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
+        config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
+        config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
 
-        // int maxSessionCount = prefs.getMaxSessionCount();
-        // if (maxSessionCount > 0) {
-        //     config.append("  max-session-count: ").append(maxSessionCount).append("\n");
-        // }
+        int maxSessionCount = prefs.getMaxSessionCount();
+        if (maxSessionCount > 0) {
+            config.append("  max-session-count: ").append(maxSessionCount).append("\n");
+        }
 
-        // config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
-        // config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
-        // config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
+        config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
+        config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
+        config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
 
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
         config.append("  log-level: ").append(prefs.getLogLevel()).append("\n");
