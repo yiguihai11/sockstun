@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.net.VpnService;
 import android.net.Uri;
 import android.text.SpannableString;
