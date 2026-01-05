@@ -80,7 +80,7 @@ public class AppListActivity extends ListActivity {
 
 		@Override
 		public void sort(Comparator<? super Package> cmp) {
-			Collections.sort(allPackages, (Comparator) cmp);
+			Collections.sort(allPackages, (Comparator<Package>) cmp);
 			applyFilter(lastFilter);
 		}
 
