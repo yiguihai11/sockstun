@@ -10,6 +10,8 @@
 package hev.sockstun;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
