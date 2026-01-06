@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -52,12 +53,19 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 	private TabHost tabHost;
 	private Handler handler;
 
-	// Log colors
-	private static final int COLOR_DEBUG = 0xFFAAAAAA; // Gray
-	private static final int COLOR_INFO = 0xFF00FF00;  // Green
-	private static final int COLOR_WARN = 0xFFFFFF00;  // Yellow
-	private static final int COLOR_ERROR = 0xFFFF0000; // Red
-	private static final int COLOR_DEFAULT = 0xFF00FF00; // Green (default)
+	// Log colors for dark theme
+	private static final int COLOR_DEBUG_DARK = 0xFFAAAAAA; // Gray
+	private static final int COLOR_INFO_DARK = 0xFF00FF00;  // Green
+	private static final int COLOR_WARN_DARK = 0xFFFFFF00;  // Yellow
+	private static final int COLOR_ERROR_DARK = 0xFFFF0000; // Red
+	private static final int COLOR_DEFAULT_DARK = 0xFF00FF00; // Green
+
+	// Log colors for light theme
+	private static final int COLOR_DEBUG_LIGHT = 0xFF808080; // Gray
+	private static final int COLOR_INFO_LIGHT = 0xFF008000;  // Dark Green
+	private static final int COLOR_WARN_LIGHT = 0xFFB8860B;  // Dark Goldenrod
+	private static final int COLOR_ERROR_LIGHT = 0xFFCC0000; // Dark Red
+	private static final int COLOR_DEFAULT_LIGHT = 0xFF008000; // Dark Green
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -297,6 +305,17 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 	private SpannableString colorizeLog(String log) {
 		SpannableString spannable = new SpannableString(log);
 
+		// Detect if light theme is being used
+		boolean isLightTheme = (getResources().getConfiguration().uiMode &
+			Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_NO;
+
+		// Choose colors based on theme
+		int colorDebug = isLightTheme ? COLOR_DEBUG_LIGHT : COLOR_DEBUG_DARK;
+		int colorInfo = isLightTheme ? COLOR_INFO_LIGHT : COLOR_INFO_DARK;
+		int colorWarn = isLightTheme ? COLOR_WARN_LIGHT : COLOR_WARN_DARK;
+		int colorError = isLightTheme ? COLOR_ERROR_LIGHT : COLOR_ERROR_DARK;
+		int colorDefault = isLightTheme ? COLOR_DEFAULT_LIGHT : COLOR_DEFAULT_DARK;
+
 		int start = 0;
 		while (start < log.length()) {
 			// Find log level marker [D], [I], [W], [E], [?]
@@ -310,20 +329,20 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 			}
 
 			char level = log.charAt(levelStart + 1);
-			int color = COLOR_DEFAULT;
+			int color = colorDefault;
 
 			switch (level) {
 			case 'D':
-				color = COLOR_DEBUG;
+				color = colorDebug;
 				break;
 			case 'I':
-				color = COLOR_INFO;
+				color = colorInfo;
 				break;
 			case 'W':
-				color = COLOR_WARN;
+				color = colorWarn;
 				break;
 			case 'E':
-				color = COLOR_ERROR;
+				color = colorError;
 				break;
 			default:
 				continue;
