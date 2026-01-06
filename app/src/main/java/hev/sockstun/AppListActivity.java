@@ -30,6 +30,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
+import android.widget.LinearLayout;
 import android.text.TextWatcher;
 import android.text.Editable;
 import android.content.Context;
@@ -58,9 +61,19 @@ public class AppListActivity extends ListActivity {
 		private final List<Package> allPackages = new ArrayList<Package>();
 		private final List<Package> filteredPackages = new ArrayList<Package>();
 		private String lastFilter = "";
+		private int filterType = 0; // 0=全部, 1=用户, 2=系统
 
 		public AppArrayAdapter(Context context) {
 			super(context, R.layout.appitem);
+		}
+
+		public void setFilterType(int type) {
+			this.filterType = type;
+			applyFilter(lastFilter);
+		}
+
+		public int getFilterType() {
+			return filterType;
 		}
 
 		@Override
@@ -99,6 +112,16 @@ public class AppListActivity extends ListActivity {
 		}
 
 		private boolean matchesFilter(Package pkg, String filter) {
+			// 检查类型过滤
+			if (filterType == 1) { // 用户应用
+				if ((pkg.info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
+					return false;
+			} else if (filterType == 2) { // 系统应用
+				if ((pkg.info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
+					return false;
+			}
+
+			// 检查搜索过滤
 			if (filter == null || filter.length() == 0)
 				return true;
 			return pkg.label.toLowerCase().contains(filter.toLowerCase());
@@ -107,14 +130,10 @@ public class AppListActivity extends ListActivity {
 		public void applyFilter(String filter) {
 			lastFilter = filter != null ? filter : "";
 			filteredPackages.clear();
-			if (lastFilter.length() == 0) {
-				filteredPackages.addAll(allPackages);
-			} else {
-				String f = lastFilter.toLowerCase();
-				for (Package p : allPackages) {
-					if (p.label != null && p.label.toLowerCase().contains(f))
-						filteredPackages.add(p);
-				}
+
+			for (Package p : allPackages) {
+				if (matchesFilter(p, lastFilter))
+					filteredPackages.add(p);
 			}
 			notifyDataSetChanged();
 		}
@@ -169,6 +188,38 @@ public class AppListActivity extends ListActivity {
 		searchBox.setPadding(pad, pad, pad, pad);
 		getListView().addHeaderView(searchBox, null, false);
 
+		// 创建类型过滤的RadioGroup
+		RadioGroup filterGroup = new RadioGroup(this);
+		filterGroup.setOrientation(RadioGroup.HORIZONTAL);
+		filterGroup.setPadding(pad, pad / 2, pad, pad);
+		filterGroup.setBackgroundColor(0xFFEEEEEE);
+
+		RadioButton rbAll = new RadioButton(this);
+		rbAll.setId(0); // 设置ID为0
+		rbAll.setText("全部");
+		rbAll.setChecked(true);
+		filterGroup.addView(rbAll);
+
+		RadioButton rbUser = new RadioButton(this);
+		rbUser.setId(1); // 设置ID为1
+		rbUser.setText("用户");
+		filterGroup.addView(rbUser);
+
+		RadioButton rbSystem = new RadioButton(this);
+		rbSystem.setId(2); // 设置ID为2
+		rbSystem.setText("系统");
+		filterGroup.addView(rbSystem);
+
+		// 设置RadioGroup的margin
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+			LinearLayout.LayoutParams.MATCH_PARENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT
+		);
+		params.setMargins(pad, 0, pad, 0);
+		filterGroup.setLayoutParams(params);
+
+		getListView().addHeaderView(filterGroup, null, false);
+
 		adapter.sort(new Comparator<Package>() {
 			public int compare(Package a, Package b) {
 				if (a.selected != b.selected)
@@ -190,6 +241,14 @@ public class AppListActivity extends ListActivity {
 
 			@Override
 			public void afterTextChanged(Editable s) { }
+		});
+
+		filterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				// checkedId就是RadioButton的ID
+				adapter.setFilterType(checkedId);
+			}
 		});
 	}
 
