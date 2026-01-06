@@ -118,7 +118,15 @@ public class TProxyService extends VpnService {
 		boolean disallowSelf = true;
 		if (prefs.getGlobal()) {
 			session += "/Global";
+			// In global mode, exclude selected apps (blacklist)
+			for (String appName : prefs.getApps()) {
+				try {
+					builder.addDisallowedApplication(appName);
+				} catch (NameNotFoundException e) {
+				}
+			}
 		} else {
+			// In per-app mode, only selected apps use VPN (whitelist)
 			for (String appName : prefs.getApps()) {
 				try {
 					builder.addAllowedApplication(appName);
