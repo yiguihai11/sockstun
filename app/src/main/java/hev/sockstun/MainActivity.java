@@ -70,6 +70,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_control;
 	private Spinner spinner_log_level;
 	private TextView textview_github_link;
+	private TextView textview_traffic_upload;
+	private TextView textview_traffic_download;
+	private TextView textview_packets_upload;
+	private TextView textview_packets_download;
 	private EditText edittext_task_stack_size;
 	private EditText edittext_tcp_buffer_size;
 	private EditText edittext_udp_recv_buffer_size;
@@ -199,6 +203,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				if ("acl".equals(tabId) && !aclLoaded) {
 					aclLoaded = true;
 					loadAclContent();
+				}
+				// Update traffic statistics when About tab is selected
+				if ("about".equals(tabId)) {
+					updateTrafficStats();
 				}
 			}
 		});
@@ -341,6 +349,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		spannableString.setSpan(new ForegroundColorSpan(0xFF2196F3), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		textview_github_link.setText(spannableString);
 		textview_github_link.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+
+		// Initialize traffic statistics TextViews
+		textview_traffic_upload = (TextView) findViewById(R.id.traffic_upload);
+		textview_traffic_download = (TextView) findViewById(R.id.traffic_download);
+		textview_packets_upload = (TextView) findViewById(R.id.packets_upload);
+		textview_packets_download = (TextView) findViewById(R.id.packets_download);
 
 		// Setup log level spinner
 		spinner_log_level = (Spinner) findViewById(R.id.log_level);
@@ -1098,6 +1112,50 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		if (focus) {
 			editText.requestFocus();
+		}
+	}
+
+	/**
+	 * Format bytes to human readable string (e.g., "1.00 MB (1048576)")
+	 */
+	private String formatBytes(long bytes) {
+		if (bytes <= 0) return "0 B";
+
+		final String[] units = {"B", "KB", "MB", "GB", "TB"};
+		int digitGroups = (int) (Math.log10(bytes) / Math.log10(1024));
+		double formatted = bytes / Math.pow(1024, digitGroups);
+
+		return String.format("%.2f %s (%d)", formatted, units[digitGroups], bytes);
+	}
+
+	/**
+	 * Update traffic statistics display
+	 */
+	private void updateTrafficStats() {
+		try {
+			long[] stats = TProxyService.getStats();
+			if (stats == null || stats.length < 4) {
+				textview_traffic_upload.setText(R.string.traffic_not_available);
+				textview_traffic_download.setText(R.string.traffic_not_available);
+				textview_packets_upload.setText(R.string.traffic_not_available);
+				textview_packets_download.setText(R.string.traffic_not_available);
+				return;
+			}
+
+			long tx_packets = stats[0];
+			long tx_bytes = stats[1];
+			long rx_packets = stats[2];
+			long rx_bytes = stats[3];
+
+			textview_traffic_upload.setText(formatBytes(tx_bytes));
+			textview_traffic_download.setText(formatBytes(rx_bytes));
+			textview_packets_upload.setText(getString(R.string.traffic_packets, tx_packets));
+			textview_packets_download.setText(getString(R.string.traffic_packets, rx_packets));
+		} catch (Exception e) {
+			textview_traffic_upload.setText(R.string.traffic_not_available);
+			textview_traffic_download.setText(R.string.traffic_not_available);
+			textview_packets_upload.setText(R.string.traffic_not_available);
+			textview_packets_download.setText(R.string.traffic_not_available);
 		}
 	}
 }
