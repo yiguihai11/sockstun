@@ -40,10 +40,6 @@ public class TProxyService extends VpnService {
 		return TProxyGetLogs(maxLines);
 	}
 
-	public static long[] getStats() {
-		return TProxyGetStats();
-	}
-
 	public static final String ACTION_CONNECT = "hev.sockstun.CONNECT";
 	public static final String ACTION_DISCONNECT = "hev.sockstun.DISCONNECT";
 

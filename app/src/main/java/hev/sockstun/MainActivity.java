@@ -10,8 +10,6 @@
 package hev.sockstun;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -51,9 +49,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private HorizontalScrollView tabScroller;
 	private TabWidget tabWidget;
 	private BroadcastReceiver vpnStateReceiver;
-	private Handler trafficUpdateHandler;
-	private Runnable trafficUpdateRunnable;
-	private boolean isAboutTabActive = false;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
 	private EditText edittext_socks_udp_port;
@@ -75,10 +70,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private Button button_control;
 	private Spinner spinner_log_level;
 	private TextView textview_github_link;
-	private TextView textview_traffic_upload;
-	private TextView textview_traffic_download;
-	private TextView textview_packets_upload;
-	private TextView textview_packets_download;
 	private EditText edittext_task_stack_size;
 	private EditText edittext_tcp_buffer_size;
 	private EditText edittext_udp_recv_buffer_size;
@@ -208,12 +199,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				if ("acl".equals(tabId) && !aclLoaded) {
 					aclLoaded = true;
 					loadAclContent();
-				}
-				// Handle traffic auto-refresh for About tab
-				if ("about".equals(tabId)) {
-					startTrafficUpdates();
-				} else {
-					stopTrafficUpdates();
 				}
 			}
 		});
@@ -357,12 +342,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		textview_github_link.setText(spannableString);
 		textview_github_link.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
 
-		// Initialize traffic statistics TextViews
-		textview_traffic_upload = (TextView) findViewById(R.id.traffic_upload);
-		textview_traffic_download = (TextView) findViewById(R.id.traffic_download);
-		textview_packets_upload = (TextView) findViewById(R.id.packets_upload);
-		textview_packets_download = (TextView) findViewById(R.id.packets_download);
-
 		// Setup log level spinner
 		spinner_log_level = (Spinner) findViewById(R.id.log_level);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -422,6 +401,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			} catch (IOException e) {
 				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (vpnStateReceiver != null) {
+			unregisterReceiver(vpnStateReceiver);
+			vpnStateReceiver = null;
 		}
 	}
 
@@ -1110,99 +1098,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		if (focus) {
 			editText.requestFocus();
-		}
-	}
-
-	/**
-	 * Format bytes to human readable string (e.g., "1.00 MB (1048576)")
-	 */
-	private String formatBytes(long bytes) {
-		if (bytes <= 0) return "0 B";
-
-		final String[] units = {"B", "KB", "MB", "GB", "TB"};
-		int digitGroups = (int) (Math.log10(bytes) / Math.log10(1024));
-		double formatted = bytes / Math.pow(1024, digitGroups);
-
-		return String.format("%.2f %s (%d)", formatted, units[digitGroups], bytes);
-	}
-
-	/**
-	 * Update traffic statistics display
-	 */
-	private void updateTrafficStats() {
-		try {
-			long[] stats = TProxyService.getStats();
-			if (stats == null || stats.length < 4) {
-				textview_traffic_upload.setText(R.string.traffic_not_available);
-				textview_traffic_download.setText(R.string.traffic_not_available);
-				textview_packets_upload.setText(R.string.traffic_not_available);
-				textview_packets_download.setText(R.string.traffic_not_available);
-				return;
-			}
-
-			long tx_packets = stats[0];
-			long tx_bytes = stats[1];
-			long rx_packets = stats[2];
-			long rx_bytes = stats[3];
-
-			textview_traffic_upload.setText(formatBytes(tx_bytes));
-			textview_traffic_download.setText(formatBytes(rx_bytes));
-			textview_packets_upload.setText(getString(R.string.traffic_packets, tx_packets));
-			textview_packets_download.setText(getString(R.string.traffic_packets, rx_packets));
-		} catch (Exception e) {
-			textview_traffic_upload.setText(R.string.traffic_not_available);
-			textview_traffic_download.setText(R.string.traffic_not_available);
-			textview_packets_upload.setText(R.string.traffic_not_available);
-			textview_packets_download.setText(R.string.traffic_not_available);
-		}
-	}
-
-	/**
-	 * Start auto-refreshing traffic statistics (every 1 second)
-	 */
-	private void startTrafficUpdates() {
-		if (isAboutTabActive) return; // Already running
-		isAboutTabActive = true;
-
-		if (trafficUpdateHandler == null) {
-			trafficUpdateHandler = new Handler(Looper.getMainLooper());
-		}
-		if (trafficUpdateRunnable == null) {
-			trafficUpdateRunnable = new Runnable() {
-				@Override
-				public void run() {
-					if (isAboutTabActive) {
-						updateTrafficStats();
-						trafficUpdateHandler.postDelayed(this, 1000);
-					}
-				}
-			};
-		}
-
-		// Initial update
-		updateTrafficStats();
-		// Start periodic updates
-		trafficUpdateHandler.postDelayed(trafficUpdateRunnable, 1000);
-	}
-
-	/**
-	 * Stop auto-refreshing traffic statistics
-	 */
-	private void stopTrafficUpdates() {
-		isAboutTabActive = false;
-		if (trafficUpdateHandler != null && trafficUpdateRunnable != null) {
-			trafficUpdateHandler.removeCallbacks(trafficUpdateRunnable);
-		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		// Stop traffic updates when activity is destroyed
-		stopTrafficUpdates();
-		if (vpnStateReceiver != null) {
-			unregisterReceiver(vpnStateReceiver);
-			vpnStateReceiver = null;
 		}
 	}
 }
