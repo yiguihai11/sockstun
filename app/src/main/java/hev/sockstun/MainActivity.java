@@ -49,6 +49,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private HorizontalScrollView tabScroller;
 	private TabWidget tabWidget;
 	private BroadcastReceiver vpnStateReceiver;
+	private Handler trafficUpdateHandler;
+	private Runnable trafficUpdateRunnable;
+	private boolean isAboutTabActive = false;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
 	private EditText edittext_socks_udp_port;
@@ -204,9 +207,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 					aclLoaded = true;
 					loadAclContent();
 				}
-				// Update traffic statistics when About tab is selected
+				// Handle traffic auto-refresh for About tab
 				if ("about".equals(tabId)) {
-					updateTrafficStats();
+					startTrafficUpdates();
+				} else {
+					stopTrafficUpdates();
 				}
 			}
 		});
@@ -415,15 +420,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			} catch (IOException e) {
 				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
-		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (vpnStateReceiver != null) {
-			unregisterReceiver(vpnStateReceiver);
-			vpnStateReceiver = null;
 		}
 	}
 
@@ -1156,6 +1152,55 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			textview_traffic_download.setText(R.string.traffic_not_available);
 			textview_packets_upload.setText(R.string.traffic_not_available);
 			textview_packets_download.setText(R.string.traffic_not_available);
+		}
+	}
+
+	/**
+	 * Start auto-refreshing traffic statistics (every 1 second)
+	 */
+	private void startTrafficUpdates() {
+		if (isAboutTabActive) return; // Already running
+		isAboutTabActive = true;
+
+		if (trafficUpdateHandler == null) {
+			trafficUpdateHandler = new Handler(Looper.getMainLooper());
+		}
+		if (trafficUpdateRunnable == null) {
+			trafficUpdateRunnable = new Runnable() {
+				@Override
+				public void run() {
+					if (isAboutTabActive) {
+						updateTrafficStats();
+						trafficUpdateHandler.postDelayed(this, 1000);
+					}
+				}
+			};
+		}
+
+		// Initial update
+		updateTrafficStats();
+		// Start periodic updates
+		trafficUpdateHandler.postDelayed(trafficUpdateRunnable, 1000);
+	}
+
+	/**
+	 * Stop auto-refreshing traffic statistics
+	 */
+	private void stopTrafficUpdates() {
+		isAboutTabActive = false;
+		if (trafficUpdateHandler != null && trafficUpdateRunnable != null) {
+			trafficUpdateHandler.removeCallbacks(trafficUpdateRunnable);
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// Stop traffic updates when activity is destroyed
+		stopTrafficUpdates();
+		if (vpnStateReceiver != null) {
+			unregisterReceiver(vpnStateReceiver);
+			vpnStateReceiver = null;
 		}
 	}
 }
