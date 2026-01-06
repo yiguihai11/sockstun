@@ -11,4 +11,5 @@
     <color name="info_text">#000000</color>
     <color name="edit_text_background">#FFFFFF</color>
     <color name="edit_text_color">#000000</color>
+    <color name="warning_text">#FF6B35</color>
 </resources>
