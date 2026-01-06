@@ -192,7 +192,7 @@ public class AppListActivity extends ListActivity {
 		RadioGroup filterGroup = new RadioGroup(this);
 		filterGroup.setOrientation(RadioGroup.HORIZONTAL);
 		filterGroup.setPadding(pad, pad / 2, pad, pad);
-		filterGroup.setBackgroundColor(0xFFEEEEEE);
+		filterGroup.setBackgroundColor(getResources().getColor(R.color.info_background));
 
 		RadioButton rbAll = new RadioButton(this);
 		rbAll.setId(0); // 设置ID为0
