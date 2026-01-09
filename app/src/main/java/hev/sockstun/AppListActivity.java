@@ -44,6 +44,7 @@ public class AppListActivity extends ListActivity {
 	private Preferences prefs;
 	private AppArrayAdapter adapter;
 	private boolean isChanged = false;
+	private TextView statsView;
 
 	private class Package {
 		public PackageInfo info;
@@ -136,6 +137,16 @@ public class AppListActivity extends ListActivity {
 					filteredPackages.add(p);
 			}
 			notifyDataSetChanged();
+			updateStats();
+		}
+
+		public int getSelectedCount() {
+			int count = 0;
+			for (Package p : allPackages) {
+				if (p.selected)
+					count++;
+			}
+			return count;
 		}
 
 		@Override
@@ -162,9 +173,19 @@ public class AppListActivity extends ListActivity {
 		}
 	}
 
+	private void updateStats() {
+		if (statsView != null && adapter != null) {
+			int total = adapter.getAllPackages().size();
+			int visible = adapter.getCount();
+			int selected = adapter.getSelectedCount();
+			statsView.setText("应用总数: " + total + " | 显示: " + visible + " | 已选: " + selected);
+		}
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTitle("应用列表 - 具有网络权限的应用");
 
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -186,9 +207,18 @@ public class AppListActivity extends ListActivity {
 			adapter.add(pkg);
 		}
 
+		int pad = (int) (8 * getResources().getDisplayMetrics().density);
+
+		// 添加统计信息显示
+		statsView = new TextView(this);
+		statsView.setPadding(pad, pad, pad, pad / 2);
+		statsView.setTextSize(14);
+		statsView.setTextColor(getResources().getColor(R.color.info_text));
+		statsView.setBackgroundColor(getResources().getColor(R.color.info_background));
+		getListView().addHeaderView(statsView, null, false);
+
 		EditText searchBox = new EditText(this);
 		searchBox.setHint("Search");
-		int pad = (int) (8 * getResources().getDisplayMetrics().density);
 		searchBox.setPadding(pad, pad, pad, pad);
 		getListView().addHeaderView(searchBox, null, false);
 
@@ -233,6 +263,7 @@ public class AppListActivity extends ListActivity {
 		});
 
 		setListAdapter(adapter);
+		updateStats();
 
 		searchBox.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -284,5 +315,6 @@ public class AppListActivity extends ListActivity {
 		if (checkbox != null)
 			checkbox.setChecked(pkg.selected);
 		isChanged = true;
+		updateStats();
 	}
 }
