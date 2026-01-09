@@ -48,11 +48,24 @@
 				android:singleLine="true" />
 		</LinearLayout>
 	</LinearLayout>
-	<CheckBox
-		android:id="@+id/checked"
+	<LinearLayout
+		android:orientation="vertical"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
-		android:focusable="false"
-		android:clickable="false" />
+		android:gravity="center" >
+		<CheckBox
+			android:id="@+id/checked"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:focusable="false"
+			android:clickable="false" />
+		<TextView
+			android:id="@+id/proxy_status"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="24px"
+			android:textColor="#666666"
+			android:singleLine="true" />
+	</LinearLayout>
 </RelativeLayout>

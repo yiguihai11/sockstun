@@ -45,6 +45,7 @@ public class AppListActivity extends ListActivity {
 	private AppArrayAdapter adapter;
 	private boolean isChanged = false;
 	private TextView statsView;
+	private boolean isGlobalMode;
 
 	private class Package {
 		public PackageInfo info;
@@ -62,7 +63,7 @@ public class AppListActivity extends ListActivity {
 		private final List<Package> allPackages = new ArrayList<Package>();
 		private final List<Package> filteredPackages = new ArrayList<Package>();
 		private String lastFilter = "";
-		private int filterType = 0; // 0=全部, 1=用户, 2=系统
+		private int filterType = 0; // 0=All, 1=User, 2=System
 
 		public AppArrayAdapter(Context context) {
 			super(context, R.layout.appitem);
@@ -113,16 +114,16 @@ public class AppListActivity extends ListActivity {
 		}
 
 		private boolean matchesFilter(Package pkg, String filter) {
-			// 检查类型过滤
-			if (filterType == 1) { // 用户应用
+			// Check type filter
+			if (filterType == 1) { // User apps
 				if ((pkg.info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
 					return false;
-			} else if (filterType == 2) { // 系统应用
+			} else if (filterType == 2) { // System apps
 				if ((pkg.info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
 					return false;
 			}
 
-			// 检查搜索过滤
+			// Check search filter
 			if (filter == null || filter.length() == 0)
 				return true;
 			return pkg.label.toLowerCase().contains(filter.toLowerCase());
@@ -159,6 +160,7 @@ public class AppListActivity extends ListActivity {
 			TextView packageNameView = (TextView) rowView.findViewById(R.id.package_name);
 			TextView packageUidView = (TextView) rowView.findViewById(R.id.package_uid);
 			CheckBox checkBox = (CheckBox) rowView.findViewById(R.id.checked);
+			TextView proxyStatusView = (TextView) rowView.findViewById(R.id.proxy_status);
 
 			Package pkg = getItem(position);
 			PackageManager pm = getContext().getPackageManager();
@@ -169,6 +171,25 @@ public class AppListActivity extends ListActivity {
 			packageUidView.setText("UID: " + appinfo.uid);
 			checkBox.setChecked(pkg.selected);
 
+			// Set proxy status text
+			if (isGlobalMode) {
+				// Global mode: selected = excluded, unselected = proxied
+				if (pkg.selected) {
+					proxyStatusView.setText("Excluded");
+					proxyStatusView.setTextColor(0xFFFF6B6B);
+				} else {
+					proxyStatusView.setText("");
+				}
+			} else {
+				// Per-app mode: selected = proxy only, unselected = bypass
+				if (pkg.selected) {
+					proxyStatusView.setText("Proxy Only");
+					proxyStatusView.setTextColor(0xFF4CAF50);
+				} else {
+					proxyStatusView.setText("");
+				}
+			}
+
 			return rowView;
 		}
 	}
@@ -178,18 +199,19 @@ public class AppListActivity extends ListActivity {
 			int total = adapter.getAllPackages().size();
 			int visible = adapter.getCount();
 			int selected = adapter.getSelectedCount();
-			statsView.setText("应用总数: " + total + " | 显示: " + visible + " | 已选: " + selected);
+			statsView.setText("Total: " + total + " | Showing: " + visible + " | Selected: " + selected);
 		}
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("应用列表 - 具有网络权限的应用");
+		setTitle("App List");
 
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 		prefs = new Preferences(this);
+		isGlobalMode = prefs.getGlobal();
 		Set<String> apps = prefs.getApps();
 		PackageManager pm = getPackageManager();
 		adapter = new AppArrayAdapter(this);
@@ -209,7 +231,7 @@ public class AppListActivity extends ListActivity {
 
 		int pad = (int) (8 * getResources().getDisplayMetrics().density);
 
-		// 添加统计信息显示
+		// Add stats view
 		statsView = new TextView(this);
 		statsView.setPadding(pad, pad, pad, pad / 2);
 		statsView.setTextSize(14);
@@ -222,29 +244,29 @@ public class AppListActivity extends ListActivity {
 		searchBox.setPadding(pad, pad, pad, pad);
 		getListView().addHeaderView(searchBox, null, false);
 
-		// 创建类型过滤的RadioGroup
+		// Create type filter RadioGroup
 		RadioGroup filterGroup = new RadioGroup(this);
 		filterGroup.setOrientation(RadioGroup.HORIZONTAL);
 		filterGroup.setPadding(pad, pad / 2, pad, pad);
 		filterGroup.setBackgroundColor(getResources().getColor(R.color.info_background));
 
 		RadioButton rbAll = new RadioButton(this);
-		rbAll.setId(0); // 设置ID为0
-		rbAll.setText("全部");
+		rbAll.setId(0); // Set ID to 0
+		rbAll.setText("All");
 		rbAll.setChecked(true);
 		filterGroup.addView(rbAll);
 
 		RadioButton rbUser = new RadioButton(this);
-		rbUser.setId(1); // 设置ID为1
-		rbUser.setText("用户");
+		rbUser.setId(1); // Set ID to 1
+		rbUser.setText("User");
 		filterGroup.addView(rbUser);
 
 		RadioButton rbSystem = new RadioButton(this);
-		rbSystem.setId(2); // 设置ID为2
-		rbSystem.setText("系统");
+		rbSystem.setId(2); // Set ID to 2
+		rbSystem.setText("System");
 		filterGroup.addView(rbSystem);
 
-		// 设置RadioGroup的margin
+		// Set RadioGroup margin
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 			LinearLayout.LayoutParams.MATCH_PARENT,
 			LinearLayout.LayoutParams.WRAP_CONTENT
@@ -281,7 +303,7 @@ public class AppListActivity extends ListActivity {
 		filterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// checkedId就是RadioButton的ID
+				// checkedId is the RadioButton's ID
 				adapter.setFilterType(checkedId);
 			}
 		});
@@ -314,6 +336,27 @@ public class AppListActivity extends ListActivity {
 		CheckBox checkbox = (CheckBox) v.findViewById(R.id.checked);
 		if (checkbox != null)
 			checkbox.setChecked(pkg.selected);
+
+		// Update proxy status text
+		TextView proxyStatusView = (TextView) v.findViewById(R.id.proxy_status);
+		if (proxyStatusView != null) {
+			if (isGlobalMode) {
+				if (pkg.selected) {
+					proxyStatusView.setText("Excluded");
+					proxyStatusView.setTextColor(0xFFFF6B6B);
+				} else {
+					proxyStatusView.setText("");
+				}
+			} else {
+				if (pkg.selected) {
+					proxyStatusView.setText("Proxy Only");
+					proxyStatusView.setTextColor(0xFF4CAF50);
+				} else {
+					proxyStatusView.setText("");
+				}
+			}
+		}
+
 		isChanged = true;
 		updateStats();
 	}
