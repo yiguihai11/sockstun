@@ -145,6 +145,8 @@ public class AppListActivity extends ListActivity {
 			View rowView = inflater.inflate(R.layout.appitem, parent, false);
 			ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 			TextView textView = (TextView) rowView.findViewById(R.id.name);
+			TextView packageNameView = (TextView) rowView.findViewById(R.id.package_name);
+			TextView packageUidView = (TextView) rowView.findViewById(R.id.package_uid);
 			CheckBox checkBox = (CheckBox) rowView.findViewById(R.id.checked);
 
 			Package pkg = getItem(position);
@@ -152,6 +154,8 @@ public class AppListActivity extends ListActivity {
 			ApplicationInfo appinfo = pkg.info.applicationInfo;
 			imageView.setImageDrawable(appinfo.loadIcon(pm));
 			textView.setText(appinfo.loadLabel(pm).toString());
+			packageNameView.setText(pkg.info.packageName);
+			packageUidView.setText("UID: " + appinfo.uid);
 			checkBox.setChecked(pkg.selected);
 
 			return rowView;
