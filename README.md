@@ -1,39 +1,46 @@
-[English](https://github.com/heiher/sockstun/blob/main/README.md ) |  [Русский](https://github.com/heiher/sockstun/blob/main/README_RU.md)
 # SocksTun
 
-[![status](https://github.com/heiher/sockstun/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/heiher/sockstun)
+[![status](https://github.com/yiguihai11/sockstun/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/yiguihai11/sockstun/actions)
 
-A simple and lightweight VPN over socks5 proxy for Android. It is based on a high-performance and low-overhead [tun2socks](https://github.com/heiher/hev-socks5-tunnel).
+一款基于 SOCKS5 代理的 Android VPN 客户端，简洁轻量，基于高性能的 [hev-socks5-tunnel](https://github.com/yiguihai11/hev-socks5-tunnel) 实现。
 
-[<img src="https://github.com/heiher/sockstun/blob/main/.github/badges/get-it-on.png"
-    alt="Get it on GitHub"
-    height="80">](https://github.com/heiher/sockstun/releases)
+## 下载安装
+
+[<img src="https://github.com/yiguihai11/sockstun/raw/main/.github/badges/get-it-on.png"
+    alt="Download APK"
+    height="80">](https://github.com/yiguihai11/sockstun/releases/tag/latest)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
     alt="Get it on F-Droid"
     height="80">](https://f-droid.org/packages/hev.sockstun)
 
-## Features
+## 主要功能
 
-* Redirect TCP connections.
-* Redirect UDP packets. (Fullcone NAT, UDP-in-UDP and UDP-in-TCP [^1])
-* Simple username/password authentication.
-* Specifying DNS addresses.
-* IPv4/IPv6 dual stack.
-* Global/per-App modes.
+- TCP 连接代理
+- UDP 数据包代理（支持 Fullcone NAT、UDP-in-UDP 和 UDP-in-TCP [^1]）
+- 简单的用户名/密码认证
+- 自定义 DNS 服务器
+- IPv4/IPv6 双栈支持
+- 全局/按应用代理模式
+- 中国路由表分流（Chnroutes）
+- ACL 访问控制
+- DNS 分流隧道
+- DNS 转发器
+- DNS 延迟优化
+- Smart Proxy 智能代理切换
 
-## How to Build
+## 编译方法
 
-Fork this project and create a new release, or build manually:
+Fork 本项目并创建 Release，或手动编译：
 
 ```bash
-git clone --recursive https://github.com/heiher/sockstun
+git clone --recursive https://github.com/yiguihai11/sockstun
 cd sockstun
-gradle assembleDebug
+./gradlew assembleDebug
 ```
 
-## Socks5 Server
+## SOCKS5 服务器
 
-### UDP relay over TCP
+### UDP over TCP 中转
 
 ```bash
 git clone --recursive https://github.com/heiher/hev-socks5-server
@@ -53,21 +60,22 @@ misc:
   limit-nofile: 65535
 ```
 
-### UDP relay over UDP
+### UDP over UDP 中转
 
-Any socks5 server that implements the CONNECT and UDP-ASSOCIATE methods of RFC1928.
+任何实现了 RFC1928 的 CONNECT 和 UDP-ASSOCIATE 方法的 SOCKS5 服务器。
 
-## Dependencies
+## 相关项目
 
-* HevSocks5Tunnel - https://github.com/heiher/hev-socks5-tunnel
+- HevSocks5Tunnel - https://github.com/yiguihai11/hev-socks5-tunnel
+- HevSocks5Server - https://github.com/heiher/hev-socks5-server
 
-## Contributors
+## 贡献者
 
-* **hev** - https://hev.cc
-* **ziqi mo** - https://github.com/mosentest
+- **hev** - https://hev.cc
+- **ziqi mo** - https://github.com/mosentest
 
-## License
+## 许可证
 
-MIT
+MIT License
 
-[^1]: See [protocol specification](https://github.com/heiher/hev-socks5-core/tree/main?tab=readme-ov-file#udp-in-tcp). The [hev-socks5-server](https://github.com/heiher/hev-socks5-server) supports UDP relay over TCP.
+[^1]: 详见 [协议规范](https://github.com/heiher/hev-socks5-core/tree/main?tab=readme-ov-file#udp-in-tcp)。[hev-socks5-server](https://github.com/heiher/hev-socks5-server) 支持 UDP over TCP 中转。
