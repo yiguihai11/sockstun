@@ -64,18 +64,14 @@
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:digits="0123456789."/>
-		<TextView
-			android:id="@+id/system_dns_v4_hint"
+		<LinearLayout
+			android:id="@+id/system_dns_v4_container"
+			android:orientation="horizontal"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text=""
-			android:textSize="11sp"
-			android:textColor="@color/hint_text"
 			android:paddingLeft="4dp"
 			android:paddingTop="2dp"
-			android:paddingBottom="2dp"
-			android:clickable="true"
-			android:focusable="true"/>
+			android:paddingBottom="2dp"/>
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -86,18 +82,14 @@
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:digits="0123456789abcdef:"/>
-		<TextView
-			android:id="@+id/system_dns_v6_hint"
+		<LinearLayout
+			android:id="@+id/system_dns_v6_container"
+			android:orientation="horizontal"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text=""
-			android:textSize="11sp"
-			android:textColor="@color/hint_text"
 			android:paddingLeft="4dp"
 			android:paddingTop="2dp"
-			android:paddingBottom="2dp"
-			android:clickable="true"
-			android:focusable="true"/>
+			android:paddingBottom="2dp"/>
 
 		<TextView
 			android:layout_width="wrap_content"

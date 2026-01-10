@@ -64,8 +64,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_socks_pass;
 	private EditText edittext_dns_ipv4;
 	private EditText edittext_dns_ipv6;
-	private TextView textview_system_dns_v4_hint;
-	private TextView textview_system_dns_v6_hint;
+	private LinearLayout linearlayout_system_dns_v4_container;
+	private LinearLayout linearlayout_system_dns_v6_container;
 	private CheckBox checkbox_udp_in_tcp;
 	private CheckBox checkbox_remote_dns;
 	private CheckBox checkbox_global;
@@ -224,8 +224,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_socks_pass = (EditText) findViewById(R.id.socks_pass);
 		edittext_dns_ipv4 = (EditText) findViewById(R.id.dns_ipv4);
 		edittext_dns_ipv6 = (EditText) findViewById(R.id.dns_ipv6);
-		textview_system_dns_v4_hint = (TextView) findViewById(R.id.system_dns_v4_hint);
-		textview_system_dns_v6_hint = (TextView) findViewById(R.id.system_dns_v6_hint);
+		linearlayout_system_dns_v4_container = (LinearLayout) findViewById(R.id.system_dns_v4_container);
+		linearlayout_system_dns_v6_container = (LinearLayout) findViewById(R.id.system_dns_v6_container);
 		checkbox_ipv4 = (CheckBox) findViewById(R.id.ipv4);
 		checkbox_ipv6 = (CheckBox) findViewById(R.id.ipv6);
 		checkbox_global = (CheckBox) findViewById(R.id.global);
@@ -711,57 +711,84 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				}
 			}
 
+			// Create buttons for IPv4 DNS
+			linearlayout_system_dns_v4_container.removeAllViews();
 			if (!v4DnsList.isEmpty()) {
-				textview_system_dns_v4_hint.setText(buildClickableDnsText(v4DnsList, edittext_dns_ipv4));
-				textview_system_dns_v4_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
-			} else {
-				textview_system_dns_v4_hint.setText("");
+				// Add "System:" label
+				TextView label = new TextView(this);
+				label.setText("System: ");
+				label.setTextSize(11);
+				label.setTextColor(0xFF808080);
+				linearlayout_system_dns_v4_container.addView(label);
+
+				for (String dns : v4DnsList) {
+					Button dnsButton = new Button(this);
+					dnsButton.setText(dns);
+					dnsButton.setTextSize(11);
+					dnsButton.setPadding(8, 4, 8, 4);
+					dnsButton.setMinimumHeight(0);
+					dnsButton.setMinimumWidth(0);
+
+					final String dnsAddr = dns;
+					dnsButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							edittext_dns_ipv4.setText(dnsAddr);
+						}
+					});
+
+					// Enable/disable based on VPN state
+					boolean editable = !prefs.getEnable();
+					dnsButton.setEnabled(editable && !prefs.getRemoteDns());
+
+					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+					params.setMargins(0, 0, 4, 0);
+					linearlayout_system_dns_v4_container.addView(dnsButton, params);
+				}
 			}
 
+			// Create buttons for IPv6 DNS
+			linearlayout_system_dns_v6_container.removeAllViews();
 			if (!v6DnsList.isEmpty()) {
-				textview_system_dns_v6_hint.setText(buildClickableDnsText(v6DnsList, edittext_dns_ipv6));
-				textview_system_dns_v6_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
-			} else {
-				textview_system_dns_v6_hint.setText("");
+				// Add "System:" label
+				TextView label = new TextView(this);
+				label.setText("System: ");
+				label.setTextSize(11);
+				label.setTextColor(0xFF808080);
+				linearlayout_system_dns_v6_container.addView(label);
+
+				for (String dns : v6DnsList) {
+					Button dnsButton = new Button(this);
+					dnsButton.setText(dns);
+					dnsButton.setTextSize(11);
+					dnsButton.setPadding(8, 4, 8, 4);
+					dnsButton.setMinimumHeight(0);
+					dnsButton.setMinimumWidth(0);
+
+					final String dnsAddr = dns;
+					dnsButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							edittext_dns_ipv6.setText(dnsAddr);
+						}
+					});
+
+					// Enable/disable based on VPN state
+					boolean editable = !prefs.getEnable();
+					dnsButton.setEnabled(editable && !prefs.getRemoteDns());
+
+					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+					params.setMargins(0, 0, 4, 0);
+					linearlayout_system_dns_v6_container.addView(dnsButton, params);
+				}
 			}
 		} catch (Exception e) {
 			// Silently ignore errors
 		}
-	}
-
-	private SpannableString buildClickableDnsText(java.util.List<String> dnsList, final EditText targetEditText) {
-		StringBuilder sb = new StringBuilder("System: ");
-		for (int i = 0; i < dnsList.size(); i++) {
-			if (i > 0) sb.append(" ");
-			sb.append(dnsList.get(i));
-		}
-
-		SpannableString spannable = new SpannableString(sb.toString());
-		int offset = 8; // "System: " length (including space after colon)
-		int linkColor = 0xFF2196F3; // Blue color for links
-
-		for (int i = 0; i < dnsList.size(); i++) {
-			final String dns = dnsList.get(i);
-			int start = offset;
-			int end = offset + dns.length();
-
-			ClickableSpan clickSpan = new ClickableSpan() {
-				@Override
-				public void onClick(View widget) {
-					targetEditText.setText(dns);
-				}
-			};
-			spannable.setSpan(clickSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-			spannable.setSpan(new ForegroundColorSpan(linkColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-			// Update offset: current DNS length + space (if not last)
-			offset = end;
-			if (i < dnsList.size() - 1) {
-				offset++; // Reserve space for the space before next DNS
-			}
-		}
-
-		return spannable;
 	}
 
 	private void savePrefs() {
