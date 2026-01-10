@@ -88,12 +88,12 @@ public class TProxyService extends VpnService {
 			// IPv4 private/local routes
 			if (prefs.getIpv4()) {
 				try {
-					builder.excludeRoute(IpPrefix("10.0.0.0/8"));
-					builder.excludeRoute(IpPrefix("100.64.0.0/10"));
-					builder.excludeRoute(IpPrefix("127.0.0.0/8"));
-					builder.excludeRoute(IpPrefix("169.254.0.0/16"));
-					builder.excludeRoute(IpPrefix("172.16.0.0/12"));
-					builder.excludeRoute(IpPrefix("192.168.0.0/16"));
+					builder.excludeRoute(new IpPrefix("10.0.0.0/8"));
+					builder.excludeRoute(new IpPrefix("100.64.0.0/10"));
+					builder.excludeRoute(new IpPrefix("127.0.0.0/8"));
+					builder.excludeRoute(new IpPrefix("169.254.0.0/16"));
+					builder.excludeRoute(new IpPrefix("172.16.0.0/12"));
+					builder.excludeRoute(new IpPrefix("192.168.0.0/16"));
 				} catch (Exception e) {
 					// Silently ignore errors for excludeRoute
 				}
@@ -101,10 +101,10 @@ public class TProxyService extends VpnService {
 			// IPv6 private/local routes
 			if (prefs.getIpv6()) {
 				try {
-					builder.excludeRoute(IpPrefix("::1/128"));
-					builder.excludeRoute(IpPrefix("::ffff:0:0/96"));
-					builder.excludeRoute(IpPrefix("fc00::/7"));
-					builder.excludeRoute(IpPrefix("fe80::/10"));
+					builder.excludeRoute(new IpPrefix("::1/128"));
+					builder.excludeRoute(new IpPrefix("::ffff:0:0/96"));
+					builder.excludeRoute(new IpPrefix("fc00::/7"));
+					builder.excludeRoute(new IpPrefix("fe80::/10"));
 				} catch (Exception e) {
 					// Silently ignore errors for excludeRoute
 				}
