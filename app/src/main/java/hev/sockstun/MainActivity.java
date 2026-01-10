@@ -15,6 +15,9 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
 import android.content.IntentFilter;
 import android.view.View;
 import android.widget.TabWidget;
@@ -59,6 +62,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_socks_pass;
 	private EditText edittext_dns_ipv4;
 	private EditText edittext_dns_ipv6;
+	private TextView textview_system_dns;
 	private CheckBox checkbox_udp_in_tcp;
 	private CheckBox checkbox_remote_dns;
 	private CheckBox checkbox_global;
@@ -213,6 +217,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_socks_pass = (EditText) findViewById(R.id.socks_pass);
 		edittext_dns_ipv4 = (EditText) findViewById(R.id.dns_ipv4);
 		edittext_dns_ipv6 = (EditText) findViewById(R.id.dns_ipv6);
+		textview_system_dns = (TextView) findViewById(R.id.system_dns);
 		checkbox_ipv4 = (CheckBox) findViewById(R.id.ipv4);
 		checkbox_ipv6 = (CheckBox) findViewById(R.id.ipv6);
 		checkbox_global = (CheckBox) findViewById(R.id.global);
@@ -357,6 +362,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_save.setOnClickListener(this);
 		button_control.setOnClickListener(this);
 		updateUI();
+		updateSystemDns();
 
 		// Register VPN state receiver
 		vpnStateReceiver = new BroadcastReceiver() {
@@ -663,6 +669,44 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		  button_control.setText(R.string.control_enable);
 		else
 		  button_control.setText(R.string.control_disable);
+	}
+
+	private void updateSystemDns() {
+		try {
+			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			if (cm == null) {
+				textview_system_dns.setText("Not available");
+				return;
+			}
+
+			Network network = cm.getActiveNetwork();
+			if (network == null) {
+				textview_system_dns.setText("No network");
+				return;
+			}
+
+			LinkProperties lp = cm.getLinkProperties(network);
+			if (lp == null) {
+				textview_system_dns.setText("No link properties");
+				return;
+			}
+
+			java.util.List<java.net.InetAddress> dnsServers = lp.getDnsServers();
+			if (dnsServers == null || dnsServers.isEmpty()) {
+				textview_system_dns.setText("No DNS servers");
+				return;
+			}
+
+			StringBuilder sb = new StringBuilder();
+			for (java.net.InetAddress dns : dnsServers) {
+				if (sb.length() > 0)
+					sb.append(", ");
+				sb.append(dns.getHostAddress());
+			}
+			textview_system_dns.setText(sb.toString());
+		} catch (Exception e) {
+			textview_system_dns.setText("Error: " + e.getMessage());
+		}
 	}
 
 	private void savePrefs() {
