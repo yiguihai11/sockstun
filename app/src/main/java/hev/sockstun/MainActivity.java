@@ -446,8 +446,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
 			if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
 				// Permission granted, notification will show
+				Toast.makeText(this, "通知权限已授予", Toast.LENGTH_SHORT).show();
 			} else {
-				// Permission denied, notification won't show but VPN will still work
+				// Permission denied, show explanation
+				Toast.makeText(this, "没有通知权限，VPN 运行时将不会显示通知栏", Toast.LENGTH_LONG).show();
 			}
 		}
 	}
