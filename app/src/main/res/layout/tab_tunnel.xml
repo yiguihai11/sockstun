@@ -51,6 +51,12 @@
 				android:layout_height="wrap_content"
 				android:inputType="text"
 				android:text="tun0"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Not supported on Android"
+				android:textSize="12sp"
+				android:textColor="@color/hint_text"/>
 		</LinearLayout>
 
 		<!-- Multi-Queue (Not applicable for Android) -->

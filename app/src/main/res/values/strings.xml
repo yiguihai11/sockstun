@@ -115,4 +115,5 @@
 	<string name="probe_port_add_entry">Add Port</string>
 	<string name="smart_proxy_info">About Smart Proxy</string>
 	<string name="smart_proxy_full_desc">Smart Proxy automatically determines the best routing method for each connection. When enabled, TCP connections first attempt direct connection; if timeout occurs, they fall back to SOCKS5 proxy. Protocol detection (TLS SNI/HTTP Host) is performed on configured probe ports to improve connection accuracy.</string>
+	<string name="about_text">SocksTun %s\n\nSOCKS5 VPN Tunnel Client\n\nGitHub: yiguihai11/sockstun</string>
 </resources>

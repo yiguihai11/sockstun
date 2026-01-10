@@ -35,6 +35,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.net.VpnService;
 import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
@@ -338,7 +340,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		// Setup clickable GitHub link
 		textview_github_link = (TextView) findViewById(R.id.github_link);
-		String fullText = textview_github_link.getText().toString();
+		String versionName = "v1.0";
+		try {
+			PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			versionName = "v" + packageInfo.versionName;
+		} catch (PackageManager.NameNotFoundException e) {
+			// Keep default version
+		}
+		String fullText = getString(R.string.about_text, versionName);
 		SpannableString spannableString = new SpannableString(fullText);
 		String repoName = "yiguihai11/sockstun";
 		int startIndex = fullText.indexOf(repoName);
