@@ -731,16 +731,27 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				}
 			}
 
+			// Check if VPN is enabled - if so, show non-clickable text
+			boolean isVpnEnabled = prefs.getEnable();
+
 			if (!v4DnsList.isEmpty()) {
-				textview_system_dns_v4_hint.setText(buildClickableDnsText(v4DnsList, edittext_dns_ipv4));
-				textview_system_dns_v4_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+				textview_system_dns_v4_hint.setText(buildDnsText(v4DnsList, edittext_dns_ipv4, isVpnEnabled));
+				if (!isVpnEnabled) {
+					textview_system_dns_v4_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+				} else {
+					textview_system_dns_v4_hint.setMovementMethod(null);
+				}
 			} else {
 				textview_system_dns_v4_hint.setText("");
 			}
 
 			if (!v6DnsList.isEmpty()) {
-				textview_system_dns_v6_hint.setText(buildClickableDnsText(v6DnsList, edittext_dns_ipv6));
-				textview_system_dns_v6_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+				textview_system_dns_v6_hint.setText(buildDnsText(v6DnsList, edittext_dns_ipv6, isVpnEnabled));
+				if (!isVpnEnabled) {
+					textview_system_dns_v6_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+				} else {
+					textview_system_dns_v6_hint.setMovementMethod(null);
+				}
 			} else {
 				textview_system_dns_v6_hint.setText("");
 			}
@@ -749,7 +760,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		}
 	}
 
-	private SpannableString buildClickableDnsText(java.util.List<String> dnsList, final EditText targetEditText) {
+	private SpannableString buildDnsText(java.util.List<String> dnsList, final EditText targetEditText, boolean clickable) {
 		StringBuilder sb = new StringBuilder("System: ");
 		for (int i = 0; i < dnsList.size(); i++) {
 			if (i > 0) sb.append(" ");
@@ -758,26 +769,28 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		SpannableString spannable = new SpannableString(sb.toString());
 		int offset = 8; // "System: " length (including space after colon)
-		int linkColor = 0xFF2196F3; // Blue color for links
 
-		for (int i = 0; i < dnsList.size(); i++) {
-			final String dns = dnsList.get(i);
-			int start = offset;
-			int end = offset + dns.length();
+		if (clickable) {
+			int linkColor = 0xFF2196F3; // Blue color for links
+			for (int i = 0; i < dnsList.size(); i++) {
+				final String dns = dnsList.get(i);
+				int start = offset;
+				int end = offset + dns.length();
 
-			ClickableSpan clickSpan = new ClickableSpan() {
-				@Override
-				public void onClick(View widget) {
-					targetEditText.setText(dns);
+				ClickableSpan clickSpan = new ClickableSpan() {
+					@Override
+					public void onClick(View widget) {
+						targetEditText.setText(dns);
+					}
+				};
+				spannable.setSpan(clickSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				spannable.setSpan(new ForegroundColorSpan(linkColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+				// Update offset: current DNS length + space (if not last)
+				offset = end;
+				if (i < dnsList.size() - 1) {
+					offset++; // Reserve space for the space before next DNS
 				}
-			};
-			spannable.setSpan(clickSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-			spannable.setSpan(new ForegroundColorSpan(linkColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-			// Update offset: current DNS length + space (if not last)
-			offset = end;
-			if (i < dnsList.size() - 1) {
-				offset++; // Reserve space for the space before next DNS
 			}
 		}
 
