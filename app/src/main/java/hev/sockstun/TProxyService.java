@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.net.VpnService;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ServiceInfo;
-import android.net.IpPrefix;
 
 import androidx.core.app.NotificationCompat;
 
@@ -84,30 +83,39 @@ public class TProxyService extends VpnService {
 		builder.setMtu(prefs.getTunnelMtu());
 
 		// Bypass LAN routes (API 33+) - MUST be called before addRoute
+		// Use reflection for IpPrefix class (added in API 28) to maintain minSdk 24
 		if (Build.VERSION.SDK_INT >= 33 && prefs.getBypassLan()) {
-			// IPv4 private/local routes
-			if (prefs.getIpv4()) {
-				try {
-					builder.excludeRoute(new IpPrefix("10.0.0.0/8"));
-					builder.excludeRoute(new IpPrefix("100.64.0.0/10"));
-					builder.excludeRoute(new IpPrefix("127.0.0.0/8"));
-					builder.excludeRoute(new IpPrefix("169.254.0.0/16"));
-					builder.excludeRoute(new IpPrefix("172.16.0.0/12"));
-					builder.excludeRoute(new IpPrefix("192.168.0.0/16"));
-				} catch (Exception e) {
-					// Silently ignore errors for excludeRoute
+			try {
+				Class<?> ipPrefixClass = Class.forName("android.net.IpPrefix");
+				java.lang.reflect.Method excludeRouteMethod = VpnService.Builder.class.getMethod("excludeRoute", ipPrefixClass);
+
+				// IPv4 private/local routes
+				if (prefs.getIpv4()) {
+					String[] ipv4Routes = {"10.0.0.0/8", "100.64.0.0/10", "127.0.0.0/8",
+					                      "169.254.0.0/16", "172.16.0.0/12", "192.168.0.0/16"};
+					for (String route : ipv4Routes) {
+						try {
+							Object ipPrefix = ipPrefixClass.getConstructor(String.class).newInstance(route);
+							excludeRouteMethod.invoke(builder, ipPrefix);
+						} catch (Exception e) {
+							// Silently ignore errors for individual routes
+						}
+					}
 				}
-			}
-			// IPv6 private/local routes
-			if (prefs.getIpv6()) {
-				try {
-					builder.excludeRoute(new IpPrefix("::1/128"));
-					builder.excludeRoute(new IpPrefix("::ffff:0:0/96"));
-					builder.excludeRoute(new IpPrefix("fc00::/7"));
-					builder.excludeRoute(new IpPrefix("fe80::/10"));
-				} catch (Exception e) {
-					// Silently ignore errors for excludeRoute
+				// IPv6 private/local routes
+				if (prefs.getIpv6()) {
+					String[] ipv6Routes = {"::1/128", "::ffff:0:0/96", "fc00::/7", "fe80::/10"};
+					for (String route : ipv6Routes) {
+						try {
+							Object ipPrefix = ipPrefixClass.getConstructor(String.class).newInstance(route);
+							excludeRouteMethod.invoke(builder, ipPrefix);
+						} catch (Exception e) {
+							// Silently ignore errors for individual routes
+						}
+					}
 				}
+			} catch (Exception e) {
+				// Silently ignore reflection errors (class not found, method not found, etc.)
 			}
 		}
 
