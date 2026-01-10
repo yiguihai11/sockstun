@@ -417,19 +417,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 	@Override
 	protected void onActivityResult(int request, int result, Intent data) {
-		// Handle VPN permission result
-		if (request == 0) {
-			if (result == RESULT_OK) {
-				Toast.makeText(this, "VPN permission granted", Toast.LENGTH_SHORT).show();
-				if (prefs.getEnable()) {
-					Intent intent = new Intent(this, TProxyService.class);
-					startService(intent.setAction(TProxyService.ACTION_CONNECT));
-				}
-			} else {
-				Toast.makeText(this, "VPN permission denied. Cannot connect without VPN permission.", Toast.LENGTH_LONG).show();
-			}
-			return;
-		}
 		if ((result == RESULT_OK) && prefs.getEnable()) {
 			Intent intent = new Intent(this, TProxyService.class);
 			startService(intent.setAction(TProxyService.ACTION_CONNECT));
