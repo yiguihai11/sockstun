@@ -207,24 +207,40 @@ public class TProxyService extends VpnService {
 
 		prefs.setEnable(true);
 
-		// Create notification BEFORE starting blocking native process
+		// Create notification BEFORE starting native process
 		// Must be done within 5 seconds of service start or system will kill the service
 		String channelName = "socks5";
 		initNotificationChannel(channelName);
 		createNotification(channelName);
 
-		// Start native process directly (blocks until exit)
-		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
+		// Start native process in background thread
+		final String configPath = tproxy_file.getAbsolutePath();
+		final int fd = tunFd.getFd();
+		nativeThread = new Thread(() -> {
+			TProxyStartService(configPath, fd);
+			// When native process exits, clean up
+			stopService();
+		});
+		nativeThread.start();
 	}
 
 	public void stopService() {
 		if (tunFd == null)
 			return;
 
-		stopForeground(true);
-
-		/* TProxy */
+		// Stop native service first
 		TProxyStopService();
+
+		// Wait for native thread to finish
+		if (nativeThread != null) {
+			try {
+				nativeThread.join(2000); // Wait up to 2 seconds
+			} catch (InterruptedException e) {
+			}
+			nativeThread = null;
+		}
+
+		stopForeground(true);
 
 		/* VPN */
 		try {
@@ -241,8 +257,6 @@ public class TProxyService extends VpnService {
 		Intent intent = new Intent("hev.sockstun.VPN_STOPPED");
 		intent.setPackage(getPackageName());
 		sendBroadcast(intent);
-
-		System.exit(0);
 	}
 
 	private void createNotification(String channelName) {
