@@ -286,13 +286,6 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 		} else {
 			textview_java_log.setText("No matching logs found.");
 		}
-		// Scroll to bottom
-		scrollview_java_log.post(new Runnable() {
-			@Override
-			public void run() {
-				scrollview_java_log.fullScroll(ScrollView.FOCUS_DOWN);
-			}
-		});
 	}
 
 	private void applyNativeLogFilter() {
@@ -303,13 +296,6 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 		} else {
 			textview_native_log.setText("No matching logs found.");
 		}
-		// Scroll to bottom
-		scrollview_native_log.post(new Runnable() {
-			@Override
-			public void run() {
-				scrollview_native_log.fullScroll(ScrollView.FOCUS_DOWN);
-			}
-		});
 	}
 
 	private String filterLogs(String originalLogs, String filter) {
