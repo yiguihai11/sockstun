@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.BroadcastReceiver;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
+import android.net.Network;
 import android.content.IntentFilter;
 import android.view.View;
 import android.widget.TabWidget;
