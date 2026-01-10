@@ -726,6 +726,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		SpannableString spannable = new SpannableString(sb.toString());
 		int offset = 7; // "System: " length
+		int linkColor = 0xFF2196F3; // Blue color for links
 
 		for (int i = 0; i < dnsList.size(); i++) {
 			// Add space before each DNS except the first
@@ -735,12 +736,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			int start = offset;
 			int end = start + dns.length();
 
-			spannable.setSpan(new ClickableSpan() {
+			ClickableSpan clickSpan = new ClickableSpan() {
 				@Override
 				public void onClick(View widget) {
 					targetEditText.setText(dns);
 				}
-			}, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			};
+			spannable.setSpan(clickSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			spannable.setSpan(new ForegroundColorSpan(linkColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 			offset = end;
 		}
