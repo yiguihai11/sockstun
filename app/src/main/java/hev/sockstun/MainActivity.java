@@ -726,23 +726,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				linearlayout_system_dns_v4_container.addView(label, labelParams);
 
 				for (String dns : v4DnsList) {
-					Button dnsButton = new Button(this);
-					dnsButton.setText(dns);
-					dnsButton.setTextSize(11);
-					// 关键修改:减小内边距,让按钮更紧凑
-					dnsButton.setPadding(16, 2, 16, 2);
-					// 关键修改:设置最小高度和宽度为0,让按钮自适应内容
-					dnsButton.setMinimumHeight(0);
-					dnsButton.setMinHeight(0);
-					dnsButton.setMinimumWidth(0);
-
-					final String dnsAddr = dns;
-					dnsButton.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							edittext_dns_ipv4.setText(dnsAddr);
-						}
-					});
+					Button dnsButton = createDnsButton(dns, edittext_dns_ipv4);
 
 					// Enable/disable based on VPN state
 					boolean editable = !prefs.getEnable();
@@ -772,23 +756,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				linearlayout_system_dns_v6_container.addView(label, labelParams);
 
 				for (String dns : v6DnsList) {
-					Button dnsButton = new Button(this);
-					dnsButton.setText(dns);
-					dnsButton.setTextSize(11);
-					// 关键修改:减小内边距,让按钮更紧凑
-					dnsButton.setPadding(16, 2, 16, 2);
-					// 关键修改:设置最小高度和宽度为0,让按钮自适应内容
-					dnsButton.setMinimumHeight(0);
-					dnsButton.setMinHeight(0);
-					dnsButton.setMinimumWidth(0);
-
-					final String dnsAddr = dns;
-					dnsButton.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							edittext_dns_ipv6.setText(dnsAddr);
-						}
-					});
+					Button dnsButton = createDnsButton(dns, edittext_dns_ipv6);
 
 					// Enable/disable based on VPN state
 					boolean editable = !prefs.getEnable();
@@ -805,6 +773,76 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		} catch (Exception e) {
 			// Silently ignore errors
 		}
+	}
+
+	/**
+	 * Create a styled DNS button that looks like a chip/tag
+	 */
+	private Button createDnsButton(final String dns, final EditText targetEditText) {
+		Button dnsButton = new Button(this);
+		dnsButton.setText(dns);
+		dnsButton.setTextSize(11);
+		dnsButton.setTextColor(0xFF2196F3); // Blue text color
+
+		// Remove default button styling
+		dnsButton.setBackgroundColor(0x00000000); // Transparent background
+		dnsButton.setPadding(12, 4, 12, 4);
+		dnsButton.setMinimumHeight(0);
+		dnsButton.setMinHeight(0);
+		dnsButton.setMinimumWidth(0);
+
+		// Add rounded border background
+		android.graphics.drawable.GradientDrawable background = new android.graphics.drawable.GradientDrawable();
+		background.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+		background.setCornerRadius(12); // Rounded corners
+		background.setStroke(2, 0xFF2196F3); // Blue border
+		background.setColor(0x00000000); // Transparent fill
+
+		// Create state list drawable for pressed state
+		android.graphics.drawable.StateListDrawable stateList = new android.graphics.drawable.StateListDrawable();
+
+		// Pressed state background
+		android.graphics.drawable.GradientDrawable pressedBackground = new android.graphics.drawable.GradientDrawable();
+		pressedBackground.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+		pressedBackground.setCornerRadius(12);
+		pressedBackground.setStroke(2, 0xFF2196F3);
+		pressedBackground.setColor(0x202196F3); // Light blue fill when pressed
+
+		// Disabled state background
+		android.graphics.drawable.GradientDrawable disabledBackground = new android.graphics.drawable.GradientDrawable();
+		disabledBackground.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+		disabledBackground.setCornerRadius(12);
+		disabledBackground.setStroke(2, 0xFF808080); // Gray border when disabled
+		disabledBackground.setColor(0x00000000);
+
+		stateList.addState(new int[]{android.R.attr.state_pressed}, pressedBackground);
+		stateList.addState(new int[]{-android.R.attr.state_enabled}, disabledBackground);
+		stateList.addState(new int[]{}, background);
+
+		dnsButton.setBackground(stateList);
+
+		// Set click listener
+		dnsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				targetEditText.setText(dns);
+			}
+		});
+
+		// Add state list for text color (gray when disabled)
+		android.content.res.ColorStateList textColorStateList = new android.content.res.ColorStateList(
+			new int[][]{
+				new int[]{-android.R.attr.state_enabled}, // disabled
+				new int[]{} // default
+			},
+			new int[]{
+				0xFF808080, // gray when disabled
+				0xFF2196F3  // blue when enabled
+			}
+		);
+		dnsButton.setTextColor(textColorStateList);
+
+		return dnsButton;
 	}
 
 	private void savePrefs() {
