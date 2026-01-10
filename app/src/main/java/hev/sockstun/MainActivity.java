@@ -62,7 +62,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_socks_pass;
 	private EditText edittext_dns_ipv4;
 	private EditText edittext_dns_ipv6;
-	private TextView textview_system_dns;
 	private CheckBox checkbox_udp_in_tcp;
 	private CheckBox checkbox_remote_dns;
 	private CheckBox checkbox_global;
@@ -217,7 +216,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_socks_pass = (EditText) findViewById(R.id.socks_pass);
 		edittext_dns_ipv4 = (EditText) findViewById(R.id.dns_ipv4);
 		edittext_dns_ipv6 = (EditText) findViewById(R.id.dns_ipv6);
-		textview_system_dns = (TextView) findViewById(R.id.system_dns);
 		checkbox_ipv4 = (CheckBox) findViewById(R.id.ipv4);
 		checkbox_ipv6 = (CheckBox) findViewById(R.id.ipv6);
 		checkbox_global = (CheckBox) findViewById(R.id.global);
@@ -674,38 +672,38 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private void updateSystemDns() {
 		try {
 			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			if (cm == null) {
-				textview_system_dns.setText("Not available");
-				return;
-			}
+			if (cm == null) return;
 
 			Network network = cm.getActiveNetwork();
-			if (network == null) {
-				textview_system_dns.setText("No network");
-				return;
-			}
+			if (network == null) return;
 
 			LinkProperties lp = cm.getLinkProperties(network);
-			if (lp == null) {
-				textview_system_dns.setText("No link properties");
-				return;
-			}
+			if (lp == null) return;
 
 			java.util.List<java.net.InetAddress> dnsServers = lp.getDnsServers();
-			if (dnsServers == null || dnsServers.isEmpty()) {
-				textview_system_dns.setText("No DNS servers");
-				return;
-			}
+			if (dnsServers == null || dnsServers.isEmpty()) return;
 
-			StringBuilder sb = new StringBuilder();
+			// Only fill if the edit text is empty
+			boolean dnsV4Empty = edittext_dns_ipv4.getText().toString().trim().isEmpty();
+			boolean dnsV6Empty = edittext_dns_ipv6.getText().toString().trim().isEmpty();
+
 			for (java.net.InetAddress dns : dnsServers) {
-				if (sb.length() > 0)
-					sb.append(", ");
-				sb.append(dns.getHostAddress());
+				String addr = dns.getHostAddress();
+				if (dns instanceof java.net.Inet4Address) {
+					if (dnsV4Empty) {
+						edittext_dns_ipv4.setText(addr);
+						dnsV4Empty = false; // Only fill first IPv4
+					}
+				} else if (dns instanceof java.net.Inet6Address) {
+					if (dnsV6Empty) {
+						edittext_dns_ipv6.setText(addr);
+						dnsV6Empty = false; // Only fill first IPv6
+					}
+				}
+				if (!dnsV4Empty && !dnsV6Empty) break; // Both filled, done
 			}
-			textview_system_dns.setText(sb.toString());
 		} catch (Exception e) {
-			textview_system_dns.setText("Error: " + e.getMessage());
+			// Silently ignore errors
 		}
 	}
 

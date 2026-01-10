@@ -42,25 +42,6 @@
 			android:textSize="16sp"
 			android:paddingTop="16dp"
 			android:paddingBottom="4dp"/>
-		<TextView
-			android:id="@+id/system_dns_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="System DNS:"
-			android:textSize="12sp"
-			android:textColor="@color/hint_text"
-			android:paddingLeft="0dp"
-			android:paddingTop="4dp"/>
-		<TextView
-			android:id="@+id/system_dns"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Detecting..."
-			android:textSize="12sp"
-			android:textColor="@color/info_text"
-			android:paddingLeft="8dp"
-			android:paddingTop="4dp"
-			android:paddingBottom="4dp"/>
 		<CheckBox
 			android:id="@+id/remote_dns"
 			android:layout_width="fill_parent"
