@@ -205,6 +205,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 					aclLoaded = true;
 					loadAclContent();
 				}
+				// Refresh system DNS when network tab is selected
+				if ("network".equals(tabId)) {
+					updateSystemDns();
+				}
 			}
 		});
 
@@ -364,7 +368,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_save.setOnClickListener(this);
 		button_control.setOnClickListener(this);
 		updateUI();
-		updateSystemDns();
 
 		// Register VPN state receiver
 		vpnStateReceiver = new BroadcastReceiver() {
