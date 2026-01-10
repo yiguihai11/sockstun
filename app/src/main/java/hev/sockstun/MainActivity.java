@@ -725,7 +725,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 					Button dnsButton = new Button(this);
 					dnsButton.setText(dns);
 					dnsButton.setTextSize(11);
-					dnsButton.setPadding(8, 4, 8, 4);
+					dnsButton.setPadding(10, 0, 10, 0);
 					dnsButton.setMinimumHeight(0);
 					dnsButton.setMinimumWidth(0);
 
@@ -763,7 +763,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 					Button dnsButton = new Button(this);
 					dnsButton.setText(dns);
 					dnsButton.setTextSize(11);
-					dnsButton.setPadding(8, 4, 8, 4);
+					dnsButton.setPadding(10, 0, 10, 0);
 					dnsButton.setMinimumHeight(0);
 					dnsButton.setMinimumWidth(0);
 
