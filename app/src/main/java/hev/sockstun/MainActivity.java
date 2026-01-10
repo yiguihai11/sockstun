@@ -399,17 +399,32 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		networkCallback = new ConnectivityManager.NetworkCallback() {
 			@Override
 			public void onAvailable(Network network) {
-				updateSystemDns();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						updateSystemDns();
+					}
+				});
 			}
 
 			@Override
 			public void onLost(Network network) {
-				updateSystemDns();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						updateSystemDns();
+					}
+				});
 			}
 
 			@Override
 			public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-				updateSystemDns();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						updateSystemDns();
+					}
+				});
 			}
 		};
 		cm.registerNetworkCallback(builder.build(), networkCallback);
