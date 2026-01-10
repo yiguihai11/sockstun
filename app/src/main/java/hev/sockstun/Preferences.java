@@ -75,6 +75,7 @@ public class Preferences
 	public static final String SMART_PROXY_TIMEOUT = "SmartProxyTimeout";
 	public static final String SMART_PROXY_BLOCKED_IP_EXPIRY = "SmartProxyBlockedIpExpiry";
 	public static final String SMART_PROXY_PROBE_PORTS = "SmartProxyProbePorts";
+	public static final String BYPASS_LAN = "BypassLan";
 
 	private SharedPreferences prefs;
 
@@ -774,5 +775,15 @@ public class Preferences
 			// If JSON creation fails, save empty array
 			setSmartProxyProbePortsJson("[]");
 		}
+	}
+
+	public boolean getBypassLan() {
+		return prefs.getBoolean(BYPASS_LAN, false);
+	}
+
+	public void setBypassLan(boolean enabled) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(BYPASS_LAN, enabled);
+		editor.commit();
 	}
 }

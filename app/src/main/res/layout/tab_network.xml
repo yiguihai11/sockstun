@@ -22,16 +22,22 @@
 			android:layout_height="wrap_content">
 			<CheckBox
 				android:id="@+id/ipv4"
-				android:layout_width="fill_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
 				android:text="@string/ipv4"/>
 			<CheckBox
 				android:id="@+id/ipv6"
-				android:layout_width="fill_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
 				android:text="@string/ipv6"/>
+			<CheckBox
+				android:id="@+id/bypass_lan"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/bypass_lan"/>
 		</LinearLayout>
 
 		<TextView

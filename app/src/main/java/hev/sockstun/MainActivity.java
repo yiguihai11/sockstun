@@ -71,6 +71,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private CheckBox checkbox_global;
 	private CheckBox checkbox_ipv4;
 	private CheckBox checkbox_ipv6;
+	private CheckBox checkbox_bypass_lan;
 	private Button button_apps;
 	private Button button_logs;
 	private Button button_save;
@@ -228,6 +229,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		linearlayout_system_dns_v6_container = (LinearLayout) findViewById(R.id.system_dns_v6_container);
 		checkbox_ipv4 = (CheckBox) findViewById(R.id.ipv4);
 		checkbox_ipv6 = (CheckBox) findViewById(R.id.ipv6);
+		checkbox_bypass_lan = (CheckBox) findViewById(R.id.bypass_lan);
 		checkbox_global = (CheckBox) findViewById(R.id.global);
 		checkbox_udp_in_tcp = (CheckBox) findViewById(R.id.udp_in_tcp);
 		checkbox_remote_dns = (CheckBox) findViewById(R.id.remote_dns);
@@ -361,6 +363,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		spannableString.setSpan(new ForegroundColorSpan(0xFF2196F3), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		textview_github_link.setText(spannableString);
 		textview_github_link.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+
+		// Hide bypass_lan checkbox on API < 33
+		if (android.os.Build.VERSION.SDK_INT < 33) {
+			checkbox_bypass_lan.setVisibility(View.GONE);
+		}
 
 		// Setup log level spinner
 		spinner_log_level = (Spinner) findViewById(R.id.log_level);
@@ -513,6 +520,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_dns_ipv6.setText(prefs.getDnsIpv6());
 		checkbox_ipv4.setChecked(prefs.getIpv4());
 		checkbox_ipv6.setChecked(prefs.getIpv6());
+		checkbox_bypass_lan.setChecked(prefs.getBypassLan());
 		checkbox_global.setChecked(prefs.getGlobal());
 		checkbox_udp_in_tcp.setChecked(prefs.getUdpInTcp());
 		checkbox_remote_dns.setChecked(prefs.getRemoteDns());
@@ -596,6 +604,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_global.setEnabled(editable);
 		checkbox_ipv4.setEnabled(editable);
 		checkbox_ipv6.setEnabled(editable);
+		checkbox_bypass_lan.setEnabled(editable && android.os.Build.VERSION.SDK_INT >= 33);
 		button_apps.setEnabled(editable);
 		button_save.setEnabled(editable);
 
@@ -865,6 +874,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		  checkbox_ipv4.setChecked(prefs.getIpv4());
 		prefs.setIpv4(checkbox_ipv4.isChecked());
 		prefs.setIpv6(checkbox_ipv6.isChecked());
+		prefs.setBypassLan(checkbox_bypass_lan.isChecked());
 		prefs.setGlobal(checkbox_global.isChecked());
 		prefs.setUdpInTcp(checkbox_udp_in_tcp.isChecked());
 		prefs.setRemoteDns(checkbox_remote_dns.isChecked());

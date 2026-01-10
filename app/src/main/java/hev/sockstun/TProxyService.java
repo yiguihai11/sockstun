@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.net.VpnService;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ServiceInfo;
+import android.net.IpPrefix;
 
 import androidx.core.app.NotificationCompat;
 
@@ -81,6 +82,35 @@ public class TProxyService extends VpnService {
 		VpnService.Builder builder = new VpnService.Builder();
 		builder.setBlocking(false);
 		builder.setMtu(prefs.getTunnelMtu());
+
+		// Bypass LAN routes (API 33+) - MUST be called before addRoute
+		if (Build.VERSION.SDK_INT >= 33 && prefs.getBypassLan()) {
+			// IPv4 private/local routes
+			if (prefs.getIpv4()) {
+				try {
+					builder.excludeRoute(IpPrefix("10.0.0.0/8"));
+					builder.excludeRoute(IpPrefix("100.64.0.0/10"));
+					builder.excludeRoute(IpPrefix("127.0.0.0/8"));
+					builder.excludeRoute(IpPrefix("169.254.0.0/16"));
+					builder.excludeRoute(IpPrefix("172.16.0.0/12"));
+					builder.excludeRoute(IpPrefix("192.168.0.0/16"));
+				} catch (Exception e) {
+					// Silently ignore errors for excludeRoute
+				}
+			}
+			// IPv6 private/local routes
+			if (prefs.getIpv6()) {
+				try {
+					builder.excludeRoute(IpPrefix("::1/128"));
+					builder.excludeRoute(IpPrefix("::ffff:0:0/96"));
+					builder.excludeRoute(IpPrefix("fc00::/7"));
+					builder.excludeRoute(IpPrefix("fe80::/10"));
+				} catch (Exception e) {
+					// Silently ignore errors for excludeRoute
+				}
+			}
+		}
+
 		if (prefs.getIpv4()) {
 			String addr = prefs.getTunnelIpv4Address();
 			int prefix = prefs.getTunnelIpv4Prefix();
@@ -115,6 +145,7 @@ public class TProxyService extends VpnService {
 				}
 			}
 		}
+
 		boolean disallowSelf = true;
 		if (prefs.getGlobal()) {
 			session += "/Global";
