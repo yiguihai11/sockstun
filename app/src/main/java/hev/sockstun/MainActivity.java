@@ -725,11 +725,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		}
 
 		SpannableString spannable = new SpannableString(sb.toString());
-		int baseOffset = 7; // "System: " length
+		int offset = 7; // "System: " length
 
 		for (int i = 0; i < dnsList.size(); i++) {
+			// Add space before each DNS except the first
+			if (i > 0) offset++;
+
 			final String dns = dnsList.get(i);
-			int start = baseOffset;
+			int start = offset;
 			int end = start + dns.length();
 
 			spannable.setSpan(new ClickableSpan() {
@@ -739,7 +742,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				}
 			}, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-			baseOffset = end + 1; // +1 for space separator
+			offset = end;
 		}
 
 		return spannable;
