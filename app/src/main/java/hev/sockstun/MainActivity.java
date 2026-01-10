@@ -17,9 +17,6 @@ import android.content.Context;
 import android.content.BroadcastReceiver;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
-import android.net.Network;
-import android.net.NetworkRequest;
-import android.net.ConnectivityManager.NetworkCallback;
 import android.content.IntentFilter;
 import android.view.View;
 import android.widget.TabWidget;
@@ -56,7 +53,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private HorizontalScrollView tabScroller;
 	private TabWidget tabWidget;
 	private BroadcastReceiver vpnStateReceiver;
-	private ConnectivityManager.NetworkCallback networkCallback;
 	private EditText edittext_socks_addr;
 	private EditText edittext_socks_udp_addr;
 	private EditText edittext_socks_udp_port;
@@ -393,42 +389,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		IntentFilter filter = new IntentFilter("hev.sockstun.VPN_STOPPED");
 		registerReceiver(vpnStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
-		// Register network callback for DNS updates
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkRequest.Builder builder = new NetworkRequest.Builder();
-		networkCallback = new ConnectivityManager.NetworkCallback() {
-			@Override
-			public void onAvailable(Network network) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						updateSystemDns();
-					}
-				});
-			}
-
-			@Override
-			public void onLost(Network network) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						updateSystemDns();
-					}
-				});
-			}
-
-			@Override
-			public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						updateSystemDns();
-					}
-				});
-			}
-		};
-		cm.registerNetworkCallback(builder.build(), networkCallback);
-
 		/* Request VPN permission */
 		Intent intent = VpnService.prepare(MainActivity.this);
 		if (intent != null)
@@ -469,11 +429,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		if (vpnStateReceiver != null) {
 			unregisterReceiver(vpnStateReceiver);
 			vpnStateReceiver = null;
-		}
-		if (networkCallback != null) {
-			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			cm.unregisterNetworkCallback(networkCallback);
-			networkCallback = null;
 		}
 	}
 
