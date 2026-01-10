@@ -65,6 +65,19 @@
 			android:singleLine="true"
 			android:digits="0123456789."/>
 		<TextView
+			android:id="@+id/system_dns_v4_hint"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text=""
+			android:textSize="11sp"
+			android:textColor="@color/hint_text"
+			android:paddingLeft="4dp"
+			android:paddingTop="2dp"
+			android:paddingBottom="2dp"
+			android:background="?attr/selectableItemBackground"
+			android:clickable="true"
+			android:focusable="true"/>
+		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/dns_ipv6"/>
@@ -74,6 +87,19 @@
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:digits="0123456789abcdef:"/>
+		<TextView
+			android:id="@+id/system_dns_v6_hint"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text=""
+			android:textSize="11sp"
+			android:textColor="@color/hint_text"
+			android:paddingLeft="4dp"
+			android:paddingTop="2dp"
+			android:paddingBottom="2dp"
+			android:background="?attr/selectableItemBackground"
+			android:clickable="true"
+			android:focusable="true"/>
 
 		<TextView
 			android:layout_width="wrap_content"

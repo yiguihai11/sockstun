@@ -62,6 +62,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_socks_pass;
 	private EditText edittext_dns_ipv4;
 	private EditText edittext_dns_ipv6;
+	private TextView textview_system_dns_v4_hint;
+	private TextView textview_system_dns_v6_hint;
 	private CheckBox checkbox_udp_in_tcp;
 	private CheckBox checkbox_remote_dns;
 	private CheckBox checkbox_global;
@@ -216,6 +218,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_socks_pass = (EditText) findViewById(R.id.socks_pass);
 		edittext_dns_ipv4 = (EditText) findViewById(R.id.dns_ipv4);
 		edittext_dns_ipv6 = (EditText) findViewById(R.id.dns_ipv6);
+		textview_system_dns_v4_hint = (TextView) findViewById(R.id.system_dns_v4_hint);
+		textview_system_dns_v6_hint = (TextView) findViewById(R.id.system_dns_v6_hint);
 		checkbox_ipv4 = (CheckBox) findViewById(R.id.ipv4);
 		checkbox_ipv6 = (CheckBox) findViewById(R.id.ipv6);
 		checkbox_global = (CheckBox) findViewById(R.id.global);
@@ -683,28 +687,62 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			java.util.List<java.net.InetAddress> dnsServers = lp.getDnsServers();
 			if (dnsServers == null || dnsServers.isEmpty()) return;
 
-			// Only fill if the edit text is empty
-			boolean dnsV4Empty = edittext_dns_ipv4.getText().toString().trim().isEmpty();
-			boolean dnsV6Empty = edittext_dns_ipv6.getText().toString().trim().isEmpty();
+			java.util.List<String> v4DnsList = new java.util.ArrayList<String>();
+			java.util.List<String> v6DnsList = new java.util.ArrayList<String>();
 
 			for (java.net.InetAddress dns : dnsServers) {
 				String addr = dns.getHostAddress();
 				if (dns instanceof java.net.Inet4Address) {
-					if (dnsV4Empty) {
-						edittext_dns_ipv4.setText(addr);
-						dnsV4Empty = false; // Only fill first IPv4
-					}
+					v4DnsList.add(addr);
 				} else if (dns instanceof java.net.Inet6Address) {
-					if (dnsV6Empty) {
-						edittext_dns_ipv6.setText(addr);
-						dnsV6Empty = false; // Only fill first IPv6
-					}
+					v6DnsList.add(addr);
 				}
-				if (!dnsV4Empty && !dnsV6Empty) break; // Both filled, done
+			}
+
+			if (!v4DnsList.isEmpty()) {
+				textview_system_dns_v4_hint.setText(buildClickableDnsText(v4DnsList, edittext_dns_ipv4));
+				textview_system_dns_v4_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+			} else {
+				textview_system_dns_v4_hint.setText("");
+			}
+
+			if (!v6DnsList.isEmpty()) {
+				textview_system_dns_v6_hint.setText(buildClickableDnsText(v6DnsList, edittext_dns_ipv6));
+				textview_system_dns_v6_hint.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+			} else {
+				textview_system_dns_v6_hint.setText("");
 			}
 		} catch (Exception e) {
 			// Silently ignore errors
 		}
+	}
+
+	private SpannableString buildClickableDnsText(java.util.List<String> dnsList, final EditText targetEditText) {
+		StringBuilder sb = new StringBuilder("System: ");
+		for (int i = 0; i < dnsList.size(); i++) {
+			if (i > 0) sb.append(" ");
+			sb.append(dnsList.get(i));
+		}
+
+		SpannableString spannable = new SpannableString(sb.toString());
+		int baseOffset = 7; // "System: " length
+
+		for (int i = 0; i < dnsList.size(); i++) {
+			final String dns = dnsList.get(i);
+			int start = baseOffset;
+			int end = start + dns.length();
+
+			spannable.setSpan(new ClickableSpan() {
+				@Override
+				public void onClick(View widget) {
+					targetEditText.setText(dns);
+				}
+			}, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+			baseOffset = end + 1; // +1 for space separator
+		}
+
+		return spannable;
 	}
 
 	private void savePrefs() {
