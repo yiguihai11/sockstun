@@ -395,12 +395,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			}
 		};
 		IntentFilter filter = new IntentFilter("hev.sockstun.VPN_STOPPED");
-		// RECEIVER_NOT_EXPORTED requires API 26+ (Oreo)
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			registerReceiver(vpnStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-		} else {
-			registerReceiver(vpnStateReceiver, filter);
-		}
+		registerReceiver(vpnStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
 		/* Request VPN permission */
 		Intent intent = VpnService.prepare(MainActivity.this);
