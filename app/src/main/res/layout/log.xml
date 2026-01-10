@@ -30,6 +30,14 @@
 					android:orientation="vertical"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent">
+					<!-- Search Box -->
+					<EditText
+						android:id="@+id/java_log_search"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:hint="Filter logs..."
+						android:singleLine="true"
+						android:padding="8dp"/>
 					<LinearLayout
 						android:orientation="horizontal"
 						android:layout_width="fill_parent"
@@ -71,6 +79,14 @@
 					android:orientation="vertical"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent">
+					<!-- Search Box -->
+					<EditText
+						android:id="@+id/native_log_search"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:hint="Filter logs..."
+						android:singleLine="true"
+						android:padding="8dp"/>
 					<LinearLayout
 						android:orientation="horizontal"
 						android:layout_width="fill_parent"

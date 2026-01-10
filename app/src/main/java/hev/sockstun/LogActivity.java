@@ -22,6 +22,8 @@ import android.widget.TabHost;
 import android.os.Handler;
 import android.os.Looper;
 import android.content.Context;
+import android.widget.EditText;
+import android.text.TextWatcher;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -43,12 +45,16 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 	private ScrollView scrollview_java_log;
 	private Button button_java_refresh;
 	private Button button_java_clear;
+	private EditText edittext_java_log_search;
+	private String originalJavaLogs; // Store original logs for filtering
 
 	// Native log UI elements
 	private TextView textview_native_log;
 	private ScrollView scrollview_native_log;
 	private Button button_native_refresh;
 	private Button button_native_clear;
+	private EditText edittext_native_log_search;
+	private String originalNativeLogs; // Store original logs for filtering
 
 	private TabHost tabHost;
 	private Handler handler;
@@ -89,18 +95,23 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 		scrollview_java_log = (ScrollView) findViewById(R.id.java_log_scroll);
 		button_java_refresh = (Button) findViewById(R.id.java_log_refresh);
 		button_java_clear = (Button) findViewById(R.id.java_log_clear);
+		edittext_java_log_search = (EditText) findViewById(R.id.java_log_search);
 
 		// Native log UI elements
 		textview_native_log = (TextView) findViewById(R.id.native_log_text);
 		scrollview_native_log = (ScrollView) findViewById(R.id.native_log_scroll);
 		button_native_refresh = (Button) findViewById(R.id.native_log_refresh);
 		button_native_clear = (Button) findViewById(R.id.native_log_clear);
+		edittext_native_log_search = (EditText) findViewById(R.id.native_log_search);
 
 		// Setup click listeners
 		button_java_refresh.setOnClickListener(this);
 		button_java_clear.setOnClickListener(this);
 		button_native_refresh.setOnClickListener(this);
 		button_native_clear.setOnClickListener(this);
+
+		// Setup search listeners
+		setupSearchListeners();
 
 		handler = new Handler(Looper.getMainLooper());
 
@@ -131,15 +142,10 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 					@Override
 					public void run() {
 						if (logs != null && !logs.isEmpty()) {
-							textview_java_log.setText(colorizeLog(logs));
-							// Scroll to bottom
-							scrollview_java_log.post(new Runnable() {
-								@Override
-								public void run() {
-									scrollview_java_log.fullScroll(ScrollView.FOCUS_DOWN);
-								}
-							});
+							originalJavaLogs = logs;
+							applyJavaLogFilter();
 						} else {
+							originalJavaLogs = "";
 							textview_java_log.setText("No Java logs available yet.");
 						}
 					}
@@ -171,19 +177,15 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 							display.append("========== tunnel.log ==========\n");
 							display.append(logs);
 							display.append("\n========== End of Logs ==========");
-							textview_native_log.setText(colorizeLog(display.toString()));
-							// Scroll to bottom
-							scrollview_native_log.post(new Runnable() {
-								@Override
-								public void run() {
-									scrollview_native_log.fullScroll(ScrollView.FOCUS_DOWN);
-								}
-							});
+							originalNativeLogs = display.toString();
+							applyNativeLogFilter();
 						} else if (config != null && !config.isEmpty()) {
 							display.append("========== tunnel.log ==========\n");
 							display.append("No logs available. Make sure VPN is running.");
-							textview_native_log.setText(colorizeLog(display.toString()));
+							originalNativeLogs = display.toString();
+							applyNativeLogFilter();
 						} else {
+							originalNativeLogs = "";
 							textview_native_log.setText("No logs or config available. Make sure VPN is running.");
 						}
 					}
@@ -244,6 +246,92 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 				}
 			}
 		}).start();
+	}
+
+	private void setupSearchListeners() {
+		// Java log search listener
+		edittext_java_log_search.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				applyJavaLogFilter();
+			}
+
+			@Override
+			public void afterTextChanged(android.text.Editable s) {}
+		});
+
+		// Native log search listener
+		edittext_native_log_search.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				applyNativeLogFilter();
+			}
+
+			@Override
+			public void afterTextChanged(android.text.Editable s) {}
+		});
+	}
+
+	private void applyJavaLogFilter() {
+		String filter = edittext_java_log_search.getText().toString().trim();
+		String filteredLogs = filterLogs(originalJavaLogs, filter);
+		if (filteredLogs != null && !filteredLogs.isEmpty()) {
+			textview_java_log.setText(colorizeLog(filteredLogs));
+		} else {
+			textview_java_log.setText("No matching logs found.");
+		}
+		// Scroll to bottom
+		scrollview_java_log.post(new Runnable() {
+			@Override
+			public void run() {
+				scrollview_java_log.fullScroll(ScrollView.FOCUS_DOWN);
+			}
+		});
+	}
+
+	private void applyNativeLogFilter() {
+		String filter = edittext_native_log_search.getText().toString().trim();
+		String filteredLogs = filterLogs(originalNativeLogs, filter);
+		if (filteredLogs != null && !filteredLogs.isEmpty()) {
+			textview_native_log.setText(colorizeLog(filteredLogs));
+		} else {
+			textview_native_log.setText("No matching logs found.");
+		}
+		// Scroll to bottom
+		scrollview_native_log.post(new Runnable() {
+			@Override
+			public void run() {
+				scrollview_native_log.fullScroll(ScrollView.FOCUS_DOWN);
+			}
+		});
+	}
+
+	private String filterLogs(String originalLogs, String filter) {
+		if (originalLogs == null || originalLogs.isEmpty()) {
+			return originalLogs;
+		}
+		if (filter == null || filter.isEmpty()) {
+			return originalLogs;
+		}
+
+		// Case-insensitive filtering
+		String lowerFilter = filter.toLowerCase();
+		String[] lines = originalLogs.split("\n");
+		StringBuilder filtered = new StringBuilder();
+
+		for (String line : lines) {
+			if (line.toLowerCase().contains(lowerFilter)) {
+				filtered.append(line).append("\n");
+			}
+		}
+
+		return filtered.toString();
 	}
 
 	private String readConfigFile() {
