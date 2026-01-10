@@ -205,14 +205,16 @@ public class TProxyService extends VpnService {
 			return;
 		}
 
-		// Start native process directly (blocks until exit)
-		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
-
 		prefs.setEnable(true);
 
+		// Create notification BEFORE starting blocking native process
+		// Must be done within 5 seconds of service start or system will kill the service
 		String channelName = "socks5";
 		initNotificationChannel(channelName);
 		createNotification(channelName);
+
+		// Start native process directly (blocks until exit)
+		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
 	}
 
 	public void stopService() {
