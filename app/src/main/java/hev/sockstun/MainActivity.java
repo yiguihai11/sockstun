@@ -719,14 +719,21 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				label.setText("System: ");
 				label.setTextSize(11);
 				label.setTextColor(0xFF808080);
-				linearlayout_system_dns_v4_container.addView(label);
+				LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+				labelParams.gravity = android.view.Gravity.CENTER_VERTICAL;
+				linearlayout_system_dns_v4_container.addView(label, labelParams);
 
 				for (String dns : v4DnsList) {
 					Button dnsButton = new Button(this);
 					dnsButton.setText(dns);
 					dnsButton.setTextSize(11);
-					dnsButton.setPadding(10, 0, 10, 0);
+					// 关键修改:减小内边距,让按钮更紧凑
+					dnsButton.setPadding(16, 2, 16, 2);
+					// 关键修改:设置最小高度和宽度为0,让按钮自适应内容
 					dnsButton.setMinimumHeight(0);
+					dnsButton.setMinHeight(0);
 					dnsButton.setMinimumWidth(0);
 
 					final String dnsAddr = dns;
@@ -744,7 +751,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.WRAP_CONTENT,
 						LinearLayout.LayoutParams.WRAP_CONTENT);
-					params.setMargins(0, 0, 4, 0);
+					params.setMargins(0, 0, 8, 0);
+					params.gravity = android.view.Gravity.CENTER_VERTICAL;
 					linearlayout_system_dns_v4_container.addView(dnsButton, params);
 				}
 			}
@@ -757,14 +765,21 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				label.setText("System: ");
 				label.setTextSize(11);
 				label.setTextColor(0xFF808080);
-				linearlayout_system_dns_v6_container.addView(label);
+				LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+				labelParams.gravity = android.view.Gravity.CENTER_VERTICAL;
+				linearlayout_system_dns_v6_container.addView(label, labelParams);
 
 				for (String dns : v6DnsList) {
 					Button dnsButton = new Button(this);
 					dnsButton.setText(dns);
 					dnsButton.setTextSize(11);
-					dnsButton.setPadding(10, 0, 10, 0);
+					// 关键修改:减小内边距,让按钮更紧凑
+					dnsButton.setPadding(16, 2, 16, 2);
+					// 关键修改:设置最小高度和宽度为0,让按钮自适应内容
 					dnsButton.setMinimumHeight(0);
+					dnsButton.setMinHeight(0);
 					dnsButton.setMinimumWidth(0);
 
 					final String dnsAddr = dns;
@@ -782,7 +797,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.WRAP_CONTENT,
 						LinearLayout.LayoutParams.WRAP_CONTENT);
-					params.setMargins(0, 0, 4, 0);
+					params.setMargins(0, 0, 8, 0);
+					params.gravity = android.view.Gravity.CENTER_VERTICAL;
 					linearlayout_system_dns_v6_container.addView(dnsButton, params);
 				}
 			}
