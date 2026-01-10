@@ -117,7 +117,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_acl_content;
 	private TextView textview_acl_path_info;
 	private static final int ACL_UPLOAD_REQUEST_CODE = 101;
-	private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 102;
 	private boolean aclLoaded = false;
 
 	// DNS Split Tunnel UI elements
@@ -402,8 +401,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
 			if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
 					!= android.content.pm.PackageManager.PERMISSION_GRANTED) {
-				requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
-						NOTIFICATION_PERMISSION_REQUEST_CODE);
+				requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 0);
 			}
 		}
 
@@ -437,19 +435,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				copyFileFromUriForAcl(uri);
 			} catch (IOException e) {
 				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-			}
-		}
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
-			if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-				// Permission granted, notification will show
-				Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show();
-			} else {
-				// Permission denied, show explanation
-				Toast.makeText(this, "Notification permission denied. VPN won't show status in notification bar.", Toast.LENGTH_LONG).show();
 			}
 		}
 	}
