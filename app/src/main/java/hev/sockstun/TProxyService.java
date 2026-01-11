@@ -252,12 +252,12 @@ public class TProxyService extends VpnService {
 	}
 
 	private void createNotification(String channelName) {
-		createNotification(channelName, "↑ --  ↓ --", null, null, null, null);
+		createNotification(channelName, "↑ --  ↓ --", null, null, null, null, true);
 	}
 
 	private void createNotification(String channelName, String contentText,
 	                                String bigText, String totalTx, String totalRx,
-	                                String packetInfo) {
+	                                String packetInfo, boolean isFirstTime) {
 		Intent i = new Intent(this, MainActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
@@ -268,21 +268,29 @@ public class TProxyService extends VpnService {
 				.setContentText(contentText)
 				.setSmallIcon(android.R.drawable.sym_def_app_icon)
 				.setContentIntent(pi)
-				.setOngoing(true);
+				.setOngoing(true)
+				.setOnlyAlertOnce(true);
 
 		// Add big text style if detailed info is available
 		if (bigText != null) {
 			NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
-			bigTextStyle.setBigContentTitle(getString(R.string.app_name));
 			bigTextStyle.bigText(bigText);
 			notification.setStyle(bigTextStyle);
 		}
 
 		Notification notify = notification.build();
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-			startForeground(1, notify);
+
+		if (isFirstTime) {
+			// First time - use startForeground
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+				startForeground(1, notify);
+			} else {
+				startForeground(1, notify, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+			}
 		} else {
-			startForeground(1, notify, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+			// Update - use NotificationManager (no sound)
+			NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.notify(1, notify);
 		}
 	}
 
@@ -291,7 +299,9 @@ public class TProxyService extends VpnService {
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			CharSequence name = getString(R.string.app_name);
-			NotificationChannel channel = new NotificationChannel(channelName, name, NotificationManager.IMPORTANCE_DEFAULT);
+			NotificationChannel channel = new NotificationChannel(channelName, name, NotificationManager.IMPORTANCE_LOW);
+			channel.setSound(null, null);
+			channel.enableVibration(false);
 			notificationManager.createNotificationChannel(channel);
 		}
 	}
@@ -367,7 +377,7 @@ public class TProxyService extends VpnService {
 		lastTime = currentTime;
 
 		// Update notification with big text
-		createNotification(channelName, contentText, bigText, totalTx, totalRx, packetInfo);
+		createNotification(channelName, contentText, bigText, totalTx, totalRx, packetInfo, false);
 	}
 
 	private String formatSpeed(long bytesPerSecond) {
