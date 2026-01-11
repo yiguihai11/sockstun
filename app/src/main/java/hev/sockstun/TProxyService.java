@@ -32,13 +32,7 @@ public class TProxyService extends VpnService {
 	private static native void TProxyStartService(String config_path, int fd);
 	private static native void TProxyStopService();
 	private static native long[] TProxyGetStats();
-	private static native String TProxyGetLogs(int max_lines);
-
 	private Thread nativeThread;
-
-	public static String getLogs(int maxLines) {
-		return TProxyGetLogs(maxLines);
-	}
 
 	public static final String ACTION_CONNECT = "hev.sockstun.CONNECT";
 	public static final String ACTION_DISCONNECT = "hev.sockstun.DISCONNECT";
@@ -77,7 +71,6 @@ public class TProxyService extends VpnService {
 		Preferences prefs = new Preferences(this);
 
 		/* VPN */
-		String session = new String();
 		VpnService.Builder builder = new VpnService.Builder();
 		builder.setBlocking(false);
 		builder.setMtu(prefs.getTunnelMtu());
@@ -127,7 +120,6 @@ public class TProxyService extends VpnService {
 			builder.addRoute("0.0.0.0", 0);
 			if (!prefs.getRemoteDns() && !dns.isEmpty())
 			  builder.addDnsServer(dns);
-			session += "IPv4";
 		}
 		if (prefs.getIpv6()) {
 			String addr = prefs.getTunnelIpv6Address();
@@ -137,9 +129,6 @@ public class TProxyService extends VpnService {
 			builder.addRoute("::", 0);
 			if (!prefs.getRemoteDns() && !dns.isEmpty())
 			  builder.addDnsServer(dns);
-			if (!session.isEmpty())
-			  session += " + ";
-			session += "IPv6";
 		}
 		if (prefs.getRemoteDns()) {
 			// Add mapped DNS servers based on enabled IP versions
@@ -156,7 +145,6 @@ public class TProxyService extends VpnService {
 
 		boolean disallowSelf = true;
 		if (prefs.getGlobal()) {
-			session += "/Global";
 			// In global mode, exclude selected apps (blacklist)
 			for (String appName : prefs.getApps()) {
 				try {
@@ -173,7 +161,6 @@ public class TProxyService extends VpnService {
 				} catch (NameNotFoundException e) {
 				}
 			}
-			session += "/per-App";
 		}
 		if (disallowSelf) {
 			String selfName = getApplicationContext().getPackageName();
@@ -182,7 +169,6 @@ public class TProxyService extends VpnService {
 			} catch (NameNotFoundException e) {
 			}
 		}
-		builder.setSession(session);
 		tunFd = builder.establish();
 		if (tunFd == null) {
 			stopSelf();
@@ -218,8 +204,6 @@ public class TProxyService extends VpnService {
 		final int fd = tunFd.getFd();
 		nativeThread = new Thread(() -> {
 			TProxyStartService(configPath, fd);
-			// When native process exits, clean up
-			stopService();
 		});
 		nativeThread.start();
 	}
@@ -228,19 +212,10 @@ public class TProxyService extends VpnService {
 		if (tunFd == null)
 			return;
 
+		stopForeground(true);
+		
 		// Stop native service first
 		TProxyStopService();
-
-		// Wait for native thread to finish
-		if (nativeThread != null) {
-			try {
-				nativeThread.join(2000); // Wait up to 2 seconds
-			} catch (InterruptedException e) {
-			}
-			nativeThread = null;
-		}
-
-		stopForeground(true);
 
 		/* VPN */
 		try {
