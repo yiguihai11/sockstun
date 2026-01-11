@@ -25,6 +25,8 @@ import android.content.Intent;
 import android.net.VpnService;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ServiceInfo;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.core.app.NotificationCompat;
 
@@ -32,16 +34,26 @@ public class TProxyService extends VpnService {
 	private static native void TProxyStartService(String config_path, int fd);
 	private static native void TProxyStopService();
 	private static native long[] TProxyGetStats();
-	private Thread nativeThread;
 
 	public static final String ACTION_CONNECT = "hev.sockstun.CONNECT";
 	public static final String ACTION_DISCONNECT = "hev.sockstun.DISCONNECT";
+	private static final int STATS_UPDATE_INTERVAL_MS = 2000;
 
 	static {
 		System.loadLibrary("hev-socks5-tunnel");
 	}
 
 	private ParcelFileDescriptor tunFd = null;
+	private String channelName = "socks5";
+
+	// Traffic stats
+	private Handler statsHandler;
+	private Runnable statsRunnable;
+	private long lastTxBytes = 0;
+	private long lastRxBytes = 0;
+	private long lastTime = 0;
+	private long totalTxBytes = 0;
+	private long totalRxBytes = 0;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -55,6 +67,9 @@ public class TProxyService extends VpnService {
 
 	@Override
 	public void onDestroy() {
+		if (statsHandler != null && statsRunnable != null) {
+			statsHandler.removeCallbacks(statsRunnable);
+		}
 		super.onDestroy();
 	}
 
@@ -67,6 +82,13 @@ public class TProxyService extends VpnService {
 	public void startService() {
 		if (tunFd != null)
 		  return;
+
+		// Reset traffic stats
+		lastTxBytes = 0;
+		lastRxBytes = 0;
+		lastTime = 0;
+		totalTxBytes = 0;
+		totalRxBytes = 0;
 
 		Preferences prefs = new Preferences(this);
 
@@ -195,15 +217,20 @@ public class TProxyService extends VpnService {
 
 		// Create notification BEFORE starting native process
 		// Must be done within 5 seconds of service start or system will kill the service
-		String channelName = "socks5";
 		initNotificationChannel(channelName);
 		createNotification(channelName);
 		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
+
+		// Start traffic stats update
+		startStatsUpdate();
 	}
 	
 	public void stopService() {
 		if (tunFd == null)
 		  return;
+
+		// Stop traffic stats update
+		stopStatsUpdate();
 
 		stopForeground(true);
 
@@ -221,14 +248,20 @@ public class TProxyService extends VpnService {
 	}
 
 	private void createNotification(String channelName) {
+		createNotification(channelName, "↑ --  ↓ --");
+	}
+
+	private void createNotification(String channelName, String contentText) {
 		Intent i = new Intent(this, MainActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelName);
 		Notification notify = notification
 				.setContentTitle(getString(R.string.app_name))
+				.setContentText(contentText)
 				.setSmallIcon(android.R.drawable.sym_def_app_icon)
 				.setContentIntent(pi)
+				.setOngoing(true)
 				.build();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
 			startForeground(1, notify);
@@ -244,6 +277,86 @@ public class TProxyService extends VpnService {
 			CharSequence name = getString(R.string.app_name);
 			NotificationChannel channel = new NotificationChannel(channelName, name, NotificationManager.IMPORTANCE_DEFAULT);
 			notificationManager.createNotificationChannel(channel);
+		}
+	}
+
+	private void startStatsUpdate() {
+		statsHandler = new Handler(Looper.getMainLooper());
+		statsRunnable = new Runnable() {
+			@Override
+			public void run() {
+				updateTrafficStats();
+				statsHandler.postDelayed(this, STATS_UPDATE_INTERVAL_MS);
+			}
+		};
+		statsHandler.post(statsRunnable);
+	}
+
+	private void stopStatsUpdate() {
+		if (statsHandler != null && statsRunnable != null) {
+			statsHandler.removeCallbacks(statsRunnable);
+		}
+	}
+
+	private void updateTrafficStats() {
+		long[] stats = TProxyGetStats();
+		if (stats == null || stats.length < 4) {
+			return;
+		}
+
+		long curTxBytes = stats[1];
+		long curRxBytes = stats[3];
+		long currentTime = System.currentTimeMillis();
+
+		String contentText;
+		if (lastTime > 0) {
+			long timeDelta = (currentTime - lastTime) / 1000;
+			if (timeDelta > 0) {
+				long txSpeed = (curTxBytes - lastTxBytes) / timeDelta;
+				long rxSpeed = (curRxBytes - lastRxBytes) / timeDelta;
+				contentText = "↑ " + formatSpeed(txSpeed) + "  ↓ " + formatSpeed(rxSpeed);
+			} else {
+				contentText = "↑ --  ↓ --";
+			}
+		} else {
+			contentText = "↑ --  ↓ --";
+		}
+
+		lastTxBytes = curTxBytes;
+		lastRxBytes = curRxBytes;
+		lastTime = currentTime;
+		totalTxBytes = curTxBytes;
+		totalRxBytes = curRxBytes;
+
+		// Update notification
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			createNotification(channelName, contentText);
+		} else {
+			// For older Android versions, recreate notification
+			createNotification(channelName, contentText);
+		}
+	}
+
+	private String formatSpeed(long bytesPerSecond) {
+		if (bytesPerSecond < 1024) {
+			return bytesPerSecond + " B/s";
+		} else if (bytesPerSecond < 1024 * 1024) {
+			return String.format("%.1f KB/s", bytesPerSecond / 1024.0);
+		} else {
+			return String.format("%.1f MB/s", bytesPerSecond / (1024.0 * 1024.0));
+		}
+	}
+
+	private String formatBytes(long bytes) {
+		if (bytes < 1024) {
+			return bytes + " B";
+		} else if (bytes < 1024 * 1024) {
+			return String.format("%.1f KB", bytes / 1024.0);
+		} else if (bytes < 1024 * 1024 * 1024) {
+			return String.format("%.1f MB", bytes / (1024.0 * 1024.0));
+		} else {
+			return String.format("%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0));
 		}
 	}
 }
