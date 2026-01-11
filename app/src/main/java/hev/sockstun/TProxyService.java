@@ -49,7 +49,9 @@ public class TProxyService extends VpnService {
 	// Traffic stats
 	private Handler statsHandler;
 	private Runnable statsRunnable;
+	private long lastTxPackets = 0;
 	private long lastTxBytes = 0;
+	private long lastRxPackets = 0;
 	private long lastRxBytes = 0;
 	private long lastTime = 0;
 	private long totalTxBytes = 0;
@@ -84,7 +86,9 @@ public class TProxyService extends VpnService {
 		  return;
 
 		// Reset traffic stats
+		lastTxPackets = 0;
 		lastTxBytes = 0;
+		lastRxPackets = 0;
 		lastRxBytes = 0;
 		lastTime = 0;
 		totalTxBytes = 0;
@@ -248,21 +252,33 @@ public class TProxyService extends VpnService {
 	}
 
 	private void createNotification(String channelName) {
-		createNotification(channelName, "↑ --  ↓ --");
+		createNotification(channelName, "↑ --  ↓ --", null, null, null, null);
 	}
 
-	private void createNotification(String channelName, String contentText) {
+	private void createNotification(String channelName, String contentText,
+	                                String bigText, String totalTx, String totalRx,
+	                                String packetInfo) {
 		Intent i = new Intent(this, MainActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelName);
-		Notification notify = notification
+
+		notification
 				.setContentTitle(getString(R.string.app_name))
 				.setContentText(contentText)
 				.setSmallIcon(android.R.drawable.sym_def_app_icon)
 				.setContentIntent(pi)
-				.setOngoing(true)
-				.build();
+				.setOngoing(true);
+
+		// Add big text style if detailed info is available
+		if (bigText != null) {
+			NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+			bigTextStyle.setBigContentTitle(getString(R.string.app_name));
+			bigTextStyle.bigText(bigText);
+			notification.setStyle(bigTextStyle);
+		}
+
+		Notification notify = notification.build();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
 			startForeground(1, notify);
 		} else {
@@ -304,17 +320,39 @@ public class TProxyService extends VpnService {
 			return;
 		}
 
+		long curTxPackets = stats[0];
 		long curTxBytes = stats[1];
+		long curRxPackets = stats[2];
 		long curRxBytes = stats[3];
 		long currentTime = System.currentTimeMillis();
 
 		String contentText;
+		String bigText = null;
+		String totalTx = null;
+		String totalRx = null;
+		String packetInfo = null;
+
 		if (lastTime > 0) {
 			long timeDelta = (currentTime - lastTime) / 1000;
 			if (timeDelta > 0) {
 				long txSpeed = (curTxBytes - lastTxBytes) / timeDelta;
 				long rxSpeed = (curRxBytes - lastRxBytes) / timeDelta;
+				long txPacketsRate = (curTxPackets - lastTxPackets) / timeDelta;
+				long rxPacketsRate = (curRxPackets - lastRxPackets) / timeDelta;
+
 				contentText = "↑ " + formatSpeed(txSpeed) + "  ↓ " + formatSpeed(rxSpeed);
+
+				// Build big text with detailed info
+				totalTx = formatBytes(curTxBytes);
+				totalRx = formatBytes(curRxBytes);
+				packetInfo = curTxPackets + " / " + curRxPackets;
+
+				bigText = "上传速度: " + formatSpeed(txSpeed) + "\n" +
+				          "发送数据: " + totalTx + "\n" +
+				          "发送包数: " + curTxPackets + "\n\n" +
+				          "下载速度: " + formatSpeed(rxSpeed) + "\n" +
+				          "接收数据: " + totalRx + "\n" +
+				          "接收包数: " + curRxPackets;
 			} else {
 				contentText = "↑ --  ↓ --";
 			}
@@ -322,20 +360,14 @@ public class TProxyService extends VpnService {
 			contentText = "↑ --  ↓ --";
 		}
 
+		lastTxPackets = curTxPackets;
 		lastTxBytes = curTxBytes;
+		lastRxPackets = curRxPackets;
 		lastRxBytes = curRxBytes;
 		lastTime = currentTime;
-		totalTxBytes = curTxBytes;
-		totalRxBytes = curRxBytes;
 
-		// Update notification
-		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			createNotification(channelName, contentText);
-		} else {
-			// For older Android versions, recreate notification
-			createNotification(channelName, contentText);
-		}
+		// Update notification with big text
+		createNotification(channelName, contentText, bigText, totalTx, totalRx, packetInfo);
 	}
 
 	private String formatSpeed(long bytesPerSecond) {
