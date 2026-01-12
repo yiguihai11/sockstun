@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Notification strings -->
+	<string name="notif_upload_speed">上传速度:</string>
+	<string name="notif_sent_data">发送数据:</string>
+	<string name="notif_sent_packets">发送包数:</string>
+	<string name="notif_download_speed">下载速度:</string>
+	<string name="notif_received_data">接收数据:</string>
+	<string name="notif_received_packets">接收包数:</string>
+</resources>
