@@ -236,19 +236,25 @@ public class TProxyService extends VpnService {
 		// Stop traffic stats update
 		stopStatsUpdate();
 
+		// Immediately remove notification and clear foreground state
 		stopForeground(true);
 
-		/* TProxy */
-		TProxyStopService();
-
-		/* VPN */
+		// Close TUN device immediately to release VPN
 		try {
 			tunFd.close();
 		} catch (IOException e) {
 		}
 		tunFd = null;
 
-		System.exit(0);
+		// Stop native service in background thread to avoid blocking UI
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				TProxyStopService();
+				// Exit process after native service stops
+				System.exit(0);
+			}
+		}, "TunnelStopThread").start();
 	}
 
 	private void createNotification(String channelName) {
