@@ -372,12 +372,12 @@ public class TProxyService extends VpnService {
 				totalRx = formatBytes(curRxBytes);
 				packetInfo = curTxPackets + " / " + curRxPackets;
 
-				bigText = "上传速度: " + formatSpeed(txSpeed) + "\n" +
-				          "发送数据: " + totalTx + "\n" +
-				          "发送包数: " + curTxPackets + "\n\n" +
-				          "下载速度: " + formatSpeed(rxSpeed) + "\n" +
-				          "接收数据: " + totalRx + "\n" +
-				          "接收包数: " + curRxPackets;
+				bigText = "Upload Speed: " + formatSpeed(txSpeed) + "\n" +
+				          "Sent Data: " + totalTx + "\n" +
+				          "Sent Packets: " + curTxPackets + "\n\n" +
+				          "Download Speed: " + formatSpeed(rxSpeed) + "\n" +
+				          "Received Data: " + totalRx + "\n" +
+				          "Received Packets: " + curRxPackets;
 			} else {
 				contentText = "↑ --  ↓ --";
 			}
