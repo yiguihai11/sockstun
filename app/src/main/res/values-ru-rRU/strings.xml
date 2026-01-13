@@ -1,20 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">SocksTun</string>
-	<string name="socks_addr">Адрес Socks:</string>
-	<string name="socks_udp_addr">UDP-aдрес Socks:</string>
-	<string name="socks_port">Порт Socks:</string>
-	<string name="socks_user">Имя пользователя Socks:</string>
-	<string name="socks_pass">Пароль Socks:</string>
+	<string name="socks_addr">Адрес Socks (TCP):</string>
+	<string name="socks_udp_addr">UDP-адрес Socks:</string>
+	<string name="socks_udp_port">UDP-порт Socks:</string>
+	<string name="socks_udp_user">Имя пользователя Socks UDP:</string>
+	<string name="socks_udp_pass">Пароль Socks UDP:</string>
+	<string name="socks_port">Порт Socks (TCP):</string>
+	<string name="socks_user">Имя пользователя Socks (TCP):</string>
+	<string name="socks_pass">Пароль Socks (TCP):</string>
 	<string name="dns_ipv4">DNS IPv4:</string>
 	<string name="dns_ipv6">DNS IPv6:</string>
 	<string name="udp_in_tcp">UDP через TCP</string>
 	<string name="remote_dns">Удалённый DNS</string>
+	<string name="remote_dns_desc">Использовать виртуальный DNS-сервер mapdns для разрешения доменов, сопоставляя результаты DNS-запросов с виртуальными IP-адресами</string>
 	<string name="ipv4">IPv4</string>
 	<string name="ipv6">IPv6</string>
+	<string name="bypass_lan">Обход LAN</string>
 	<string name="global">Глобально</string>
 	<string name="apps">Приложения</string>
+	<string name="logs">Журналы</string>
 	<string name="save">Сохранить</string>
 	<string name="control_enable">Включить</string>
 	<string name="control_disable">Отключить</string>
+	<string name="task_stack_size">Размер стека задачи (байт)</string>
+	<string name="log_level">Уровень журналирования</string>
+	<string-array name="log_level_entries">
+		<item>Отладка</item>
+		<item>Информация</item>
+		<item>Ошибка</item>
+	</string-array>
+	<string-array name="log_level_values">
+		<item>debug</item>
+		<item>info</item>
+		<item>error</item>
+	</string-array>
+	<string name="tcp_buffer_size">Размер буфера TCP (байт)</string>
+	<string name="udp_recv_buffer_size">Размер буфера приёма UDP (байт)</string>
+	<string name="udp_copy_buffer_nums">Количество буферов копирования UDP</string>
+	<string name="connect_timeout">Таймаут подключения (мс)</string>
+	<string name="tcp_read_write_timeout">Таймаут чтения/записи TCP (мс)</string>
+	<string name="udp_read_write_timeout">Таймаут чтения/записи UDP (мс)</string>
+	<string name="max_session_count">Макс. количество сессий (0 = без ограничений)</string>
+	<string name="pid_file">Путь к файлу PID (необязательно)</string>
+	<string name="limit_nofile">Лимит открытых файлов</string>
+	<string name="tunnel_mtu">MTU туннеля</string>
+	<string name="tunnel_name">Имя интерфейса</string>
+	<string name="tunnel_multi_queue">Мультиочередь</string>
+	<string name="tunnel_ipv4">Адрес IPv4</string>
+	<string name="tunnel_ipv6">Адрес IPv6</string>
+	<string name="tunnel_post_up_script">Скрипт после поднятия</string>
+	<string name="tunnel_pre_down_script">Скрипт перед отключением</string>
+	<string name="chnroutes_title">Китайские маршруты (Chnroutes)</string>
+	<string name="chnroutes_description">Разделённая маршрутизация на основе китайских диапазонов IP</string>
+	<string name="chnroutes_enabled">Включено</string>
+	<string name="chnroutes_upload">Загрузить</string>
+	<string name="chnroutes_extract">Извлечь</string>
+	<string name="chnroutes_content_title">Содержимое chnroutes.txt</string>
+	<string name="chnroutes_content_hint">Содержимое файла chnroutes.txt...</string>
+	<string name="chnroutes_clear">Очистить</string>
+	<string name="chnroutes_refresh">Обновить</string>
+	<string name="chnroutes_save">Сохранить</string>
+	<string name="chnroutes_path_info">Путь к файлу: /data/data/.../cache/chnroutes.txt</string>
+	<string name="acl_title">Список контроля доступа (ACL)</string>
+	<string name="acl_description">Блокировка IP-адресов и имён хостов/SNI из списка ACL</string>
+	<string name="acl_enabled">Включено</string>
+	<string name="acl_upload">Загрузить</string>
+	<string name="acl_extract">Извлечь</string>
+	<string name="acl_content_title">Содержимое acl.txt</string>
+	<string name="acl_content_hint">Содержимое файла acl.txt...</string>
+	<string name="acl_clear">Очистить</string>
+	<string name="acl_refresh">Обновить</string>
+	<string name="acl_save">Сохранить</string>
+	<string name="acl_path_info">Путь к файлу: /data/data/.../cache/acl.txt</string>
+	<string name="dns_split_tunnel_enable">Включить разделённый DNS</string>
+	<string name="dns_split_tunnel_enable_desc">Маршрутизация DNS-запросов на основе назначения (зарубежные/Китай)</string>
+	<string name="dns_foreign_servers">Зарубежные DNS-серверы</string>
+	<string name="dns_foreign_servers_desc">Добавьте DNS-серверы (IPv4 или IPv6) для зарубежных доменов. Используйте + для добавления, - для удаления.</string>
+	<string name="dns_add_entry">Добавить DNS-сервер</string>
+	<string name="dns_split_tunnel_info">О разделённом DNS</string>
+	<string name="dns_split_tunnel_info_desc">При включении DNS-запросы маршрутизируются на основе домена назначения. Зарубежные домены используют настроенные выше DNS-серверы, китайские домены используют локальные DNS-серверы.</string>
+	<string name="dns_forwarder_title">DNS-форвардер</string>
+	<string name="dns_forwarder_desc">Перехват и перенаправление DNS-запросов на пользовательские цели. Для каждой пары (IPv4/IPv6) должны быть заполнены оба поля (виртуальный и целевой). Оставьте пустым для отключения.</string>
+	<string name="dns_virtual_ip4">Виртуальный IPv4 (перехватываемый адрес):</string>
+	<string name="dns_virtual_ip6">Виртуальный IPv6 (перехватываемый адрес):</string>
+	<string name="dns_target_ip4">Целевой IPv4 (перенаправить на):</string>
+	<string name="dns_target_ip6">Целевой IPv6 (перенаправить на):</string>
+	<string name="mapdns_title">Сопоставлённый DNS</string>
+	<string name="mapdns_desc">Конфигурация сопоставления DNS для режима удалённого DNS. Используется при включённом удалённом DNS.</string>
+	<string name="mapdns_address">Адрес прослушивания (IPv4):</string>
+	<string name="mapdns_address6">Адрес прослушивания (IPv6):</string>
+	<string name="mapdns_port">Порт:</string>
+	<string name="mapdns_network">Сеть (IPv4):</string>
+	<string name="mapdns_netmask">Маска сети (IPv4):</string>
+	<string name="mapdns_network6">Префикс сети (IPv6):</string>
+	<string name="mapdns_prefixlen">Длина префикса (IPv6):</string>
+	<string name="mapdns_prefixlen_desc">По умолчанию: 96 (/96 = 4,2 млрд записей, /112 = 65K записей, /120 = 256 записей)</string>
+	<string name="mapdns_cache_size">Размер кэша:</string>
+	<string name="dns_latency_optimize_title">Оптимизация задержки DNS</string>
+	<string name="dns_latency_optimize_desc">Если DNS-ответ содержит несколько IP-адресов, автоматически тестировать и выбрать адрес с наименьшей задержкой.</string>
+	<string name="dns_latency_optimize_enable">Включить оптимизацию задержки DNS</string>
+	<string name="dns_latency_optimize_timeout">Таймаут (мс):</string>
+	<string name="dns_latency_optimize_timeout_desc">Общий таймаут для проверки скорости всех IP. Возвращает исходный DNS-ответ, если все IP истекли.</string>
+	<string name="dns_latency_optimize_warning">⚠️ Предупреждение: Эта функция нестабильна и может вызывать сбои. Не рекомендуется для ежедневного использования.</string>
+	<string name="smart_proxy_title">Умный прокси</string>
+	<string name="smart_proxy_desc">Интеллектуальное переключение для не внутреннего TCP-трафика. Прямое подключение с таймаутом, затем переключение на прокси.</string>
+	<string name="smart_proxy_info_desc">При включении автоматически определяется лучший метод маршрутизации для каждого подключения на основе сетевых условий.</string>
+	<string name="smart_proxy_config_title">Конфигурация</string>
+	<string name="smart_proxy_timeout">Таймаут (мс):</string>
+	<string name="smart_proxy_timeout_desc">Таймаут попыток прямого подключения. Установите 0 для отключения.</string>
+	<string name="smart_proxy_blocked_ip_expiry">Истечение блокировки IP (минуты):</string>
+	<string name="smart_proxy_blocked_ip_expiry_desc">Время истечения для временно заблокированных IP. Установите 0 для отключения.</string>
+	<string name="smart_proxy_probe_ports">Порты проверки</string>
+	<string name="smart_proxy_probe_ports_desc">Порты, запускающие определение протокола (TLS SNI/HTTP Host). Используйте + для добавления, - для удаления.</string>
+	<string name="probe_port_add_entry">Добавить порт</string>
+	<string name="smart_proxy_info">Об умном прокси</string>
+	<string name="smart_proxy_full_desc">Умный прокси автоматически определяет лучший метод маршрутизации для каждого подключения. При включении TCP-подключения сначала пытаются установить прямое подключение; при истечении таймаута переключаются на SOCKS5-прокси. Определение протокола (TLS SNI/HTTP Host) выполняется на настроенных портах проверки для повышения точности подключения.</string>
+	<string name="about_text">SocksTun %s\n\nКлиент VPN-туннеля SOCKS5\n\nGitHub: yiguihai11/sockstun</string>
+
+	<!-- Notification strings -->
+	<string name="notif_upload_speed">Скорость отправки:</string>
+	<string name="notif_sent_data">Отправлено данных:</string>
+	<string name="notif_sent_packets">Отправлено пакетов:</string>
+	<string name="notif_download_speed">Скорость загрузки:</string>
+	<string name="notif_received_data">Получено данных:</string>
+	<string name="notif_received_packets">Получено пакетов:</string>
+
+	<!-- Common strings -->
+	<string name="saved">Сохранено</string>
+	<string name="saved_successfully">Успешно сохранено</string>
+	<string name="save_failed">Ошибка сохранения: %s</string>
+	<string name="upload_failed">Ошибка загрузки: %s</string>
+	<string name="uploaded_successfully">Успешно загружено</string>
+	<string name="extracted_successfully">Успешно извлечено</string>
+	<string name="extract_failed">Ошибка извлечения: %s</string>
+	<string name="unable_to_read_file">Не удалось прочитать файл: %s</string>
+	<string name="system_prefix">Система: </string>
+
+	<!-- App List strings -->
+	<string name="app_list_title">Список приложений</string>
+	<string name="uid_prefix">UID: </string>
+	<string name="app_status_excluded">Исключено</string>
+	<string name="app_status_proxy_only">Только прокси</string>
+	<string name="filter_total">Всего: </string>
+	<string name="filter_showing"> | Показано: </string>
+	<string name="filter_selected"> | Выбрано: </string>
+	<string name="filter_all">Все</string>
+	<string name="filter_user">Пользователь</string>
+	<string name="filter_system">Система</string>
+	<string name="button_remove">-</string>
+	<string name="search_hint">Поиск</string>
+
+	<!-- Log strings -->
+	<string name="log_no_java_logs">Журналы Java пока недоступны.</string>
+	<string name="log_no_native_logs">Нет журналов или конфигурации. Убедитесь, что VPN работает.</string>
+	<string name="log_java_cleared">Журналы Java очищены.</string>
+	<string name="log_clear_failed">Не удалось очистить журналы: %s</string>
+	<string name="log_native_cleared">Журналы Native очищены.</string>
+	<string name="log_no_matches">Соответствий не найдено.</string>
+	<string name="log_filter_hint">Фильтр журналов...</string>
+
+	<!-- Button labels -->
+	<string name="button_refresh">Обновить</string>
+	<string name="button_clear">Очистить</string>
+
+	<!-- Loading messages -->
+	<string name="loading_java_logs">Загрузка журналов Java...</string>
+	<string name="loading_native_logs">Загрузка журналов Native...</string>
+
+	<!-- Tab labels -->
+	<string name="tab_tools">Инструменты</string>
+	<string name="tab_info">Информация</string>
+
+	<!-- Network settings -->
+	<string name="ip_settings">Настройки IP</string>
+	<string name="dns_settings">Настройки DNS</string>
+	<string name="routing_mode">Режим маршрутизации</string>
+
+	<!-- SOCKS configuration -->
+	<string name="tcp_configuration">Конфигурация TCP</string>
+	<string name="udp_configuration">Конфигурация UDP</string>
+	<string name="udp_empty_hint">Оставьте настройки UDP пустыми для использования конфигурации TCP</string>
+
+	<!-- Platform restriction messages -->
+	<string name="not_supported_on_android">Не поддерживается на Android</string>
+	<string name="not_supported_on_android_sandbox">Не поддерживается на Android (ограничение песочницы)</string>
+	<string name="limited_by_android_sandbox">Ограничено песочницей Android</string>
+	<string name="unlimited_hint">0 = без ограничений</string>
+
+	<!-- Default value hints -->
+	<string name="default_65536">По умолчанию: 65536</string>
+	<string name="default_524288">По умолчанию: 524288</string>
+	<string name="default_10">По умолчанию: 10</string>
+	<string name="default_10000_ms">По умолчанию: 10000 (мс)</string>
+	<string name="default_300000_ms">По умолчанию: 300000 (мс)</string>
+	<string name="default_60000_ms">По умолчанию: 60000 (мс)</string>
+
+	<!-- Tab labels -->
+	<string name="tab_socks">SOCKS</string>
+	<string name="tab_tunnel">Туннель</string>
+	<string name="tab_network">Сеть</string>
+	<string name="tab_smart_proxy">Умный прокси</string>
+	<string name="tab_dns">DNS</string>
+	<string name="tab_chnroutes">Китайские маршруты</string>
+	<string name="tab_acl">ACL</string>
+	<string name="tab_misc">Разное</string>
+	<string name="tab_about_label">О программе</string>
+	<string name="tab_java_log">Журнал Java</string>
+	<string name="tab_native_log">Журнал Native</string>
 </resources>
