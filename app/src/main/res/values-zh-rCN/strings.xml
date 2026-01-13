@@ -148,6 +148,7 @@
 	<string name="filter_user">用户</string>
 	<string name="filter_system">系统</string>
 	<string name="button_remove">-</string>
+	<string name="search_hint">搜索</string>
 
 	<!-- Log strings -->
 	<string name="log_no_java_logs">暂无 Java 日志。</string>

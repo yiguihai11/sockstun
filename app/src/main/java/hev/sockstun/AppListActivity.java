@@ -240,7 +240,7 @@ public class AppListActivity extends ListActivity {
 		getListView().addHeaderView(statsView, null, false);
 
 		EditText searchBox = new EditText(this);
-		searchBox.setHint("Search");
+		searchBox.setHint(getString(R.string.search_hint));
 		searchBox.setPadding(pad, pad, pad, pad);
 		getListView().addHeaderView(searchBox, null, false);
 

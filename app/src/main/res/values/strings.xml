@@ -148,6 +148,7 @@
 	<string name="filter_user">User</string>
 	<string name="filter_system">System</string>
 	<string name="button_remove">-</string>
+	<string name="search_hint">Search</string>
 
 	<!-- Log strings -->
 	<string name="log_no_java_logs">No Java logs available yet.</string>
