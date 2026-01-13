@@ -207,6 +207,7 @@ public class AppListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(getString(R.string.app_list_title));
+		setContentView(R.layout.app_list);
 
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -229,52 +230,10 @@ public class AppListActivity extends ListActivity {
 			adapter.add(pkg);
 		}
 
-		int pad = (int) (8 * getResources().getDisplayMetrics().density);
-
-		// Add stats view
-		statsView = new TextView(this);
-		statsView.setPadding(pad, pad, pad, pad / 2);
-		statsView.setTextSize(14);
-		statsView.setTextColor(getResources().getColor(R.color.info_text));
-		statsView.setBackgroundColor(getResources().getColor(R.color.info_background));
-		getListView().addHeaderView(statsView, null, false);
-
-		EditText searchBox = new EditText(this);
-		searchBox.setHint(getString(R.string.search_hint));
-		searchBox.setPadding(pad, pad, pad, pad);
-		getListView().addHeaderView(searchBox, null, false);
-
-		// Create type filter RadioGroup
-		RadioGroup filterGroup = new RadioGroup(this);
-		filterGroup.setOrientation(RadioGroup.HORIZONTAL);
-		filterGroup.setPadding(pad, pad / 2, pad, pad);
-		filterGroup.setBackgroundColor(getResources().getColor(R.color.info_background));
-
-		RadioButton rbAll = new RadioButton(this);
-		rbAll.setId(0); // Set ID to 0
-		rbAll.setText(getString(R.string.filter_all));
-		rbAll.setChecked(true);
-		filterGroup.addView(rbAll);
-
-		RadioButton rbUser = new RadioButton(this);
-		rbUser.setId(1); // Set ID to 1
-		rbUser.setText(getString(R.string.filter_user));
-		filterGroup.addView(rbUser);
-
-		RadioButton rbSystem = new RadioButton(this);
-		rbSystem.setId(2); // Set ID to 2
-		rbSystem.setText(getString(R.string.filter_system));
-		filterGroup.addView(rbSystem);
-
-		// Set RadioGroup margin
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-			LinearLayout.LayoutParams.MATCH_PARENT,
-			LinearLayout.LayoutParams.WRAP_CONTENT
-		);
-		params.setMargins(pad, 0, pad, 0);
-		filterGroup.setLayoutParams(params);
-
-		getListView().addHeaderView(filterGroup, null, false);
+		// Find views from layout
+		statsView = (TextView) findViewById(R.id.stats_view);
+		EditText searchBox = (EditText) findViewById(R.id.search_box);
+		RadioGroup filterGroup = (RadioGroup) findViewById(R.id.filter_group);
 
 		adapter.sort(new Comparator<Package>() {
 			public int compare(Package a, Package b) {
@@ -303,8 +262,18 @@ public class AppListActivity extends ListActivity {
 		filterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// checkedId is the RadioButton's ID
-				adapter.setFilterType(checkedId);
+				// Map radio button IDs to filter types
+				int filterType;
+				if (checkedId == R.id.filter_all) {
+					filterType = 0;
+				} else if (checkedId == R.id.filter_user) {
+					filterType = 1;
+				} else if (checkedId == R.id.filter_system) {
+					filterType = 2;
+				} else {
+					filterType = 0;
+				}
+				adapter.setFilterType(filterType);
 			}
 		});
 	}
@@ -327,11 +296,7 @@ public class AppListActivity extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		int headers = l.getHeaderViewsCount();
-		int adjPos = position - headers;
-		if (adjPos < 0)
-			return;
-		Package pkg = adapter.getItem(adjPos);
+		Package pkg = adapter.getItem(position);
 		pkg.selected = !pkg.selected;
 		CheckBox checkbox = (CheckBox) v.findViewById(R.id.checked);
 		if (checkbox != null)

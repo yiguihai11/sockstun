@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<!-- Fixed header section -->
+	<LinearLayout
+		android:id="@+id/filter_container"
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/info_background">
+
+		<!-- Stats view -->
+		<TextView
+			android:id="@+id/stats_view"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:paddingBottom="4dp"
+			android:textSize="14sp"
+			android:textColor="@color/info_text"/>
+
+		<!-- Search box -->
+		<EditText
+			android:id="@+id/search_box"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:hint="@string/search_hint"
+			android:singleLine="true"/>
+
+		<!-- Filter radio group -->
+		<RadioGroup
+			android:id="@+id/filter_group"
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:paddingTop="4dp">
+
+			<RadioButton
+				android:id="@+id/filter_all"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/filter_all"
+				android:checked="true"/>
+
+			<RadioButton
+				android:id="@+id/filter_user"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/filter_user"/>
+
+			<RadioButton
+				android:id="@+id/filter_system"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/filter_system"/>
+		</RadioGroup>
+	</LinearLayout>
+
+	<!-- List view -->
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:choiceMode="multipleChoice"/>
+
+</LinearLayout>
