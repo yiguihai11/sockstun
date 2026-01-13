@@ -246,19 +246,23 @@ public class TProxyService extends VpnService {
 		// Immediately remove notification and clear foreground state
 		stopForeground(true);
 
-		// Close TUN device immediately to release VPN connection
-		try {
-			tunFd.close();
-		} catch (IOException e) {
-		}
-		tunFd = null;
-
-		// Stop native service in background thread to avoid blocking UI
+		// Stop native service first - this will signal tunnel to stop
+		// The tunnel will stop reading from TUN device
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				// Wait for tunnel to stop gracefully
 				TProxyStopService();
+
+				// NOW close TUN device after tunnel has stopped reading from it
+				try {
+					if (tunFd != null) {
+						tunFd.close();
+					}
+				} catch (IOException e) {
+				}
+				tunFd = null;
+
 				// Clear stopping flag and stop the service
 				isStopping = false;
 				stopSelf();
