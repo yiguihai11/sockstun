@@ -11,7 +11,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="IP Settings"
+			android:text="@string/ip_settings"
 			android:textStyle="bold"
 			android:textSize="16sp"
 			android:paddingTop="8dp"
@@ -43,7 +43,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="DNS Settings"
+			android:text="@string/dns_settings"
 			android:textStyle="bold"
 			android:textSize="16sp"
 			android:paddingTop="16dp"
@@ -100,7 +100,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Routing Mode"
+			android:text="@string/routing_mode"
 			android:textStyle="bold"
 			android:textSize="16sp"
 			android:paddingTop="16dp"

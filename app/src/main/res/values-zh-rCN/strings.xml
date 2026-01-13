@@ -156,4 +156,54 @@
 	<string name="log_clear_failed">清除日志失败: %s</string>
 	<string name="log_native_cleared">Native 日志已清除。</string>
 	<string name="log_no_matches">未找到匹配的日志。</string>
+	<string name="log_filter_hint">筛选日志...</string>
+
+	<!-- Button labels -->
+	<string name="button_refresh">刷新</string>
+	<string name="button_clear">清除</string>
+
+	<!-- Loading messages -->
+	<string name="loading_java_logs">正在加载 Java 日志...</string>
+	<string name="loading_native_logs">正在加载 Native 日志...</string>
+
+	<!-- Tab labels -->
+	<string name="tab_tools">工具</string>
+	<string name="tab_info">信息</string>
+
+	<!-- Network settings -->
+	<string name="ip_settings">IP 设置</string>
+	<string name="dns_settings">DNS 设置</string>
+	<string name="routing_mode">路由模式</string>
+
+	<!-- SOCKS configuration -->
+	<string name="tcp_configuration">TCP 配置</string>
+	<string name="udp_configuration">UDP 配置</string>
+	<string name="udp_empty_hint">留空 UDP 设置以使用 TCP 配置</string>
+
+	<!-- Platform restriction messages -->
+	<string name="not_supported_on_android">Android 不支持</string>
+	<string name="not_supported_on_android_sandbox">Android 不支持（沙箱限制）</string>
+	<string name="limited_by_android_sandbox">受 Android 沙箱限制</string>
+	<string name="unlimited_hint">0 = 无限制</string>
+
+	<!-- Default value hints -->
+	<string name="default_65536">默认值: 65536</string>
+	<string name="default_524288">默认值: 524288</string>
+	<string name="default_10">默认值: 10</string>
+	<string name="default_10000_ms">默认值: 10000 (毫秒)</string>
+	<string name="default_300000_ms">默认值: 300000 (毫秒)</string>
+	<string name="default_60000_ms">默认值: 60000 (毫秒)</string>
+
+	<!-- Tab labels -->
+	<string name="tab_socks">SOCKS</string>
+	<string name="tab_tunnel">隧道</string>
+	<string name="tab_network">网络</string>
+	<string name="tab_smart_proxy">智能代理</string>
+	<string name="tab_dns">DNS</string>
+	<string name="tab_chnroutes">中国路由</string>
+	<string name="tab_acl">访问控制</string>
+	<string name="tab_misc">杂项</string>
+	<string name="tab_about_label">关于</string>
+	<string name="tab_java_log">Java 日志</string>
+	<string name="tab_native_log">Native 日志</string>
 </resources>

@@ -165,31 +165,31 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
 		// Setup tabs
 		tabHost.addTab(tabHost.newTabSpec("socks")
-			.setIndicator("SOCKS")
+			.setIndicator(getString(R.string.tab_socks))
 			.setContent(R.id.tab_socks));
 		tabHost.addTab(tabHost.newTabSpec("tunnel")
-			.setIndicator("Tunnel")
+			.setIndicator(getString(R.string.tab_tunnel))
 			.setContent(R.id.tab_tunnel));
 		tabHost.addTab(tabHost.newTabSpec("network")
-			.setIndicator("Network")
+			.setIndicator(getString(R.string.tab_network))
 			.setContent(R.id.tab_network));
 		tabHost.addTab(tabHost.newTabSpec("smartproxy")
-			.setIndicator("Smart Proxy")
+			.setIndicator(getString(R.string.tab_smart_proxy))
 			.setContent(R.id.tab_smartproxy));
 		tabHost.addTab(tabHost.newTabSpec("dns")
-			.setIndicator("DNS")
+			.setIndicator(getString(R.string.tab_dns))
 			.setContent(R.id.tab_dns));
 		tabHost.addTab(tabHost.newTabSpec("chnroutes")
-			.setIndicator("Chnroutes")
+			.setIndicator(getString(R.string.tab_chnroutes))
 			.setContent(R.id.tab_chnroutes));
 		tabHost.addTab(tabHost.newTabSpec("acl")
-			.setIndicator("ACL")
+			.setIndicator(getString(R.string.tab_acl))
 			.setContent(R.id.tab_acl));
 		tabHost.addTab(tabHost.newTabSpec("misc")
-			.setIndicator("Misc")
+			.setIndicator(getString(R.string.tab_misc))
 			.setContent(R.id.tab_misc));
 		tabHost.addTab(tabHost.newTabSpec("about")
-			.setIndicator("About")
+			.setIndicator(getString(R.string.tab_about_label))
 			.setContent(R.id.tab_about));
 
 		// Setup tab scroller for auto-scroll on tab change

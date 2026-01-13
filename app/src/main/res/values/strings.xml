@@ -156,4 +156,54 @@
 	<string name="log_clear_failed">Failed to clear logs: %s</string>
 	<string name="log_native_cleared">Native logs cleared.</string>
 	<string name="log_no_matches">No matching logs found.</string>
+	<string name="log_filter_hint">Filter logs...</string>
+
+	<!-- Button labels -->
+	<string name="button_refresh">Refresh</string>
+	<string name="button_clear">Clear</string>
+
+	<!-- Loading messages -->
+	<string name="loading_java_logs">Loading Java logs...</string>
+	<string name="loading_native_logs">Loading Native logs...</string>
+
+	<!-- Tab labels -->
+	<string name="tab_tools">Tools</string>
+	<string name="tab_info">Info</string>
+
+	<!-- Network settings -->
+	<string name="ip_settings">IP Settings</string>
+	<string name="dns_settings">DNS Settings</string>
+	<string name="routing_mode">Routing Mode</string>
+
+	<!-- SOCKS configuration -->
+	<string name="tcp_configuration">TCP Configuration</string>
+	<string name="udp_configuration">UDP Configuration</string>
+	<string name="udp_empty_hint">Leave UDP settings empty to use TCP configuration</string>
+
+	<!-- Platform restriction messages -->
+	<string name="not_supported_on_android">Not supported on Android</string>
+	<string name="not_supported_on_android_sandbox">Not supported on Android (sandbox restriction)</string>
+	<string name="limited_by_android_sandbox">Limited by Android sandbox</string>
+	<string name="unlimited_hint">0 = unlimited</string>
+
+	<!-- Default value hints -->
+	<string name="default_65536">Default: 65536</string>
+	<string name="default_524288">Default: 524288</string>
+	<string name="default_10">Default: 10</string>
+	<string name="default_10000_ms">Default: 10000 (ms)</string>
+	<string name="default_300000_ms">Default: 300000 (ms)</string>
+	<string name="default_60000_ms">Default: 60000 (ms)</string>
+
+	<!-- Tab labels -->
+	<string name="tab_socks">SOCKS</string>
+	<string name="tab_tunnel">Tunnel</string>
+	<string name="tab_network">Network</string>
+	<string name="tab_smart_proxy">Smart Proxy</string>
+	<string name="tab_dns">DNS</string>
+	<string name="tab_chnroutes">Chnroutes</string>
+	<string name="tab_acl">ACL</string>
+	<string name="tab_misc">Misc</string>
+	<string name="tab_about_label">About</string>
+	<string name="tab_java_log">Java Log</string>
+	<string name="tab_native_log">Native Log</string>
 </resources>
