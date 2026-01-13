@@ -425,7 +425,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			try {
 				copyFileFromUri(uri);
 			} catch (IOException e) {
-				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.upload_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 			}
 		}
 		// Handle ACL file upload
@@ -434,7 +434,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			try {
 				copyFileFromUriForAcl(uri);
 			} catch (IOException e) {
-				Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.upload_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -460,7 +460,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		} else if (view == button_save) {
 			savePrefs();
 			Context context = getApplicationContext();
-			Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, getString(R.string.saved), Toast.LENGTH_SHORT).show();
 		} else if (view == button_control) {
 			boolean isEnable = prefs.getEnable();
 			prefs.setEnable(!isEnable);
@@ -733,7 +733,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			if (!v4DnsList.isEmpty()) {
 				// Add "System:" label
 				TextView label = new TextView(this);
-				label.setText("System: ");
+				label.setText(getString(R.string.system_prefix));
 				label.setTextSize(11);
 				label.setTextColor(0xFF808080);
 				LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
@@ -763,7 +763,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			if (!v6DnsList.isEmpty()) {
 				// Add "System:" label
 				TextView label = new TextView(this);
-				label.setText("System: ");
+				label.setText(getString(R.string.system_prefix));
 				label.setTextSize(11);
 				label.setTextColor(0xFF808080);
 				LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
@@ -966,7 +966,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			reader.close();
 			edittext_chnroutes_content.setText(content.toString());
 		} catch (IOException e) {
-			edittext_chnroutes_content.setText("Unable to read file: " + e.getMessage());
+			edittext_chnroutes_content.setText(getString(R.string.unable_to_read_file, e.getMessage()));
 		}
 	}
 
@@ -979,9 +979,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(chnroutesFile), "UTF-8");
 			writer.write(edittext_chnroutes_content.getText().toString());
 			writer.close();
-			Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
-			Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -1002,9 +1002,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			reader.close();
 			writer.close();
 			loadChnroutesContent();
-			Toast.makeText(this, "Extracted successfully", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.extracted_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
-			Toast.makeText(this, "Extract failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.extract_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -1023,7 +1023,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		reader.close();
 		writer.close();
 		loadChnroutesContent();
-		Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, getString(R.string.uploaded_successfully), Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -1046,7 +1046,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			reader.close();
 			edittext_acl_content.setText(content.toString());
 		} catch (IOException e) {
-			edittext_acl_content.setText("Unable to read file: " + e.getMessage());
+			edittext_acl_content.setText(getString(R.string.unable_to_read_file, e.getMessage()));
 		}
 	}
 
@@ -1059,9 +1059,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(aclFile), "UTF-8");
 			writer.write(edittext_acl_content.getText().toString());
 			writer.close();
-			Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
-			Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -1082,9 +1082,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			reader.close();
 			writer.close();
 			loadAclContent();
-			Toast.makeText(this, "Extracted successfully", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.extracted_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
-			Toast.makeText(this, "Extract failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.extract_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -1103,7 +1103,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		reader.close();
 		writer.close();
 		loadAclContent();
-		Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, getString(R.string.uploaded_successfully), Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -1186,7 +1186,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			LinearLayout.LayoutParams.WRAP_CONTENT);
 		buttonParams.setMargins(8, 0, 0, 0);
 		removeButton.setLayoutParams(buttonParams);
-		removeButton.setText("-");
+		removeButton.setText(getString(R.string.button_remove));
 		removeButton.setEnabled(editable);
 
 		final EditText thisEdit = editText;
@@ -1276,7 +1276,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			LinearLayout.LayoutParams.WRAP_CONTENT);
 		buttonParams.setMargins(8, 0, 0, 0);
 		removeButton.setLayoutParams(buttonParams);
-		removeButton.setText("-");
+		removeButton.setText(getString(R.string.button_remove));
 		removeButton.setEnabled(editable);
 
 		final EditText thisEdit = editText;

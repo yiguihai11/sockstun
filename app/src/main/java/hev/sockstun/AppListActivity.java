@@ -168,14 +168,14 @@ public class AppListActivity extends ListActivity {
 			imageView.setImageDrawable(appinfo.loadIcon(pm));
 			textView.setText(appinfo.loadLabel(pm).toString());
 			packageNameView.setText(pkg.info.packageName);
-			packageUidView.setText("UID: " + appinfo.uid);
+			packageUidView.setText(getString(R.string.uid_prefix) + appinfo.uid);
 			checkBox.setChecked(pkg.selected);
 
 			// Set proxy status text
 			if (isGlobalMode) {
 				// Global mode: selected = excluded, unselected = proxied
 				if (pkg.selected) {
-					proxyStatusView.setText("Excluded");
+					proxyStatusView.setText(getString(R.string.app_status_excluded));
 					proxyStatusView.setTextColor(0xFFFF6B6B);
 				} else {
 					proxyStatusView.setText("");
@@ -183,7 +183,7 @@ public class AppListActivity extends ListActivity {
 			} else {
 				// Per-app mode: selected = proxy only, unselected = bypass
 				if (pkg.selected) {
-					proxyStatusView.setText("Proxy Only");
+					proxyStatusView.setText(getString(R.string.app_status_proxy_only));
 					proxyStatusView.setTextColor(0xFF4CAF50);
 				} else {
 					proxyStatusView.setText("");
@@ -199,7 +199,7 @@ public class AppListActivity extends ListActivity {
 			int total = adapter.getAllPackages().size();
 			int visible = adapter.getCount();
 			int selected = adapter.getSelectedCount();
-			statsView.setText("Total: " + total + " | Showing: " + visible + " | Selected: " + selected);
+			statsView.setText(getString(R.string.filter_total) + total + getString(R.string.filter_showing) + visible + getString(R.string.filter_selected) + selected);
 		}
 	}
 
@@ -252,18 +252,18 @@ public class AppListActivity extends ListActivity {
 
 		RadioButton rbAll = new RadioButton(this);
 		rbAll.setId(0); // Set ID to 0
-		rbAll.setText("All");
+		rbAll.setText(getString(R.string.filter_all));
 		rbAll.setChecked(true);
 		filterGroup.addView(rbAll);
 
 		RadioButton rbUser = new RadioButton(this);
 		rbUser.setId(1); // Set ID to 1
-		rbUser.setText("User");
+		rbUser.setText(getString(R.string.filter_user));
 		filterGroup.addView(rbUser);
 
 		RadioButton rbSystem = new RadioButton(this);
 		rbSystem.setId(2); // Set ID to 2
-		rbSystem.setText("System");
+		rbSystem.setText(getString(R.string.filter_system));
 		filterGroup.addView(rbSystem);
 
 		// Set RadioGroup margin
@@ -342,14 +342,14 @@ public class AppListActivity extends ListActivity {
 		if (proxyStatusView != null) {
 			if (isGlobalMode) {
 				if (pkg.selected) {
-					proxyStatusView.setText("Excluded");
+					proxyStatusView.setText(getString(R.string.app_status_excluded));
 					proxyStatusView.setTextColor(0xFFFF6B6B);
 				} else {
 					proxyStatusView.setText("");
 				}
 			} else {
 				if (pkg.selected) {
-					proxyStatusView.setText("Proxy Only");
+					proxyStatusView.setText(getString(R.string.app_status_proxy_only));
 					proxyStatusView.setTextColor(0xFF4CAF50);
 				} else {
 					proxyStatusView.setText("");

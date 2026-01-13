@@ -146,7 +146,7 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 							applyJavaLogFilter();
 						} else {
 							originalJavaLogs = "";
-							textview_java_log.setText("No Java logs available yet.");
+							textview_java_log.setText(getString(R.string.log_no_java_logs));
 						}
 					}
 				});
@@ -186,7 +186,7 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 							applyNativeLogFilter();
 						} else {
 							originalNativeLogs = "";
-							textview_native_log.setText("No logs or config available. Make sure VPN is running.");
+							textview_native_log.setText(getString(R.string.log_no_native_logs));
 						}
 					}
 				});
@@ -206,14 +206,14 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							textview_java_log.setText("Java logs cleared.");
+							textview_java_log.setText(getString(R.string.log_java_cleared));
 						}
 					});
 				} catch (Exception e) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							textview_java_log.setText("Failed to clear logs: " + e.getMessage());
+							textview_java_log.setText(getString(R.string.log_clear_failed, e.getMessage()));
 						}
 					});
 				}
@@ -233,14 +233,14 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							textview_native_log.setText("Native logs cleared.");
+							textview_native_log.setText(getString(R.string.log_native_cleared));
 						}
 					});
 				} catch (Exception e) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							textview_native_log.setText("Failed to clear logs: " + e.getMessage());
+							textview_native_log.setText(getString(R.string.log_clear_failed, e.getMessage()));
 						}
 					});
 				}
@@ -284,7 +284,7 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 		if (filteredLogs != null && !filteredLogs.isEmpty()) {
 			textview_java_log.setText(colorizeLog(filteredLogs));
 		} else {
-			textview_java_log.setText("No matching logs found.");
+			textview_java_log.setText(getString(R.string.log_no_matches));
 		}
 	}
 
@@ -294,7 +294,7 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 		if (filteredLogs != null && !filteredLogs.isEmpty()) {
 			textview_native_log.setText(colorizeLog(filteredLogs));
 		} else {
-			textview_native_log.setText("No matching logs found.");
+			textview_native_log.setText(getString(R.string.log_no_matches));
 		}
 	}
 

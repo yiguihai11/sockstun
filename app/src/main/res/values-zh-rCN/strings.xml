@@ -125,4 +125,35 @@
 	<string name="notif_download_speed">下载速度:</string>
 	<string name="notif_received_data">接收数据:</string>
 	<string name="notif_received_packets">接收包数:</string>
+
+	<!-- Common strings -->
+	<string name="saved">已保存</string>
+	<string name="saved_successfully">保存成功</string>
+	<string name="save_failed">保存失败: %s</string>
+	<string name="upload_failed">上传失败: %s</string>
+	<string name="uploaded_successfully">上传成功</string>
+	<string name="extracted_successfully">提取成功</string>
+	<string name="extract_failed">提取失败: %s</string>
+	<string name="unable_to_read_file">无法读取文件: %s</string>
+	<string name="system_prefix">系统: </string>
+
+	<!-- App List strings -->
+	<string name="uid_prefix">UID: </string>
+	<string name="app_status_excluded">已排除</string>
+	<string name="app_status_proxy_only">仅代理</string>
+	<string name="filter_total">总计: </string>
+	<string name="filter_showing"> | 显示: </string>
+	<string name="filter_selected"> | 已选: </string>
+	<string name="filter_all">全部</string>
+	<string name="filter_user">用户</string>
+	<string name="filter_system">系统</string>
+	<string name="button_remove">-</string>
+
+	<!-- Log strings -->
+	<string name="log_no_java_logs">暂无 Java 日志。</string>
+	<string name="log_no_native_logs">无日志或配置。请确保 VPN 正在运行。</string>
+	<string name="log_java_cleared">Java 日志已清除。</string>
+	<string name="log_clear_failed">清除日志失败: %s</string>
+	<string name="log_native_cleared">Native 日志已清除。</string>
+	<string name="log_no_matches">未找到匹配的日志。</string>
 </resources>

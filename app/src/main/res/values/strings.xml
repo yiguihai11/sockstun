@@ -125,4 +125,35 @@
 	<string name="notif_download_speed">Download Speed:</string>
 	<string name="notif_received_data">Received Data:</string>
 	<string name="notif_received_packets">Received Packets:</string>
+
+	<!-- Common strings -->
+	<string name="saved">Saved</string>
+	<string name="saved_successfully">Saved successfully</string>
+	<string name="save_failed">Save failed: %s</string>
+	<string name="upload_failed">Upload failed: %s</string>
+	<string name="uploaded_successfully">Uploaded successfully</string>
+	<string name="extracted_successfully">Extracted successfully</string>
+	<string name="extract_failed">Extract failed: %s</string>
+	<string name="unable_to_read_file">Unable to read file: %s</string>
+	<string name="system_prefix">System: </string>
+
+	<!-- App List strings -->
+	<string name="uid_prefix">UID: </string>
+	<string name="app_status_excluded">Excluded</string>
+	<string name="app_status_proxy_only">Proxy Only</string>
+	<string name="filter_total">Total: </string>
+	<string name="filter_showing"> | Showing: </string>
+	<string name="filter_selected"> | Selected: </string>
+	<string name="filter_all">All</string>
+	<string name="filter_user">User</string>
+	<string name="filter_system">System</string>
+	<string name="button_remove">-</string>
+
+	<!-- Log strings -->
+	<string name="log_no_java_logs">No Java logs available yet.</string>
+	<string name="log_no_native_logs">No logs or config available. Make sure VPN is running.</string>
+	<string name="log_java_cleared">Java logs cleared.</string>
+	<string name="log_clear_failed">Failed to clear logs: %s</string>
+	<string name="log_native_cleared">Native logs cleared.</string>
+	<string name="log_no_matches">No matching logs found.</string>
 </resources>
