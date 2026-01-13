@@ -138,6 +138,7 @@
 	<string name="system_prefix">系统: </string>
 
 	<!-- App List strings -->
+	<string name="app_list_title">应用列表</string>
 	<string name="uid_prefix">UID: </string>
 	<string name="app_status_excluded">已排除</string>
 	<string name="app_status_proxy_only">仅代理</string>

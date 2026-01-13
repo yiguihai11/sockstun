@@ -138,6 +138,7 @@
 	<string name="system_prefix">System: </string>
 
 	<!-- App List strings -->
+	<string name="app_list_title">App List</string>
 	<string name="uid_prefix">UID: </string>
 	<string name="app_status_excluded">Excluded</string>
 	<string name="app_status_proxy_only">Proxy Only</string>

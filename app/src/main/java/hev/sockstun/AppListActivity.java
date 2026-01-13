@@ -206,7 +206,7 @@ public class AppListActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("App List");
+		setTitle(getString(R.string.app_list_title));
 
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
