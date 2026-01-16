@@ -221,16 +221,26 @@ public class TProxyService extends VpnService {
 			return;
 		}
 
-		prefs.setEnable(true);
+		try {
+			// Create notification FIRST (before starting native process)
+			// Android requires startForeground() to be called within 5 seconds
+			// or the system will kill the service
+			initNotificationChannel(channelName);
+			createNotification(channelName);
 
-		// Create notification BEFORE starting native process
-		// Must be done within 5 seconds of service start or system will kill the service
-		initNotificationChannel(channelName);
-		createNotification(channelName);
-		TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
+			// Start native service
+			TProxyStartService(tproxy_file.getAbsolutePath(), tunFd.getFd());
 
-		// Start traffic stats update
-		startStatsUpdate();
+			// Start traffic stats update
+			startStatsUpdate();
+
+			// Set enable flag LAST (only if all previous steps succeeded)
+			// This ensures state consistency if any step fails
+			prefs.setEnable(true);
+		} catch (Exception e) {
+			// Any step fails, clean up and stop service
+			stopService();
+		}
 	}
 	
 	public void stopService() {
