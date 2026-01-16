@@ -20,6 +20,8 @@ import android.net.LinkProperties;
 import android.net.Network;
 import android.content.IntentFilter;
 import android.view.View;
+import android.view.MotionEvent;
+import android.text.InputType;
 import android.widget.TabWidget;
 import android.widget.Button;
 import android.widget.CheckBox;
