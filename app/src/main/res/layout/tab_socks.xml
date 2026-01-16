@@ -63,11 +63,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:singleLine="true"
-				android:inputType="textPassword"
-				android:drawableEnd="@drawable/ic_eye_invisible"
-				android:drawableRight="@drawable/ic_eye_invisible"
-				android:focusable="true"
-				android:focusableInTouchMode="true"/>
+				android:inputType="textPassword"/>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -136,11 +132,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:singleLine="true"
-				android:inputType="textPassword"
-				android:drawableEnd="@drawable/ic_eye_invisible"
-				android:drawableRight="@drawable/ic_eye_invisible"
-				android:focusable="true"
-				android:focusableInTouchMode="true"/>
+				android:inputType="textPassword"/>
 		</LinearLayout>
 
 	</LinearLayout>

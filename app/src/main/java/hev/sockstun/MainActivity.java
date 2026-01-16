@@ -220,17 +220,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		edittext_socks_udp_port = (EditText) findViewById(R.id.socks_udp_port);
 		edittext_socks_udp_user = (EditText) findViewById(R.id.socks_udp_user);
 		edittext_socks_udp_pass = (EditText) findViewById(R.id.socks_udp_pass);
-
-		// Setup password visibility toggle
-		setupPasswordVisibilityToggle(edittext_socks_udp_pass);
-
 		edittext_socks_port = (EditText) findViewById(R.id.socks_port);
 		edittext_socks_user = (EditText) findViewById(R.id.socks_user);
 		edittext_socks_pass = (EditText) findViewById(R.id.socks_pass);
-
-		// Setup password visibility toggle
-		setupPasswordVisibilityToggle(edittext_socks_pass);
-
 		edittext_dns_ipv4 = (EditText) findViewById(R.id.dns_ipv4);
 		edittext_dns_ipv6 = (EditText) findViewById(R.id.dns_ipv6);
 		linearlayout_system_dns_v4_container = (LinearLayout) findViewById(R.id.system_dns_v4_container);
@@ -1305,35 +1297,5 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		if (focus) {
 			editText.requestFocus();
 		}
-	}
-
-	private void setupPasswordVisibilityToggle(final EditText editText) {
-		editText.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				final int DRAWABLE_RIGHT = 2;
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (event.getX() >= (editText.getWidth() - editText.getPaddingRight() -
-							editText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-						// Toggle password visibility
-						if (editText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-							// Show password
-							editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-							editText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-									getResources().getDrawable(R.drawable.ic_eye_visible), null);
-						} else {
-							// Hide password
-							editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-							editText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-									getResources().getDrawable(R.drawable.ic_eye_invisible), null);
-						}
-						// Move cursor to the end
-						editText.setSelection(editText.getText().length());
-						return true;
-					}
-				}
-				return false;
-			}
-		});
 	}
 }
