@@ -58,12 +58,26 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/socks_pass"/>
-			<EditText
-				android:id="@+id/socks_pass"
+			<LinearLayout
+				android:orientation="horizontal"
 				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:singleLine="true"
-				android:inputType="textPassword"/>
+				android:layout_height="wrap_content">
+				<EditText
+					android:id="@+id/socks_pass"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:singleLine="true"
+					android:inputType="textPassword"/>
+				<Button
+					android:id="@+id/socks_pass_toggle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/show_password"
+					android:textSize="12sp"
+					android:minWidth="60dp"
+					android:minHeight="40dp"/>
+			</LinearLayout>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -127,12 +141,26 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/socks_udp_pass"/>
-			<EditText
-				android:id="@+id/socks_udp_pass"
+			<LinearLayout
+				android:orientation="horizontal"
 				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:singleLine="true"
-				android:inputType="textPassword"/>
+				android:layout_height="wrap_content">
+				<EditText
+					android:id="@+id/socks_udp_pass"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:singleLine="true"
+					android:inputType="textPassword"/>
+				<Button
+					android:id="@+id/socks_udp_pass_toggle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/show_password"
+					android:textSize="12sp"
+					android:minWidth="60dp"
+					android:minHeight="40dp"/>
+			</LinearLayout>
 		</LinearLayout>
 
 	</LinearLayout>

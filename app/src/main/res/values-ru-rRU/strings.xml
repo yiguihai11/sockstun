@@ -208,4 +208,8 @@
 	<string name="tab_about_label">О программе</string>
 	<string name="tab_java_log">Журнал Java</string>
 	<string name="tab_native_log">Журнал Native</string>
+
+	<!-- Password visibility toggle -->
+	<string name="show_password">Показать</string>
+	<string name="hide_password">Скрыть</string>
 </resources>

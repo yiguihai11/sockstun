@@ -208,4 +208,8 @@
 	<string name="tab_about_label">About</string>
 	<string name="tab_java_log">Java Log</string>
 	<string name="tab_native_log">Native Log</string>
+
+	<!-- Password visibility toggle -->
+	<string name="show_password">Show</string>
+	<string name="hide_password">Hide</string>
 </resources>

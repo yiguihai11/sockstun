@@ -62,6 +62,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private EditText edittext_socks_port;
 	private EditText edittext_socks_user;
 	private EditText edittext_socks_pass;
+	private Button button_socks_pass_toggle;
+	private Button button_socks_udp_pass_toggle;
 	private EditText edittext_dns_ipv4;
 	private EditText edittext_dns_ipv6;
 	private LinearLayout linearlayout_system_dns_v4_container;
@@ -237,6 +239,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_logs = (Button) findViewById(R.id.logs);
 		button_save = (Button) findViewById(R.id.save);
 		button_control = (Button) findViewById(R.id.control);
+		button_socks_pass_toggle = (Button) findViewById(R.id.socks_pass_toggle);
+		button_socks_udp_pass_toggle = (Button) findViewById(R.id.socks_udp_pass_toggle);
 
 		edittext_task_stack_size = (EditText) findViewById(R.id.task_stack_size);
 		edittext_tcp_buffer_size = (EditText) findViewById(R.id.tcp_buffer_size);
@@ -383,6 +387,21 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		button_logs.setOnClickListener(this);
 		button_save.setOnClickListener(this);
 		button_control.setOnClickListener(this);
+
+		// Password visibility toggle listeners
+		button_socks_pass_toggle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				togglePasswordVisibility(edittext_socks_pass, button_socks_pass_toggle);
+			}
+		});
+		button_socks_udp_pass_toggle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				togglePasswordVisibility(edittext_socks_udp_pass, button_socks_udp_pass_toggle);
+			}
+		});
+
 		updateUI();
 
 		// Register VPN state receiver
@@ -1297,5 +1316,20 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		if (focus) {
 			editText.requestFocus();
 		}
+	}
+
+	private void togglePasswordVisibility(EditText editText, Button toggleButton) {
+		int currentInputType = editText.getInputType();
+		if (currentInputType == (android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+			// Currently hidden, show password
+			editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+			toggleButton.setText(R.string.hide_password);
+		} else {
+			// Currently visible, hide password
+			editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			toggleButton.setText(R.string.show_password);
+		}
+		// Move cursor to the end
+		editText.setSelection(editText.getText().length());
 	}
 }
