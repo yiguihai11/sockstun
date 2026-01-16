@@ -20,8 +20,6 @@ import android.net.LinkProperties;
 import android.net.Network;
 import android.content.IntentFilter;
 import android.view.View;
-import android.view.MotionEvent;
-import android.text.InputType;
 import android.widget.TabWidget;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -1321,11 +1319,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 						if (editText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
 							// Show password
 							editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-							editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_visible, 0);
+							editText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+									getResources().getDrawable(R.drawable.ic_eye_visible), null);
 						} else {
 							// Hide password
 							editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-							editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_invisible, 0);
+							editText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+									getResources().getDrawable(R.drawable.ic_eye_invisible), null);
 						}
 						// Move cursor to the end
 						editText.setSelection(editText.getText().length());
