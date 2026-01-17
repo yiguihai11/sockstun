@@ -194,7 +194,7 @@ public class Preferences
 	}
 
 	public String getMapdnsNetwork() {
-		return prefs.getString(MAPDNS_NETWORK, "240.0.0.0");
+		return prefs.getString(MAPDNS_NETWORK, "100.64.0.0");
 	}
 
 	public void setMapdnsNetwork(String value) {
@@ -204,7 +204,7 @@ public class Preferences
 	}
 
 	public String getMapdnsNetmask() {
-		return prefs.getString(MAPDNS_NETMASK, "240.0.0.0");
+		return prefs.getString(MAPDNS_NETMASK, "255.192.0.0");
 	}
 
 	public void setMapdnsNetmask(String value) {
