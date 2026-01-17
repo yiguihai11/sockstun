@@ -38,10 +38,16 @@ android {
 		release {
 			minifyEnabled false
 			signingConfig signingConfigs.release
+			packagingOptions {
+				doNotStrip '**/*.so'
+			}
 		}
 		debug {
 			minifyEnabled false
 			signingConfig signingConfigs.release
+			packagingOptions {
+				doNotStrip '**/*.so'
+			}
 		}
 	}
 
