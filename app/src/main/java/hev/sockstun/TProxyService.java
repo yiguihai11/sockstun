@@ -45,7 +45,6 @@ public class TProxyService extends VpnService {
 
 	private ParcelFileDescriptor tunFd = null;
 	private String channelName = "socks5";
-	private volatile boolean isStopping = false;  // Prevent race conditions
 
 	// Traffic stats
 	private Handler statsHandler;
@@ -83,11 +82,8 @@ public class TProxyService extends VpnService {
 	}
 
 	public void startService() {
-		if (tunFd != null || isStopping)
+		if (tunFd != null)
 		  return;
-
-		// Reset stopping flag
-		isStopping = false;
 
 		// Reset traffic stats
 		lastTxPackets = 0;
@@ -244,11 +240,8 @@ public class TProxyService extends VpnService {
 	}
 	
 	public void stopService() {
-		if (tunFd == null || isStopping)
+		if (tunFd == null)
 		  return;
-
-		// Set stopping flag to prevent race conditions
-		isStopping = true;
 
 		// Stop traffic stats update
 		stopStatsUpdate();
@@ -256,28 +249,20 @@ public class TProxyService extends VpnService {
 		// Immediately remove notification and clear foreground state
 		stopForeground(true);
 
-		// Stop native service first - this will signal tunnel to stop
-		// The tunnel will stop reading from TUN device
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// Wait for tunnel to stop gracefully
-				TProxyStopService();
+		// Wait for tunnel to stop gracefully
+		TProxyStopService();
 
-				// NOW close TUN device after tunnel has stopped reading from it
-				try {
-					if (tunFd != null) {
-						tunFd.close();
-					}
-				} catch (IOException e) {
-				}
-				tunFd = null;
-
-				// Clear stopping flag and stop the service
-				isStopping = false;
-				stopSelf();
+		// NOW close TUN device after tunnel has stopped reading from it
+		try {
+			if (tunFd != null) {
+				tunFd.close();
 			}
-		}, "TunnelStopThread").start();
+		} catch (IOException e) {
+		}
+		tunFd = null;
+
+		//stopSelf();
+		System.exit(0);
 	}
 
 	private void createNotification(String channelName) {
