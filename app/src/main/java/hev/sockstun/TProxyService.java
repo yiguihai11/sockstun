@@ -27,6 +27,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ServiceInfo;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -82,8 +83,10 @@ public class TProxyService extends VpnService {
 	}
 
 	public void startService() {
-		if (tunFd != null)
-		  return;
+		if (tunFd != null) {
+			showToast("服务已在运行");
+			return;
+		}
 
 		// Reset traffic stats
 		lastTxPackets = 0;
@@ -240,8 +243,10 @@ public class TProxyService extends VpnService {
 	}
 	
 	public void stopService() {
-		if (tunFd == null)
-		  return;
+		if (tunFd == null) {
+			showToast("服务未运行");
+			return;
+		}
 
 		// Stop traffic stats update
 		stopStatsUpdate();
@@ -258,6 +263,7 @@ public class TProxyService extends VpnService {
 				tunFd.close();
 			}
 		} catch (IOException e) {
+			showToast("关闭TUN设备失败: " + e.getMessage());
 		}
 		tunFd = null;
 
@@ -414,5 +420,14 @@ public class TProxyService extends VpnService {
 		} else {
 			return String.format("%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0));
 		}
+	}
+
+	private void showToast(final String message) {
+		new Handler(Looper.getMainLooper()).post(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(TProxyService.this, message, Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 }
