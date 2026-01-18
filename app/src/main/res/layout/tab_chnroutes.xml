@@ -74,12 +74,11 @@
 				android:textStyle="bold"
 				android:textSize="16sp"
 				android:paddingBottom="8dp"/>
-			<androidx.core.widget.NestedScrollView
+			<ScrollView
 				android:layout_width="fill_parent"
 				android:layout_height="300dp"
 				android:background="@color/edit_text_background"
-				android:padding="4dp"
-				android:nestedScrollingEnabled="true">
+				android:padding="4dp">
 				<EditText
 					android:id="@+id/chnroutes_content"
 					android:layout_width="fill_parent"
@@ -93,7 +92,7 @@
 					android:fontFamily="monospace"
 					android:textSize="12sp"
 					android:hint="@string/chnroutes_content_hint"/>
-			</androidx.core.widget.NestedScrollView>
+			</ScrollView>
 
 			<!-- Clear, Refresh and Save buttons -->
 			<LinearLayout
