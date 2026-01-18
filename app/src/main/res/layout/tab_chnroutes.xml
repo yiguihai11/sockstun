@@ -74,25 +74,21 @@
 				android:textStyle="bold"
 				android:textSize="16sp"
 				android:paddingBottom="8dp"/>
-			<ScrollView
+			<EditText
+				android:id="@+id/chnroutes_content"
 				android:layout_width="fill_parent"
 				android:layout_height="300dp"
 				android:background="@color/edit_text_background"
-				android:padding="4dp">
-				<EditText
-					android:id="@+id/chnroutes_content"
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:minLines="20"
-					android:gravity="top|start"
-					android:inputType="textMultiLine"
-					android:background="@null"
-					android:textColor="@color/edit_text_color"
-					android:textColorHint="@color/hint_text"
-					android:fontFamily="monospace"
-					android:textSize="12sp"
-					android:hint="@string/chnroutes_content_hint"/>
-			</ScrollView>
+				android:padding="4dp"
+				android:minLines="20"
+				android:gravity="top|start"
+				android:inputType="textMultiLine"
+				android:textColor="@color/edit_text_color"
+				android:textColorHint="@color/hint_text"
+				android:fontFamily="monospace"
+				android:textSize="12sp"
+				android:hint="@string/chnroutes_content_hint"
+				android:scrollbars="vertical"/>
 
 			<!-- Clear, Refresh and Save buttons -->
 			<LinearLayout
