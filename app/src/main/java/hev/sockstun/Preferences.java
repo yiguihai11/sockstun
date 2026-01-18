@@ -314,7 +314,7 @@ public class Preferences
 	}
 
 	public int getTunnelMtu() {
-		return prefs.getInt(TUNNEL_MTU, 8500);
+		return prefs.getInt(TUNNEL_MTU, 1500);
 	}
 
 	public void setTunnelMtu(int mtu) {
@@ -470,7 +470,7 @@ public class Preferences
 	}
 
 	public int getUdpReadWriteTimeout() {
-		return prefs.getInt(UDP_READ_WRITE_TIMEOUT, 60000);
+		return prefs.getInt(UDP_READ_WRITE_TIMEOUT, 5000);
 	}
 
 	public void setUdpReadWriteTimeout(int timeout) {
@@ -693,7 +693,7 @@ public class Preferences
 	}
 
 	public int getDnsLatencyOptimizeTimeout() {
-		return prefs.getInt(DNS_LATENCY_OPTIMIZE_TIMEOUT, 3000);
+		return prefs.getInt(DNS_LATENCY_OPTIMIZE_TIMEOUT, 250);
 	}
 
 	public void setDnsLatencyOptimizeTimeout(int timeout) {
@@ -714,7 +714,7 @@ public class Preferences
 	}
 
 	public int getSmartProxyTimeout() {
-		return prefs.getInt(SMART_PROXY_TIMEOUT, 0);
+		return prefs.getInt(SMART_PROXY_TIMEOUT, 1400);
 	}
 
 	public void setSmartProxyTimeout(int timeout) {
