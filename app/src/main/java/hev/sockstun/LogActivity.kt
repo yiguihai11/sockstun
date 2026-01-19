@@ -316,36 +316,21 @@ fun LogTabContent(
 			}
 		} else if (logs.text.isNotEmpty()) {
 			val scrollState = rememberScrollState()
-			Box(modifier = Modifier.fillMaxSize()) {
-				SelectionContainer {
-					Column(
-						modifier = Modifier
-							.fillMaxSize()
-							.verticalScroll(scrollState)
-							.padding(end = 24.dp) // Space for scrollbar indicator
-							.padding(8.dp)
-					) {
-						Text(
-							text = logs,
-							fontSize = 12.sp,
-							lineHeight = 18.sp,
-							fontFamily = FontFamily.Monospace,
-							modifier = Modifier.fillMaxWidth()
-						)
-					}
-				}
-				// Scroll position indicator
-				Box(
+			SelectionContainer {
+				Column(
 					modifier = Modifier
-						.align(Alignment.CenterEnd)
+						.fillMaxSize()
+						.verticalScroll(scrollState)
 						.padding(8.dp)
-						.width(4.dp)
-						.fillMaxHeight(0.5f)
-						.background(
-							Color.Gray.copy(alpha = 0.3f),
-							shape = RoundedCornerShape(2.dp)
-						)
-				)
+				) {
+					Text(
+						text = logs,
+						fontSize = 12.sp,
+						lineHeight = 18.sp,
+						fontFamily = FontFamily.Monospace,
+						modifier = Modifier.fillMaxWidth()
+					)
+				}
 			}
 		} else {
 			Box(
