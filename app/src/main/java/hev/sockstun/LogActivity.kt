@@ -10,6 +10,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -311,19 +313,18 @@ fun LogTabContent(
 			}
 		} else if (logs.text.isNotEmpty()) {
 			SelectionContainer {
-				LazyColumn(
-					state = listState,
+				Column(
 					modifier = Modifier
 						.fillMaxSize()
+						.verticalScroll(rememberScrollState())
 						.padding(8.dp)
 				) {
-					item {
-						Text(
-							text = logs,
-							fontSize = 12.sp,
-							lineHeight = 16.sp
-						)
-					}
+					Text(
+						text = logs,
+						fontSize = 12.sp,
+						lineHeight = 16.sp,
+						modifier = Modifier.fillMaxWidth()
+					)
 				}
 			}
 		} else {
