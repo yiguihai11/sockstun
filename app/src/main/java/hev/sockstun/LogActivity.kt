@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -500,7 +501,7 @@ private fun colorizeAndFilterLog(context: Context, originalLogs: String, filter:
 }
 
 private fun colorizeLog(context: Context, log: String): AnnotatedString {
-	val isLightTheme = (context.resources.configuration.uiMode &
+	val isLightTheme = (context.resources.configuration.uiMode and
 		Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_NO
 
 	val colorDebug = if (isLightTheme) COLOR_DEBUG_LIGHT else COLOR_DEBUG_DARK
