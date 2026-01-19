@@ -560,8 +560,12 @@ private fun colorizeLog(context: Context, log: String): AnnotatedString {
 			withStyle(SpanStyle(color = color)) {
 				append(log.substring(lineStart, lineEnd))
 			}
+			// Add newline after the colored line
+			if (lineEnd < log.length && log[lineEnd] == '\n') {
+				append("\n")
+			}
 
-			start = lineEnd
+			start = lineEnd + 1
 		}
 	}
 }
