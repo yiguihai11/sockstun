@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.v2.Scrollbar
+import androidx.compose.foundation.v2.rememberScrollbarAdapter
+import androidx.compose.foundation.v2.verticalScrollbar
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -313,20 +316,30 @@ fun LogTabContent(
 				CircularProgressIndicator()
 			}
 		} else if (logs.text.isNotEmpty()) {
-			SelectionContainer {
-				Column(
-					modifier = Modifier
-						.fillMaxSize()
-						.verticalScroll(rememberScrollState())
-						.padding(8.dp)
-				) {
-					Text(
-						text = logs,
-						fontSize = 12.sp,
-						lineHeight = 18.sp,
-						fontFamily = FontFamily.Monospace,
-						modifier = Modifier.fillMaxWidth()
-					)
+			val scrollState = rememberScrollState()
+			Box(
+				modifier = Modifier
+					.fillMaxSize()
+					.padding(8.dp)
+			) {
+				SelectionContainer {
+					Column(
+						modifier = Modifier
+							.fillMaxSize()
+							.verticalScroll(scrollState)
+							.verticalScrollbar(
+								state = rememberScrollbarAdapter(scrollState),
+								modifier = Modifier.fillMaxHeight()
+							)
+					) {
+						Text(
+							text = logs,
+							fontSize = 12.sp,
+							lineHeight = 18.sp,
+							fontFamily = FontFamily.Monospace,
+							modifier = Modifier.fillMaxWidth()
+						)
+					}
 				}
 			}
 		} else {
