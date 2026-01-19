@@ -37,6 +37,8 @@ jobs:
           else
             ref_name="${{ github.ref_name }}"
           fi
+          # Replace / with - in ref_name for valid artifact name
+          ref_name=$(echo "$ref_name" | tr '/' '-')
           echo "ref_name=${ref_name}" >> $GITHUB_ENV
           # Copy all ABI-specific APKs
           mkdir -p artifacts
