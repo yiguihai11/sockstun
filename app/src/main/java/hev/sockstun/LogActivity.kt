@@ -337,12 +337,11 @@ fun LogTabContent(
 				Box(
 					modifier = Modifier
 						.align(Alignment.CenterEnd)
-						.padding(vertical = 8.dp)
+						.padding(vertical = 8.dp, end = 8.dp)
 						.width(4.dp)
 						.fillMaxHeight(0.5f)
 						.background(
-							color = if (MaterialTheme.colorScheme.surfaceBrightness > 0.5f)
-								Color.DarkGray else Color.LightGray,
+							Color.Gray.copy(alpha = 0.3f),
 							shape = RoundedCornerShape(2.dp)
 						)
 				)
