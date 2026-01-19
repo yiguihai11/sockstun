@@ -12,10 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.v2.Scrollbar
-import androidx.compose.foundation.v2.rememberScrollbarAdapter
-import androidx.compose.foundation.v2.verticalScrollbar
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -317,20 +315,14 @@ fun LogTabContent(
 			}
 		} else if (logs.text.isNotEmpty()) {
 			val scrollState = rememberScrollState()
-			Box(
-				modifier = Modifier
-					.fillMaxSize()
-					.padding(8.dp)
-			) {
+			Box(modifier = Modifier.fillMaxSize()) {
 				SelectionContainer {
 					Column(
 						modifier = Modifier
 							.fillMaxSize()
 							.verticalScroll(scrollState)
-							.verticalScrollbar(
-								state = rememberScrollbarAdapter(scrollState),
-								modifier = Modifier.fillMaxHeight()
-							)
+							.padding(end = 24.dp) // Space for scrollbar indicator
+							.padding(8.dp)
 					) {
 						Text(
 							text = logs,
@@ -341,6 +333,19 @@ fun LogTabContent(
 						)
 					}
 				}
+				// Scroll position indicator
+				Box(
+					modifier = Modifier
+						.align(Alignment.CenterEnd)
+						.padding(vertical = 8.dp)
+						.width(4.dp)
+						.fillMaxHeight(0.5f)
+						.background(
+							color = if (MaterialTheme.colorScheme.surfaceBrightness > 0.5f)
+								Color.DarkGray else Color.LightGray,
+							shape = RoundedCornerShape(2.dp)
+						)
+				)
 			}
 		} else {
 			Box(
