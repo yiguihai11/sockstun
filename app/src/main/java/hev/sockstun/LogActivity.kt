@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -37,11 +36,6 @@ import java.util.*
 class LogActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		// Hide system title bar
-		window.setFlags(
-			WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-			WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-		)
 		setContent {
 			LogViewerScreen()
 		}
