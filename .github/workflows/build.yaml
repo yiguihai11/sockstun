@@ -31,7 +31,7 @@ jobs:
           export ANDROID_SDK_ROOT=`pwd`/sdk
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           yes | sdk/cmdline-tools/bin/sdkmanager --sdk_root=`pwd`/sdk --licenses
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease assembleDebug
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             ref_name="pr-${{ github.event.pull_request.number }}"
           else
@@ -45,10 +45,15 @@ jobs:
               cp "$apk" artifacts/
             fi
           done
+          for apk in app/build/outputs/apk/debug/*-debug.apk; do
+            if [ -f "$apk" ]; then
+              cp "$apk" artifacts/
+            fi
+          done
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: hev.sockstun-${{ env.ref_name }}-release
+          name: hev.sockstun-${{ env.ref_name }}-build
           path: artifacts/
           if-no-files-found: error
           retention-days: 1
@@ -67,7 +72,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: release
-          pattern: "hev.sockstun-*"
+          pattern: "hev.sockstun-*-build"
           merge-multiple: true
       - name: Update latest release
         env:
