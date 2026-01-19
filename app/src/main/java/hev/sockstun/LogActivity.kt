@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -54,8 +52,8 @@ private val COLOR_DEFAULT_DARK = Color(0xFF00FF00) // Green
 private val COLOR_DEBUG_LIGHT = Color(0xFF808080) // Gray
 private val COLOR_INFO_LIGHT = Color(0xFF008000)  // Dark Green
 private val COLOR_WARN_LIGHT = Color(0xFFB8860B)  // Dark Goldenrod
-private const val COLOR_ERROR_LIGHT = 0xFFCC0000 // Dark Red
-private const val COLOR_DEFAULT_LIGHT = 0xFF008000 // Dark Green
+private val COLOR_ERROR_LIGHT = Color(0xFFCC0000) // Dark Red
+private val COLOR_DEFAULT_LIGHT = Color(0xFF008000) // Dark Green
 
 private const val MAX_LOG_SIZE = 100 * 1024 // 100KB max
 
@@ -69,16 +67,16 @@ fun LogViewerScreen() {
 	var selectedTab by remember { mutableStateOf(0) }
 
 	// Java log state
-	var javaLogs by remember { mutableStateOf("") }
+	var javaLogs by remember { mutableStateOf(AnnotatedString("")) }
 	var javaOriginalLogs by remember { mutableStateOf("") }
 	var javaSearchQuery by remember { mutableStateOf("") }
 	var javaIsLoading by remember { mutableStateOf(false) }
 
 	// Native log state
-	var nativeLogs by remember { mutableStateOf("") }
+	var nativeLogs by remember { mutableStateOf(AnnotatedString("")) }
 	var nativeOriginalLogs by remember { mutableStateOf("") }
 	var nativeSearchQuery by remember { mutableStateOf("") }
-	var nativeIsLoading by remember { mutableStateOf(false ) }
+	var nativeIsLoading by remember { mutableStateOf(false) }
 
 	val listState = rememberLazyListState()
 
@@ -102,13 +100,6 @@ fun LogViewerScreen() {
 				nativeLogs = colorizeAndFilterLog(context, it, nativeSearchQuery)
 			}
 		)
-	}
-
-	// Auto-scroll to bottom when new logs arrive
-	LaunchedEffect(javaLogs, nativeLogs) {
-		if (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index != listState.layoutInfo.totalItemsCount - 1) {
-			listState.animateScrollToItem(Int.MAX_VALUE)
-		}
 	}
 
 	Scaffold(
@@ -168,7 +159,7 @@ fun LogViewerScreen() {
 								handler = handler,
 								onLogsCleared = {
 									javaOriginalLogs = it
-									javaLogs = it
+									javaLogs = buildAnnotatedString { append(it) }
 								}
 							)
 						}
@@ -203,7 +194,7 @@ fun LogViewerScreen() {
 								handler = handler,
 								onLogsCleared = {
 									nativeOriginalLogs = it
-									nativeLogs = it
+									nativeLogs = buildAnnotatedString { append(it) }
 								}
 							)
 						}
@@ -217,7 +208,7 @@ fun LogViewerScreen() {
 
 @Composable
 fun JavaLogTab(
-	javaLogs: String,
+	javaLogs: AnnotatedString,
 	searchQuery: String,
 	onSearchQueryChange: (String) -> Unit,
 	isLoading: Boolean,
@@ -238,7 +229,7 @@ fun JavaLogTab(
 
 @Composable
 fun NativeLogTab(
-	nativeLogs: String,
+	nativeLogs: AnnotatedString,
 	searchQuery: String,
 	onSearchQueryChange: (String) -> Unit,
 	isLoading: Boolean,
@@ -259,7 +250,7 @@ fun NativeLogTab(
 
 @Composable
 fun LogTabContent(
-	logs: String,
+	logs: AnnotatedString,
 	searchQuery: String,
 	onSearchQueryChange: (String) -> Unit,
 	isLoading: Boolean,
@@ -309,7 +300,7 @@ fun LogTabContent(
 			) {
 				CircularProgressIndicator()
 			}
-		} else if (logs.isNotEmpty()) {
+		} else if (logs.text.isNotEmpty()) {
 			SelectionContainer {
 				LazyColumn(
 					state = listState,
@@ -515,8 +506,8 @@ private fun colorizeLog(context: Context, log: String): AnnotatedString {
 	val colorDebug = if (isLightTheme) COLOR_DEBUG_LIGHT else COLOR_DEBUG_DARK
 	val colorInfo = if (isLightTheme) COLOR_INFO_LIGHT else COLOR_INFO_DARK
 	val colorWarn = if (isLightTheme) COLOR_WARN_LIGHT else COLOR_WARN_DARK
-	val colorError = if (isLightTheme) Color(COLOR_ERROR_LIGHT) else COLOR_ERROR_DARK
-	val colorDefault = if (isLightTheme) Color(COLOR_DEFAULT_LIGHT) else COLOR_DEFAULT_DARK
+	val colorError = if (isLightTheme) COLOR_ERROR_LIGHT else COLOR_ERROR_DARK
+	val colorDefault = if (isLightTheme) COLOR_DEFAULT_LIGHT else COLOR_DEFAULT_DARK
 
 	return buildAnnotatedString {
 		var start = 0
