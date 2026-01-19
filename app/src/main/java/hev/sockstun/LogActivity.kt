@@ -337,7 +337,7 @@ fun LogTabContent(
 				Box(
 					modifier = Modifier
 						.align(Alignment.CenterEnd)
-						.padding(vertical = 8.dp, end = 8.dp)
+						.padding(8.dp)
 						.width(4.dp)
 						.fillMaxHeight(0.5f)
 						.background(
