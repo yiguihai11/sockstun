@@ -118,8 +118,14 @@ fun LogViewerScreen() {
 					titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
 				)
 			)
-		},
-		bottomBar = {
+		}
+	) { paddingValues ->
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(paddingValues)
+		) {
+			// Tab bar at top
 			TabRow(selectedTabIndex = selectedTab) {
 				Tab(selected = selectedTab == 0,
 					onClick = { selectedTab = 0 },
@@ -130,13 +136,8 @@ fun LogViewerScreen() {
 					text = { Text(context.getString(R.string.tab_native_log)) }
 				)
 			}
-		}
-	) { paddingValues ->
-		Column(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(paddingValues)
-		) {
+
+			// Content based on selected tab
 			when (selectedTab) {
 				0 -> JavaLogTab(
 					context = context,
