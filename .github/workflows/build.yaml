@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/*
   pull_request:
   release:
     types:
@@ -64,7 +65,7 @@ jobs:
     name: Update Latest Release
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -76,22 +77,35 @@ jobs:
           path: release
           pattern: "hev.sockstun-*-build"
           merge-multiple: true
-      - name: Update latest release
+      - name: Update release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Delete old release if exists
-          if gh release view latest >/dev/null 2>&1; then
-            gh release delete latest --yes
+          # Determine release tag based on branch
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            release_name="latest"
+            release_title="Latest Build"
+          else
+            # Convert branch name to valid release tag
+            release_tag=$(echo "${{ github.ref_name }}" | tr '/' '-')
+            release_name="$release_tag"
+            release_title="Build from $release_tag"
           fi
-          # Create or update latest release
-          gh release create latest \
-            --title "Latest Build" \
-            --notes "Automated build from main branch. Commit: ${{ github.sha }}" \
+
+          # Delete old release if exists
+          if gh release view "$release_name" >/dev/null 2>&1; then
+            gh release delete "$release_name" --yes
+          fi
+
+          # Create or update release
+          gh release create "$release_name" \
+            --title "$release_title" \
+            --notes "Automated build from ${{ github.ref_name }}. Commit: ${{ github.sha }}" \
             --prerelease
+
           # Upload new assets
           for i in release/hev.sockstun-*; do
-            gh release upload latest $i
+            gh release upload "$release_name" $i
           done
 
   # release:
