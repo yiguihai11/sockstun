@@ -112,7 +112,7 @@ fun LogViewerScreen() {
 	Scaffold(
 		topBar = {
 			TopAppBar(
-				title = { Text("日志查看器") },
+				title = { Text(context.getString(R.string.log_viewer_title)) },
 				colors = TopAppBarDefaults.topAppBarColors(
 					containerColor = MaterialTheme.colorScheme.primaryContainer,
 					titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -123,11 +123,11 @@ fun LogViewerScreen() {
 			TabRow(selectedTabIndex = selectedTab) {
 				Tab(selected = selectedTab == 0,
 					onClick = { selectedTab = 0 },
-					text = { Text("Java 日志") }
+					text = { Text(context.getString(R.string.tab_java_log)) }
 				)
 				Tab(selected = selectedTab == 1,
 					onClick = { selectedTab = 1 },
-					text = { Text("Native 日志") }
+					text = { Text(context.getString(R.string.tab_native_log)) }
 				)
 			}
 		}
@@ -139,6 +139,7 @@ fun LogViewerScreen() {
 		) {
 			when (selectedTab) {
 				0 -> JavaLogTab(
+					context = context,
 					javaLogs = javaLogs,
 					searchQuery = javaSearchQuery,
 					onSearchQueryChange = {
@@ -174,6 +175,7 @@ fun LogViewerScreen() {
 					listState = listState
 				)
 				1 -> NativeLogTab(
+					context = context,
 					nativeLogs = nativeLogs,
 					searchQuery = nativeSearchQuery,
 					onSearchQueryChange = {
@@ -215,6 +217,7 @@ fun LogViewerScreen() {
 
 @Composable
 fun JavaLogTab(
+	context: Context,
 	javaLogs: AnnotatedString,
 	searchQuery: String,
 	onSearchQueryChange: (String) -> Unit,
@@ -224,6 +227,7 @@ fun JavaLogTab(
 	listState: androidx.compose.foundation.lazy.LazyListState
 ) {
 	LogTabContent(
+		context = context,
 		logs = javaLogs,
 		searchQuery = searchQuery,
 		onSearchQueryChange = onSearchQueryChange,
@@ -236,6 +240,7 @@ fun JavaLogTab(
 
 @Composable
 fun NativeLogTab(
+	context: Context,
 	nativeLogs: AnnotatedString,
 	searchQuery: String,
 	onSearchQueryChange: (String) -> Unit,
@@ -245,6 +250,7 @@ fun NativeLogTab(
 	listState: androidx.compose.foundation.lazy.LazyListState
 ) {
 	LogTabContent(
+		context = context,
 		logs = nativeLogs,
 		searchQuery = searchQuery,
 		onSearchQueryChange = onSearchQueryChange,
@@ -257,6 +263,7 @@ fun NativeLogTab(
 
 @Composable
 fun LogTabContent(
+	context: Context,
 	logs: AnnotatedString,
 	searchQuery: String,
 	onSearchQueryChange: (String) -> Unit,
@@ -280,7 +287,7 @@ fun LogTabContent(
 				value = searchQuery,
 				onValueChange = onSearchQueryChange,
 				modifier = Modifier.weight(1f),
-				placeholder = { Text("搜索日志...") },
+				placeholder = { Text(context.getString(R.string.search_logs)) },
 				singleLine = true
 			)
 
@@ -288,14 +295,14 @@ fun LogTabContent(
 				onClick = onRefresh,
 				enabled = !isLoading
 			) {
-				Text("刷新")
+				Text(context.getString(R.string.button_refresh))
 			}
 
 			Button(
 				onClick = onClear,
 				enabled = !isLoading
 			) {
-				Text("清除")
+				Text(context.getString(R.string.button_clear))
 			}
 		}
 
@@ -329,7 +336,7 @@ fun LogTabContent(
 				modifier = Modifier.fillMaxSize(),
 				contentAlignment = Alignment.Center
 			) {
-				Text("暂无日志", style = MaterialTheme.typography.bodyLarge)
+				Text(context.getString(R.string.no_logs), style = MaterialTheme.typography.bodyLarge)
 			}
 		}
 	}

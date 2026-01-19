@@ -209,6 +209,11 @@
 	<string name="tab_java_log">Java Log</string>
 	<string name="tab_native_log">Native Log</string>
 
+	<!-- Log Viewer -->
+	<string name="log_viewer_title">Log Viewer</string>
+	<string name="search_logs">Search logs...</string>
+	<string name="no_logs">No logs available</string>
+
 	<!-- Password visibility toggle -->
 	<string name="show_password">Show</string>
 	<string name="hide_password">Hide</string>
