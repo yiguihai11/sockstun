@@ -13,7 +13,11 @@
 # limitations under the License.
 #
 
-APP_OPTIM := release
+ifeq ($(NDK_DEBUG),1)
+  APP_OPTIM := debug
+else
+  APP_OPTIM := release
+endif
 APP_PLATFORM := android-29
 APP_ABI := armeabi-v7a arm64-v8a
 APP_CFLAGS := -O3 -DPKGNAME=hev/sockstun
