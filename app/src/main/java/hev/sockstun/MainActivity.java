@@ -76,6 +76,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 	private CheckBox checkbox_bypass_lan;
 	private Button button_apps;
 	private Button button_logs;
+	private Button button_blacklist;
 	private Button button_save;
 	private Button button_control;
 	private Spinner spinner_log_level;
@@ -237,6 +238,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_remote_dns = (CheckBox) findViewById(R.id.remote_dns);
 		button_apps = (Button) findViewById(R.id.apps);
 		button_logs = (Button) findViewById(R.id.logs);
+		button_blacklist = (Button) findViewById(R.id.blacklist);
 		button_save = (Button) findViewById(R.id.save);
 		button_control = (Button) findViewById(R.id.control);
 		textview_socks_pass_toggle = (TextView) findViewById(R.id.socks_pass_toggle);
@@ -385,6 +387,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		checkbox_global.setOnClickListener(this);
 		button_apps.setOnClickListener(this);
 		button_logs.setOnClickListener(this);
+		button_blacklist.setOnClickListener(this);
 		button_save.setOnClickListener(this);
 		button_control.setOnClickListener(this);
 
@@ -476,6 +479,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			startActivity(new Intent(this, AppListActivity.class));
 		} else if (view == button_logs) {
 			startActivity(new Intent(this, LogActivity.class));
+		} else if (view == button_blacklist) {
+			startActivity(new Intent(this, BlacklistActivity.class));
 		} else if (view == button_save) {
 			savePrefs();
 			Context context = getApplicationContext();

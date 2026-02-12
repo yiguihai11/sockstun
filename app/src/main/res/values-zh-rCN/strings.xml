@@ -20,6 +20,10 @@
 	<string name="global">全局模式</string>
 	<string name="apps">应用</string>
 	<string name="logs">日志</string>
+	<string name="blacklist">黑名单</string>
+	<string name="blacklist_expiry">过期: %d 秒</string>
+	<string name="blacklist_hits">命中: %d</string>
+	<string name="blacklist_count">总计: %d</string>
 	<string name="save">保存</string>
 	<string name="control_enable">启用</string>
 	<string name="control_disable">禁用</string>

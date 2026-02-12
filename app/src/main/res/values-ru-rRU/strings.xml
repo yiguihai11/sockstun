@@ -20,6 +20,7 @@
 	<string name="global">Глобально</string>
 	<string name="apps">Приложения</string>
 	<string name="logs">Журналы</string>
+	<string name="blacklist">Черный список</string>
 	<string name="save">Сохранить</string>
 	<string name="control_enable">Включить</string>
 	<string name="control_disable">Отключить</string>

@@ -20,6 +20,10 @@
 	<string name="global">Global</string>
 	<string name="apps">Apps</string>
 	<string name="logs">Logs</string>
+	<string name="blacklist">Blacklist</string>
+	<string name="blacklist_expiry">Expiry: %d s</string>
+	<string name="blacklist_hits">Hits: %d</string>
+	<string name="blacklist_count">Total: %d</string>
 	<string name="save">Save</string>
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>

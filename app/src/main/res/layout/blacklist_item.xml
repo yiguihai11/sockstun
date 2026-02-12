@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="8dp">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<TextView
+			android:id="@+id/blacklist_item_type"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:paddingEnd="8dp"
+			android:textColor="@color/info_text"/>
+		<TextView
+			android:id="@+id/blacklist_item_value"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:textSize="16sp"
+			android:textColor="@color/info_text"/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:paddingTop="4dp">
+		<TextView
+			android:id="@+id/blacklist_item_expiry"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			android:textColor="#808080"/>
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"/>
+		<TextView
+			android:id="@+id/blacklist_item_hits"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			android:textColor="#808080"/>
+	</LinearLayout>
+</LinearLayout>
