@@ -24,6 +24,7 @@
 	<string name="blacklist_expiry">过期: %d 秒</string>
 	<string name="blacklist_hits">命中: %d</string>
 	<string name="blacklist_count">总计: %d</string>
+	<string name="vpn_not_running">VPN 未运行。黑名单仅在 VPN 激活时可用。</string>
 	<string name="save">保存</string>
 	<string name="control_enable">启用</string>
 	<string name="control_disable">禁用</string>

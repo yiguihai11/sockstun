@@ -24,9 +24,11 @@ import java.util.List;
 public class BlacklistActivity extends Activity implements View.OnClickListener {
 
 	private TextView textview_count;
+	private TextView textview_msg;
 	private ListView listview_blacklist;
 	private Button button_refresh;
 	private BlacklistAdapter adapter;
+	private Preferences prefs;
 
 	private static class BlacklistEntry {
 		String type;
@@ -74,7 +76,9 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 		setContentView(R.layout.blacklist);
 		setTitle(R.string.blacklist);
 
+		prefs = new Preferences(this);
 		textview_count = (TextView) findViewById(R.id.blacklist_count);
+		textview_msg = (TextView) findViewById(R.id.vpn_not_running_msg);
 		listview_blacklist = (ListView) findViewById(R.id.blacklist_list);
 		button_refresh = (Button) findViewById(R.id.refresh_blacklist);
 
@@ -91,12 +95,22 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 	}
 
 	private void refreshBlacklist() {
+		if (!prefs.getEnable()) {
+			textview_count.setText(getString(R.string.blacklist_count, 0));
+			textview_msg.setVisibility(View.VISIBLE);
+			listview_blacklist.setVisibility(View.GONE);
+			return;
+		}
+
+		textview_msg.setVisibility(View.GONE);
+		listview_blacklist.setVisibility(View.VISIBLE);
+
 		String[] data = TProxyService.getBlacklist();
 		List<BlacklistEntry> entries = new ArrayList<BlacklistEntry>();
 
 		if (data != null) {
 			for (String line : data) {
-				String[] parts = line.split("\|");
+				String[] parts = line.split("\\|");
 				if (parts.length >= 4) {
 					try {
 						entries.add(new BlacklistEntry(

@@ -24,6 +24,7 @@
 	<string name="blacklist_expiry">Expiry: %d s</string>
 	<string name="blacklist_hits">Hits: %d</string>
 	<string name="blacklist_count">Total: %d</string>
+	<string name="vpn_not_running">VPN is not running. Blacklist is only available when VPN is active.</string>
 	<string name="save">Save</string>
 	<string name="control_enable">Enable</string>
 	<string name="control_disable">Disable</string>
