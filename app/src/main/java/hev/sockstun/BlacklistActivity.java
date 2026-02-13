@@ -40,12 +40,14 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 		String value;
 		long expiry;
 		long hits;
+		String reason;
 
-		BlacklistEntry(String type, String value, long expiry, long hits) {
+		BlacklistEntry(String type, String value, long expiry, long hits, String reason) {
 			this.type = type;
 			this.value = value;
 			this.expiry = expiry;
 			this.hits = hits;
+			this.reason = reason;
 		}
 	}
 
@@ -66,7 +68,7 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 			TextView expiryView = (TextView) convertView.findViewById(R.id.blacklist_item_expiry);
 			TextView hitsView = (TextView) convertView.findViewById(R.id.blacklist_item_hits);
 
-			typeView.setText(entry.type);
+			typeView.setText(entry.type + " (" + entry.reason + ")");
 			valueView.setText(entry.value);
 			expiryView.setText(getContext().getString(R.string.blacklist_expiry, entry.expiry));
 			hitsView.setText(getContext().getString(R.string.blacklist_hits, entry.hits));
@@ -126,15 +128,16 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 
 		if (data != null) {
 			for (String line : data) {
-				LogActivity.d(this, "BlacklistRawData", "Raw Line: " + line);
 				String[] parts = line.split("\\|");
 				if (parts.length >= 4) {
 					try {
+						String reason = (parts.length >= 5) ? parts[4] : "Unknown";
 						entries.add(new BlacklistEntry(
 							parts[0],
 							parts[1],
 							Long.parseLong(parts[2]),
-							Long.parseLong(parts[3])
+							Long.parseLong(parts[3]),
+							reason
 						));
 					} catch (NumberFormatException e) {
 						// Ignore invalid entries
