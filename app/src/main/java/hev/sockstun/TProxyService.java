@@ -259,21 +259,28 @@ public class TProxyService extends VpnService {
 		// Immediately remove notification and clear foreground state
 		stopForeground(true);
 
-		// Wait for tunnel to stop gracefully
-		TProxyStopService();
+		final ParcelFileDescriptor currentTunFd = tunFd;
+		tunFd = null; // Mark as stopping/stopped
 
-		// NOW close TUN device after tunnel has stopped reading from it
-		try {
-			if (tunFd != null) {
-				tunFd.close();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// Wait for tunnel to stop gracefully
+				TProxyStopService();
+
+				// NOW close TUN device after tunnel has stopped reading from it
+				try {
+					if (currentTunFd != null) {
+						currentTunFd.close();
+					}
+				} catch (IOException e) {
+					// Silently ignore close failures in background thread
+				}
+
+				// Terminate process after clean up
+				System.exit(0);
 			}
-		} catch (IOException e) {
-			showToast("关闭TUN设备失败: " + e.getMessage());
-		}
-		tunFd = null;
-
-		//stopSelf();
-		System.exit(0);
+		}).start();
 	}
 
 	private void createNotification(String channelName) {
