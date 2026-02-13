@@ -118,6 +118,7 @@
 	<string name="smart_proxy_info">Об умном прокси</string>
 	<string name="smart_proxy_full_desc">Умный прокси автоматически определяет лучший метод маршрутизации для каждого подключения. При включении TCP-подключения сначала пытаются установить прямое подключение; при истечении таймаута переключаются на SOCKS5-прокси. Определение протокола (TLS SNI/HTTP Host) выполняется на настроенных портах проверки для повышения точности подключения.</string>
 	<string name="about_text">SocksTun %s\n\nКлиент VPN-туннеля SOCKS5\n\nGitHub: yiguihai11/sockstun</string>
+	<string name="copied_to_clipboard">Скопировано в буфер обмена: %s</string>
 
 	<!-- Notification strings -->
 	<string name="notif_upload_speed">Скорость отправки:</string>

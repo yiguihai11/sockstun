@@ -14,10 +14,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.content.ClipboardManager;
+import android.content.ClipData;
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +88,17 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 		button_refresh = (Button) findViewById(R.id.refresh_blacklist);
 
 		button_refresh.setOnClickListener(this);
+		listview_blacklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				BlacklistEntry entry = adapter.getItem(position);
+				ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("Blacklist Value", entry.value);
+				clipboard.setPrimaryClip(clip);
+				String msg = getString(R.string.copied_to_clipboard, entry.value);
+				Toast.makeText(BlacklistActivity.this, msg, Toast.LENGTH_SHORT).show();
+			}
+		});
 
 		refreshBlacklist();
 	}

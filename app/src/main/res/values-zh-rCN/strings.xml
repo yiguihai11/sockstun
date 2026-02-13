@@ -122,6 +122,7 @@
 	<string name="smart_proxy_info">关于智能代理</string>
 	<string name="smart_proxy_full_desc">智能代理自动确定每个连接的最佳路由方式。启用后，TCP 连接首先尝试直连；如果超时，则回退到 SOCKS5 代理。在配置的探测端口上执行协议检测（TLS SNI/HTTP Host）以提高连接准确性。</string>
 	<string name="about_text">SocksTun %s\n\nSOCKS5 VPN 隧道客户端\n\nGitHub: yiguihai11/sockstun</string>
+	<string name="copied_to_clipboard">已复制到剪切板：%s</string>
 
 	<!-- Notification strings -->
 	<string name="notif_upload_speed">上传速度:</string>
