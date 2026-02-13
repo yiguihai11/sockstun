@@ -91,7 +91,7 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 		listview_blacklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				BlacklistEntry entry = adapter.getItem(position);
+				BlacklistEntry entry = (BlacklistEntry) parent.getAdapter().getItem(position);
 				ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 				ClipData clip = ClipData.newPlainText("Blacklist Value", entry.value);
 				clipboard.setPrimaryClip(clip);
