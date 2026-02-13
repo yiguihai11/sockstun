@@ -90,7 +90,7 @@ public class Preferences
 	public void setSocksAddress(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_ADDR, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getSocksUdpAddress() {
@@ -100,7 +100,7 @@ public class Preferences
 	public void setSocksUdpAddress(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_UDP_ADDR, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getSocksPort() {
@@ -110,7 +110,7 @@ public class Preferences
 	public void setSocksPort(int port) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(SOCKS_PORT, port);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getSocksUsername() {
@@ -120,7 +120,7 @@ public class Preferences
 	public void setSocksUsername(String user) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_USER, user);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getSocksPassword() {
@@ -130,7 +130,7 @@ public class Preferences
 	public void setSocksPassword(String pass) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_PASS, pass);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getDnsIpv4() {
@@ -140,7 +140,7 @@ public class Preferences
 	public void setDnsIpv4(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_IPV4, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getDnsIpv6() {
@@ -150,7 +150,7 @@ public class Preferences
 	public void setDnsIpv6(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_IPV6, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getMappedDns() {
@@ -160,7 +160,7 @@ public class Preferences
 	public void setMappedDns(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(MAPDNS_ADDRESS, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getMapdnsAddress() {
@@ -170,7 +170,7 @@ public class Preferences
 	public void setMapdnsAddress(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(MAPDNS_ADDRESS, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getMapdnsAddress6() {
@@ -180,7 +180,7 @@ public class Preferences
 	public void setMapdnsAddress6(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(MAPDNS_ADDRESS6, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getMapdnsPort() {
@@ -190,7 +190,7 @@ public class Preferences
 	public void setMapdnsPort(int port) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(MAPDNS_PORT, port);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getMapdnsNetwork() {
@@ -200,7 +200,7 @@ public class Preferences
 	public void setMapdnsNetwork(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(MAPDNS_NETWORK, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getMapdnsNetmask() {
@@ -210,7 +210,7 @@ public class Preferences
 	public void setMapdnsNetmask(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(MAPDNS_NETMASK, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getMapdnsNetwork6() {
@@ -220,7 +220,7 @@ public class Preferences
 	public void setMapdnsNetwork6(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(MAPDNS_NETWORK6, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getMapdnsPrefixlen() {
@@ -230,7 +230,7 @@ public class Preferences
 	public void setMapdnsPrefixlen(int value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(MAPDNS_PREFIXLEN, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getMapdnsCacheSize() {
@@ -240,7 +240,7 @@ public class Preferences
 	public void setMapdnsCacheSize(int value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(MAPDNS_CACHE_SIZE, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getUdpInTcp() {
@@ -250,7 +250,7 @@ public class Preferences
 	public void setUdpInTcp(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(UDP_IN_TCP, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getRemoteDns() {
@@ -260,7 +260,7 @@ public class Preferences
 	public void setRemoteDns(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(REMOTE_DNS, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getIpv4() {
@@ -270,7 +270,7 @@ public class Preferences
 	public void setIpv4(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(IPV4, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getIpv6() {
@@ -280,7 +280,7 @@ public class Preferences
 	public void setIpv6(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(IPV6, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getGlobal() {
@@ -290,7 +290,7 @@ public class Preferences
 	public void setGlobal(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(GLOBAL, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public Set<String> getApps() {
@@ -300,7 +300,7 @@ public class Preferences
 	public void setApps(Set<String> apps) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putStringSet(APPS, apps);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getEnable() {
@@ -310,7 +310,7 @@ public class Preferences
 	public void setEnable(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(ENABLE, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getTunnelMtu() {
@@ -320,7 +320,7 @@ public class Preferences
 	public void setTunnelMtu(int mtu) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(TUNNEL_MTU, mtu);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getTunnelName() {
@@ -330,7 +330,7 @@ public class Preferences
 	public void setTunnelName(String name) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(TUNNEL_NAME, name);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getTunnelMultiQueue() {
@@ -340,7 +340,7 @@ public class Preferences
 	public void setTunnelMultiQueue(boolean enable) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(TUNNEL_MULTI_QUEUE, enable);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getTunnelIpv4() {
@@ -350,7 +350,7 @@ public class Preferences
 	public void setTunnelIpv4(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(TUNNEL_IPV4, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getTunnelIpv6() {
@@ -360,7 +360,7 @@ public class Preferences
 	public void setTunnelIpv6(String addr) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(TUNNEL_IPV6, addr);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getTunnelPostUpScript() {
@@ -370,7 +370,7 @@ public class Preferences
 	public void setTunnelPostUpScript(String script) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(TUNNEL_POST_UP_SCRIPT, script);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getTunnelPreDownScript() {
@@ -380,7 +380,7 @@ public class Preferences
 	public void setTunnelPreDownScript(String script) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(TUNNEL_PRE_DOWN_SCRIPT, script);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getTunnelIpv4Address() {
@@ -406,7 +406,7 @@ public class Preferences
 	public void setTaskStackSize(int size) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(TASK_STACK_SIZE, size);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getLogLevel() {
@@ -416,7 +416,7 @@ public class Preferences
 	public void setLogLevel(String level) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(LOG_LEVEL, level);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getTcpBufferSize() {
@@ -426,7 +426,7 @@ public class Preferences
 	public void setTcpBufferSize(int size) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(TCP_BUFFER_SIZE, size);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getUdpRecvBufferSize() {
@@ -436,7 +436,7 @@ public class Preferences
 	public void setUdpRecvBufferSize(int size) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(UDP_RECV_BUFFER_SIZE, size);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getUdpCopyBufferNums() {
@@ -446,7 +446,7 @@ public class Preferences
 	public void setUdpCopyBufferNums(int nums) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(UDP_COPY_BUFFER_NUMS, nums);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getConnectTimeout() {
@@ -456,7 +456,7 @@ public class Preferences
 	public void setConnectTimeout(int timeout) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(CONNECT_TIMEOUT, timeout);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getTcpReadWriteTimeout() {
@@ -466,7 +466,7 @@ public class Preferences
 	public void setTcpReadWriteTimeout(int timeout) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(TCP_READ_WRITE_TIMEOUT, timeout);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getUdpReadWriteTimeout() {
@@ -476,7 +476,7 @@ public class Preferences
 	public void setUdpReadWriteTimeout(int timeout) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(UDP_READ_WRITE_TIMEOUT, timeout);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getSocksUdpPort() {
@@ -486,7 +486,7 @@ public class Preferences
 	public void setSocksUdpPort(int port) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(SOCKS_UDP_PORT, port);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getSocksUdpUsername() {
@@ -496,7 +496,7 @@ public class Preferences
 	public void setSocksUdpUsername(String user) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_UDP_USER, user);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getSocksUdpPassword() {
@@ -506,7 +506,7 @@ public class Preferences
 	public void setSocksUdpPassword(String pass) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SOCKS_UDP_PASS, pass);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getMaxSessionCount() {
@@ -516,7 +516,7 @@ public class Preferences
 	public void setMaxSessionCount(int count) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(MAX_SESSION_COUNT, count);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getPidFile() {
@@ -526,7 +526,7 @@ public class Preferences
 	public void setPidFile(String path) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(PID_FILE, path);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getLimitNofile() {
@@ -536,7 +536,7 @@ public class Preferences
 	public void setLimitNofile(int limit) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(LIMIT_NOFILE, limit);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getChnroutesEnabled() {
@@ -546,7 +546,7 @@ public class Preferences
 	public void setChnroutesEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(CHNROUTES_ENABLED, enabled);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getAclEnabled() {
@@ -556,7 +556,7 @@ public class Preferences
 	public void setAclEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(ACL_ENABLED, enabled);
-		editor.commit();
+		editor.apply();
 	}
 
 	public boolean getDnsSplitTunnelEnabled() {
@@ -566,7 +566,7 @@ public class Preferences
 	public void setDnsSplitTunnelEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(DNS_SPLIT_TUNNEL_ENABLED, enabled);
-		editor.commit();
+		editor.apply();
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class Preferences
 	public void setDnsForeignServersJson(String json) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_FOREIGN_SERVERS, json);
-		editor.commit();
+		editor.apply();
 	}
 
 	/**
@@ -637,7 +637,7 @@ public class Preferences
 	public void setDnsVirtualIp4(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_VIRTUAL_IP4, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getDnsVirtualIp6() {
@@ -647,7 +647,7 @@ public class Preferences
 	public void setDnsVirtualIp6(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_VIRTUAL_IP6, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getDnsTargetIp4() {
@@ -657,7 +657,7 @@ public class Preferences
 	public void setDnsTargetIp4(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_TARGET_IP4, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getDnsTargetIp6() {
@@ -667,7 +667,7 @@ public class Preferences
 	public void setDnsTargetIp6(String value) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(DNS_TARGET_IP6, value);
-		editor.commit();
+		editor.apply();
 	}
 
 	// DNS Forwarder preferences
@@ -678,7 +678,7 @@ public class Preferences
 	public void setDnsForwarderEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(DNS_FORWARDER_ENABLED, enabled);
-		editor.commit();
+		editor.apply();
 	}
 
 	// DNS Latency Optimize preferences
@@ -689,7 +689,7 @@ public class Preferences
 	public void setDnsLatencyOptimizeEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(DNS_LATENCY_OPTIMIZE_ENABLED, enabled);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getDnsLatencyOptimizeTimeout() {
@@ -699,7 +699,7 @@ public class Preferences
 	public void setDnsLatencyOptimizeTimeout(int timeout) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(DNS_LATENCY_OPTIMIZE_TIMEOUT, timeout);
-		editor.commit();
+		editor.apply();
 	}
 
 	// Smart Proxy preferences
@@ -710,7 +710,7 @@ public class Preferences
 	public void setSmartProxyEnabled(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(SMART_PROXY_ENABLED, enabled);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getSmartProxyTimeout() {
@@ -720,7 +720,7 @@ public class Preferences
 	public void setSmartProxyTimeout(int timeout) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(SMART_PROXY_TIMEOUT, timeout);
-		editor.commit();
+		editor.apply();
 	}
 
 	public int getSmartProxyBlockedIpExpiry() {
@@ -730,7 +730,7 @@ public class Preferences
 	public void setSmartProxyBlockedIpExpiry(int expiry) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(SMART_PROXY_BLOCKED_IP_EXPIRY, expiry);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getSmartProxyProbePortsJson() {
@@ -740,7 +740,7 @@ public class Preferences
 	public void setSmartProxyProbePortsJson(String json) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(SMART_PROXY_PROBE_PORTS, json);
-		editor.commit();
+		editor.apply();
 	}
 
 	public java.util.List<Integer> getSmartProxyProbePortsList() {
@@ -784,6 +784,6 @@ public class Preferences
 	public void setBypassLan(boolean enabled) {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(BYPASS_LAN, enabled);
-		editor.commit();
+		editor.apply();
 	}
 }
