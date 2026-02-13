@@ -126,6 +126,7 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 
 		if (data != null) {
 			for (String line : data) {
+				LogActivity.d(this, "BlacklistRawData", "Raw Line: " + line);
 				String[] parts = line.split("\\|");
 				if (parts.length >= 4) {
 					try {
