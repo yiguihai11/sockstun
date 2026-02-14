@@ -24,55 +24,6 @@
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent">
 
-				<!-- Java Log Tab -->
-				<LinearLayout
-					android:id="@+id/tab_java_log"
-					android:orientation="vertical"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent">
-					<!-- Search Box -->
-					<EditText
-						android:id="@+id/java_log_search"
-						android:layout_width="fill_parent"
-						android:layout_height="wrap_content"
-						android:hint="@string/log_filter_hint"
-						android:singleLine="true"
-						android:padding="8dp"/>
-					<LinearLayout
-						android:orientation="horizontal"
-						android:layout_width="fill_parent"
-						android:layout_height="wrap_content">
-						<Button
-							android:id="@+id/java_log_refresh"
-							android:layout_width="fill_parent"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="@string/button_refresh"/>
-						<Button
-							android:id="@+id/java_log_clear"
-							android:layout_width="fill_parent"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="@string/button_clear"/>
-					</LinearLayout>
-					<ScrollView
-						android:id="@+id/java_log_scroll"
-						android:layout_width="fill_parent"
-						android:layout_height="fill_parent"
-						android:background="@color/log_background"
-						android:padding="4dp">
-						<TextView
-							android:id="@+id/java_log_text"
-							android:layout_width="fill_parent"
-							android:layout_height="wrap_content"
-							android:textColor="@color/log_text"
-							android:textSize="10sp"
-							android:typeface="monospace"
-							android:textIsSelectable="true"
-							android:text="@string/loading_java_logs"/>
-					</ScrollView>
-				</LinearLayout>
-
 				<!-- Native Log Tab -->
 				<LinearLayout
 					android:id="@+id/tab_native_log"
@@ -119,6 +70,55 @@
 							android:typeface="monospace"
 							android:textIsSelectable="true"
 							android:text="@string/loading_native_logs"/>
+					</ScrollView>
+				</LinearLayout>
+
+				<!-- Java Log Tab -->
+				<LinearLayout
+					android:id="@+id/tab_java_log"
+					android:orientation="vertical"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent">
+					<!-- Search Box -->
+					<EditText
+						android:id="@+id/java_log_search"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:hint="@string/log_filter_hint"
+						android:singleLine="true"
+						android:padding="8dp"/>
+					<LinearLayout
+						android:orientation="horizontal"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content">
+						<Button
+							android:id="@+id/java_log_refresh"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:text="@string/button_refresh"/>
+						<Button
+							android:id="@+id/java_log_clear"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:text="@string/button_clear"/>
+					</LinearLayout>
+					<ScrollView
+						android:id="@+id/java_log_scroll"
+						android:layout_width="fill_parent"
+						android:layout_height="fill_parent"
+						android:background="@color/log_background"
+						android:padding="4dp">
+						<TextView
+							android:id="@+id/java_log_text"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:textColor="@color/log_text"
+							android:textSize="10sp"
+							android:typeface="monospace"
+							android:textIsSelectable="true"
+							android:text="@string/loading_java_logs"/>
 					</ScrollView>
 				</LinearLayout>
 
