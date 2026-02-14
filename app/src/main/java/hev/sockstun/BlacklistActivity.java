@@ -23,8 +23,13 @@ import android.widget.Toast;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
 
 public class BlacklistActivity extends Activity implements View.OnClickListener {
 
@@ -34,6 +39,9 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 	private Button button_refresh;
 	private BlacklistAdapter adapter;
 	private Preferences prefs;
+	private Handler refreshHandler;
+	private Runnable refreshRunnable;
+	private static final int REFRESH_INTERVAL_MS = 1000;
 
 	private static class BlacklistEntry {
 		String type;
@@ -41,6 +49,7 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 		long expiry;
 		long hits;
 		String reason;
+		long absoluteExpiryTime;
 
 		BlacklistEntry(String type, String value, long expiry, long hits, String reason) {
 			this.type = type;
@@ -48,10 +57,13 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 			this.expiry = expiry;
 			this.hits = hits;
 			this.reason = reason;
+			this.absoluteExpiryTime = System.currentTimeMillis() + (expiry * 1000);
 		}
 	}
 
 	private class BlacklistAdapter extends ArrayAdapter<BlacklistEntry> {
+		private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
 		BlacklistAdapter(Activity context, List<BlacklistEntry> entries) {
 			super(context, R.layout.blacklist_item, entries);
 		}
@@ -70,7 +82,12 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 
 			typeView.setText(entry.type + " (" + entry.reason + ")");
 			valueView.setText(entry.value);
-			expiryView.setText(getContext().getString(R.string.blacklist_expiry, entry.expiry));
+
+			long remaining = (entry.absoluteExpiryTime - System.currentTimeMillis()) / 1000;
+			if (remaining < 0) remaining = 0;
+			String expiryStr = timeFormat.format(new Date(entry.absoluteExpiryTime)) + " (" + remaining + "s)";
+			expiryView.setText(expiryStr);
+			
 			hitsView.setText(getContext().getString(R.string.blacklist_hits, entry.hits));
 
 			return convertView;
@@ -102,7 +119,26 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 			}
 		});
 
-		refreshBlacklist();
+		refreshHandler = new Handler(Looper.getMainLooper());
+		refreshRunnable = new Runnable() {
+			@Override
+			public void run() {
+				refreshBlacklist();
+				refreshHandler.postDelayed(this, REFRESH_INTERVAL_MS);
+			}
+		};
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		refreshHandler.post(refreshRunnable);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		refreshHandler.removeCallbacks(refreshRunnable);
 	}
 
 	@Override
@@ -147,7 +183,16 @@ public class BlacklistActivity extends Activity implements View.OnClickListener 
 		}
 
 		textview_count.setText(getString(R.string.blacklist_count, entries.size()));
-		adapter = new BlacklistAdapter(this, entries);
-		listview_blacklist.setAdapter(adapter);
+		
+		// Use existing adapter if possible to avoid flickering
+		if (adapter == null || adapter.getCount() != entries.size()) {
+			adapter = new BlacklistAdapter(this, entries);
+			listview_blacklist.setAdapter(adapter);
+		} else {
+			// Update entries and notify
+			adapter.clear();
+			adapter.addAll(entries);
+			adapter.notifyDataSetChanged();
+		}
 	}
 }
