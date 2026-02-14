@@ -33,6 +33,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.net.VpnService;
 import android.net.Uri;
+import android.os.PowerManager;
+import android.provider.Settings;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageInfo;
 import android.text.SpannableString;
@@ -433,6 +437,40 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		  startActivityForResult(intent, 0);
 		else
 		  onActivityResult(0, RESULT_OK, null);
+
+		/* Check battery optimization */
+		checkBatteryOptimization();
+	}
+
+	private void checkBatteryOptimization() {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			if (pm != null && !pm.isIgnoringBatteryOptimizations(getPackageName())) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.battery_opt_title);
+				builder.setMessage(R.string.battery_opt_message);
+				builder.setPositiveButton(R.string.battery_opt_ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+							intent.setData(Uri.parse("package:" + getPackageName()));
+							startActivity(intent);
+						} catch (Exception e) {
+							// Fallback to settings list if direct request is not supported
+							try {
+								Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+								startActivity(intent);
+							} catch (Exception ex) {
+								Toast.makeText(MainActivity.this, "Could not open battery settings", Toast.LENGTH_SHORT).show();
+							}
+						}
+					}
+				});
+				builder.setNegativeButton(R.string.battery_opt_no, null);
+				builder.show();
+			}
+		}
 	}
 
 	@Override

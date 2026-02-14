@@ -218,4 +218,10 @@
 	<!-- Password visibility toggle -->
 	<string name="show_password">Show</string>
 	<string name="hide_password">Hide</string>
+
+	<!-- Battery Optimization -->
+	<string name="battery_opt_title">Optimization Settings</string>
+	<string name="battery_opt_message">To ensure SocksTun stays connected in the background and prevents network disconnection when screen is off, please allow it to ignore battery optimizations.</string>
+	<string name="battery_opt_ok">Allow</string>
+	<string name="battery_opt_no">Not Now</string>
 </resources>

@@ -218,4 +218,10 @@
 	<string name="default_10000_ms">默认值: 10000 (毫秒)</string>
 	<string name="default_300000_ms">默认值: 300000 (毫秒)</string>
 	<string name="default_60000_ms">默认值: 60000 (毫秒)</string>
+
+	<!-- Battery Optimization -->
+	<string name="battery_opt_title">电池优化设置</string>
+	<string name="battery_opt_message">为了确保 SocksTun 在后台稳定运行，并防止息屏后网络断开，请允许应用忽略电池优化。</string>
+	<string name="battery_opt_ok">允许</string>
+	<string name="battery_opt_no">暂不</string>
 </resources>
