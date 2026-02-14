@@ -80,15 +80,15 @@ public class LogActivity extends TabActivity implements View.OnClickListener {
 
 		tabHost = getTabHost();
 
-		// Setup Java log tab
-		tabHost.addTab(tabHost.newTabSpec("java_log")
-			.setIndicator(getString(R.string.tab_java_log))
-			.setContent(R.id.tab_java_log));
-
 		// Setup Native log tab
 		tabHost.addTab(tabHost.newTabSpec("native_log")
 			.setIndicator(getString(R.string.tab_native_log))
 			.setContent(R.id.tab_native_log));
+
+		// Setup Java log tab
+		tabHost.addTab(tabHost.newTabSpec("java_log")
+			.setIndicator(getString(R.string.tab_java_log))
+			.setContent(R.id.tab_java_log));
 
 		// Java log UI elements
 		textview_java_log = (TextView) findViewById(R.id.java_log_text);
