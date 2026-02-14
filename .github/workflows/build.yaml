@@ -20,6 +20,13 @@ jobs:
         with:
           fetch-depth: 1
           submodules: true
+      - name: Update chnroutes
+        run: |
+          wget -qO chnroute.txt https://raw.githubusercontent.com/mayaxcn/china-ip-list/master/chnroute.txt
+          wget -qO chnroute_v6.txt https://raw.githubusercontent.com/mayaxcn/china-ip-list/master/chnroute_v6.txt
+          cat chnroute.txt chnroute_v6.txt > chnroutes.txt
+          cp -f chnroutes.txt app/src/main/assets/chnroutes.txt
+          cp -f chnroutes.txt app/src/main/jni/hev-socks5-tunnel/conf/chnroutes.txt
       - name: Build
         run: |
           sudo apt-get update -y && sudo apt-get install -y wget unzip file git openjdk-17-jdk
