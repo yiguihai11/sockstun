@@ -525,6 +525,15 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			Toast.makeText(context, getString(R.string.saved), Toast.LENGTH_SHORT).show();
 		} else if (view == button_control) {
 			boolean isEnable = prefs.getEnable();
+			if (!isEnable) {
+				/* Request VPN permission again before starting */
+				Intent intent = VpnService.prepare(this);
+				if (intent != null) {
+					startActivityForResult(intent, 0);
+					return;
+				}
+			}
+			
 			prefs.setEnable(!isEnable);
 			savePrefs();
 			updateUI();

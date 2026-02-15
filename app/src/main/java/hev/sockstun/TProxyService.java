@@ -205,6 +205,9 @@ public class TProxyService extends VpnService {
 		}
 		tunFd = builder.establish();
 		if (tunFd == null) {
+			showToast("建立VPN隧道失败，请检查VPN权限");
+			prefs.setEnable(false);
+			sendBroadcast(new Intent("hev.sockstun.VPN_STOPPED"));
 			stopSelf();
 			return;
 		}
@@ -272,6 +275,7 @@ public class TProxyService extends VpnService {
 		}
 		tunFd = null;
 
+		sendBroadcast(new Intent("hev.sockstun.VPN_STOPPED"));
 		//stopSelf();
 		System.exit(0);
 	}
