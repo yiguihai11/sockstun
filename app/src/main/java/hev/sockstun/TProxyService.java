@@ -305,18 +305,18 @@ public class TProxyService extends VpnService {
 	                                String bigText, String totalTx, String totalRx,
 	                                String packetInfo, boolean isFirstTime) {
 		Intent i = new Intent(this, MainActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
+		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 		// Logs Action
 		Intent logsIntent = new Intent(this, LogActivity.class);
 		logsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		PendingIntent logsPi = PendingIntent.getActivity(this, 1, logsIntent, PendingIntent.FLAG_IMMUTABLE);
+		PendingIntent logsPi = PendingIntent.getActivity(this, 1, logsIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 		// Blacklist Action
 		Intent blacklistIntent = new Intent(this, BlacklistActivity.class);
 		blacklistIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		PendingIntent blacklistPi = PendingIntent.getActivity(this, 2, blacklistIntent, PendingIntent.FLAG_IMMUTABLE);
+		PendingIntent blacklistPi = PendingIntent.getActivity(this, 2, blacklistIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelName);
 
