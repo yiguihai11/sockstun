@@ -308,11 +308,6 @@ public class TProxyService extends VpnService {
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
-		// Disconnect Action
-		Intent disconnectIntent = new Intent(this, TProxyService.class);
-		disconnectIntent.setAction(ACTION_DISCONNECT);
-		PendingIntent disconnectPi = PendingIntent.getService(this, 0, disconnectIntent, PendingIntent.FLAG_IMMUTABLE);
-
 		// Logs Action
 		Intent logsIntent = new Intent(this, LogActivity.class);
 		logsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -332,7 +327,6 @@ public class TProxyService extends VpnService {
 				.setContentIntent(pi)
 				.setOngoing(true)
 				.setOnlyAlertOnce(true)
-				.addAction(0, getString(R.string.control_disable), disconnectPi)
 				.addAction(0, getString(R.string.logs), logsPi)
 				.addAction(0, getString(R.string.blacklist), blacklistPi);
 
