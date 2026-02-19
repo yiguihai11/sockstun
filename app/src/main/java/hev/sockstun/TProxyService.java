@@ -307,6 +307,22 @@ public class TProxyService extends VpnService {
 		Intent i = new Intent(this, MainActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
+
+		// Disconnect Action
+		Intent disconnectIntent = new Intent(this, TProxyService.class);
+		disconnectIntent.setAction(ACTION_DISCONNECT);
+		PendingIntent disconnectPi = PendingIntent.getService(this, 0, disconnectIntent, PendingIntent.FLAG_IMMUTABLE);
+
+		// Logs Action
+		Intent logsIntent = new Intent(this, LogActivity.class);
+		logsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent logsPi = PendingIntent.getActivity(this, 1, logsIntent, PendingIntent.FLAG_IMMUTABLE);
+
+		// Blacklist Action
+		Intent blacklistIntent = new Intent(this, BlacklistActivity.class);
+		blacklistIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent blacklistPi = PendingIntent.getActivity(this, 2, blacklistIntent, PendingIntent.FLAG_IMMUTABLE);
+
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelName);
 
 		notification
@@ -315,7 +331,10 @@ public class TProxyService extends VpnService {
 				.setSmallIcon(android.R.drawable.sym_def_app_icon)
 				.setContentIntent(pi)
 				.setOngoing(true)
-				.setOnlyAlertOnce(true);
+				.setOnlyAlertOnce(true)
+				.addAction(0, getString(R.string.control_disable), disconnectPi)
+				.addAction(0, getString(R.string.logs), logsPi)
+				.addAction(0, getString(R.string.blacklist), blacklistPi);
 
 		// Add big text style if detailed info is available
 		if (bigText != null) {
