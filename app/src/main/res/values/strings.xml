@@ -224,4 +224,11 @@
 	<string name="battery_opt_message">To ensure SocksTun stays connected in the background and prevents network disconnection when screen is off, please allow it to ignore battery optimizations.</string>
 	<string name="battery_opt_ok">Allow</string>
 	<string name="battery_opt_no">Not Now</string>
+
+	<!-- Notification Mode strings -->
+	<string name="notif_mode_global">Global</string>
+	<string name="notif_mode_per_app">Per-app</string>
+	<string name="notif_stack_v4">IPv4</string>
+	<string name="notif_stack_v6">IPv6</string>
+	<string name="notif_stack_dual">IPv4+6</string>
 </resources>

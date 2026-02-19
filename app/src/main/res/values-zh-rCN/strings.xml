@@ -224,4 +224,11 @@
 	<string name="battery_opt_message">为了确保 SocksTun 在后台稳定运行，并防止息屏后网络断开，请允许应用忽略电池优化。</string>
 	<string name="battery_opt_ok">允许</string>
 	<string name="battery_opt_no">暂不</string>
+
+	<!-- Notification Mode strings -->
+	<string name="notif_mode_global">全局模式</string>
+	<string name="notif_mode_per_app">分流模式</string>
+	<string name="notif_stack_v4">IPv4</string>
+	<string name="notif_stack_v6">IPv6</string>
+	<string name="notif_stack_dual">双栈</string>
 </resources>

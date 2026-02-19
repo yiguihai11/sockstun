@@ -51,6 +51,7 @@ public class TProxyService extends VpnService {
 
 	private ParcelFileDescriptor tunFd = null;
 	private String channelName = "socks5";
+	private Preferences prefs;
 
 	// Traffic stats
 	private Handler statsHandler;
@@ -102,7 +103,7 @@ public class TProxyService extends VpnService {
 		totalTxBytes = 0;
 		totalRxBytes = 0;
 
-		Preferences prefs = new Preferences(this);
+		prefs = new Preferences(this);
 
 		/* VPN */
 		VpnService.Builder builder = new VpnService.Builder();
@@ -281,7 +282,23 @@ public class TProxyService extends VpnService {
 	}
 
 	private void createNotification(String channelName) {
-		createNotification(channelName, "↑ --  ↓ --", null, null, null, null, true);
+		String modeInfo = getModeInfoString();
+		createNotification(channelName, "[" + modeInfo + "] ↑ --  ↓ --", null, null, null, null, true);
+	}
+
+	private String getModeInfoString() {
+		if (prefs == null) return "";
+		
+		String mode = prefs.getGlobal() ? getString(R.string.notif_mode_global) : getString(R.string.notif_mode_per_app);
+		String stack = "";
+		boolean v4 = prefs.getIpv4();
+		boolean v6 = prefs.getIpv6();
+		
+		if (v4 && v6) stack = getString(R.string.notif_stack_dual);
+		else if (v4) stack = getString(R.string.notif_stack_v4);
+		else if (v6) stack = getString(R.string.notif_stack_v6);
+		
+		return mode + " " + stack;
 	}
 
 	private void createNotification(String channelName, String contentText,
@@ -370,6 +387,7 @@ public class TProxyService extends VpnService {
 		String totalTx = null;
 		String totalRx = null;
 		String packetInfo = null;
+		String modeInfo = getModeInfoString();
 
 		if (lastTime > 0) {
 			long timeDelta = (currentTime - lastTime) / 1000;
@@ -379,7 +397,7 @@ public class TProxyService extends VpnService {
 				long txPacketsRate = (curTxPackets - lastTxPackets) / timeDelta;
 				long rxPacketsRate = (curRxPackets - lastRxPackets) / timeDelta;
 
-				contentText = "↑ " + formatSpeed(txSpeed) + "  ↓ " + formatSpeed(rxSpeed);
+				contentText = "[" + modeInfo + "] ↑ " + formatSpeed(txSpeed) + "  ↓ " + formatSpeed(rxSpeed);
 
 				// Build big text with detailed info
 				totalTx = formatBytes(curTxBytes);
@@ -393,10 +411,10 @@ public class TProxyService extends VpnService {
 				          getString(R.string.notif_received_data) + " " + totalRx + "\n" +
 				          getString(R.string.notif_received_packets) + " " + curRxPackets;
 			} else {
-				contentText = "↑ --  ↓ --";
+				contentText = "[" + modeInfo + "] ↑ --  ↓ --";
 			}
 		} else {
-			contentText = "↑ --  ↓ --";
+			contentText = "[" + modeInfo + "] ↑ --  ↓ --";
 		}
 
 		lastTxPackets = curTxPackets;
