@@ -180,6 +180,7 @@ public class TProxyService extends VpnService {
 				try {
 					builder.addDisallowedApplication(appName);
 				} catch (NameNotFoundException e) {
+					LogActivity.w(this, "TProxyService", "Package not found for exclusion: " + appName);
 				}
 			}
 		} else {
@@ -189,6 +190,7 @@ public class TProxyService extends VpnService {
 					builder.addAllowedApplication(appName);
 					disallowSelf = false;
 				} catch (NameNotFoundException e) {
+					LogActivity.w(this, "TProxyService", "Package not found for inclusion: " + appName);
 				}
 			}
 		}
@@ -197,6 +199,7 @@ public class TProxyService extends VpnService {
 			try {
 				builder.addDisallowedApplication(selfName);
 			} catch (NameNotFoundException e) {
+				LogActivity.w(this, "TProxyService", "Self package not found: " + selfName);
 			}
 		}
 		tunFd = builder.establish();
