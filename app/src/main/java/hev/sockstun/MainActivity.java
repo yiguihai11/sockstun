@@ -454,11 +454,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 							intent.setData(Uri.parse("package:" + getPackageName()));
 							startActivity(intent);
 						} catch (Exception e) {
+							LogActivity.w(MainActivity.this, "MainActivity", "Direct battery optimization request failed, falling back to settings list: " + e.getMessage());
 							// Fallback to settings list if direct request is not supported
 							try {
 								Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
 								startActivity(intent);
 							} catch (Exception ex) {
+								LogActivity.e(MainActivity.this, "MainActivity", "Could not open battery optimization settings: " + ex.getMessage());
 								Toast.makeText(MainActivity.this, "Could not open battery settings", Toast.LENGTH_SHORT).show();
 							}
 						}
