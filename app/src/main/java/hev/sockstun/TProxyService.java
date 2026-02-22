@@ -85,7 +85,7 @@ public class TProxyService extends VpnService {
 
 	public void startService() {
 		if (tunFd != null) {
-			showToast("服务已在运行");
+			showToast(getString(R.string.toast_service_already_running));
 			return;
 		}
 
@@ -201,7 +201,7 @@ public class TProxyService extends VpnService {
 		}
 		tunFd = builder.establish();
 		if (tunFd == null) {
-			showToast("建立VPN隧道失败，请检查VPN权限");
+			showToast(getString(R.string.toast_vpn_establish_failed));
 			prefs.setEnable(false);
 			sendBroadcast(new Intent("hev.sockstun.VPN_STOPPED"));
 			stopSelf();
@@ -248,9 +248,15 @@ public class TProxyService extends VpnService {
 	
 	public void stopService() {
 		if (tunFd == null) {
-			showToast("服务未运行");
+			showToast(getString(R.string.toast_service_not_running));
 			return;
 		}
+
+		// Update preference state and notify UI early
+		if (prefs != null) {
+			prefs.setEnable(false);
+		}
+		sendBroadcast(new Intent("hev.sockstun.VPN_STOPPED"));
 
 		// Stop traffic stats update
 		stopStatsUpdate();
@@ -267,7 +273,7 @@ public class TProxyService extends VpnService {
 				tunFd.close();
 			}
 		} catch (IOException e) {
-			showToast("关闭TUN设备失败: " + e.getMessage());
+			showToast(getString(R.string.toast_tun_close_failed, e.getMessage()));
 		}
 		tunFd = null;
 

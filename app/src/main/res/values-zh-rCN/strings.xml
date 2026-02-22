@@ -227,4 +227,10 @@
 	<string name="notif_stack_v4">IPv4</string>
 	<string name="notif_stack_v6">IPv6</string>
 	<string name="notif_stack_dual">双栈</string>
+
+	<!-- Toast messages -->
+	<string name="toast_service_already_running">服务已在运行</string>
+	<string name="toast_vpn_establish_failed">建立VPN隧道失败，请检查VPN权限</string>
+	<string name="toast_service_not_running">服务未运行</string>
+	<string name="toast_tun_close_failed">关闭TUN设备失败: %s</string>
 </resources>

@@ -227,4 +227,10 @@
 	<string name="notif_stack_v4">IPv4</string>
 	<string name="notif_stack_v6">IPv6</string>
 	<string name="notif_stack_dual">IPv4+6</string>
+
+	<!-- Toast messages -->
+	<string name="toast_service_already_running">Service is already running</string>
+	<string name="toast_vpn_establish_failed">Failed to establish VPN tunnel, please check VPN permissions</string>
+	<string name="toast_service_not_running">Service is not running</string>
+	<string name="toast_tun_close_failed">Failed to close TUN device: %s</string>
 </resources>
