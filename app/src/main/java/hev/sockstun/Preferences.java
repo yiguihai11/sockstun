@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.HashSet;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class Preferences
 {
@@ -78,8 +79,10 @@ public class Preferences
 	public static final String BYPASS_LAN = "BypassLan";
 
 	private SharedPreferences prefs;
+	private Context context;
 
 	public Preferences(Context context) {
+		this.context = context;
 		prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_MULTI_PROCESS);
 	}
 
@@ -602,6 +605,7 @@ public class Preferences
 				}
 			}
 		} catch (Exception e) {
+			LogActivity.e(context, "Preferences", "Failed to parse foreign DNS JSON: " + e.getMessage());
 			// If JSON parsing fails, return default list
 			result.add("1.1.1.1");
 			result.add("8.8.8.8");
@@ -624,6 +628,7 @@ public class Preferences
 			}
 			setDnsForeignServersJson(jsonArray.toString());
 		} catch (Exception e) {
+			LogActivity.e(context, "Preferences", "Failed to create foreign DNS JSON: " + e.getMessage());
 			// If JSON creation fails, save empty array
 			setDnsForeignServersJson("[]");
 		}
@@ -755,6 +760,7 @@ public class Preferences
 				}
 			}
 		} catch (Exception e) {
+			LogActivity.e(context, "Preferences", "Failed to parse probe ports JSON: " + e.getMessage());
 			// If JSON parsing fails, return default list
 			result.add(80);
 			result.add(443);
@@ -772,6 +778,7 @@ public class Preferences
 			}
 			setSmartProxyProbePortsJson(jsonArray.toString());
 		} catch (Exception e) {
+			LogActivity.e(context, "Preferences", "Failed to create probe ports JSON: " + e.getMessage());
 			// If JSON creation fails, save empty array
 			setSmartProxyProbePortsJson("[]");
 		}

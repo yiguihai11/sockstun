@@ -1032,6 +1032,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			reader.close();
 			edittext_chnroutes_content.setText(content.toString());
 		} catch (IOException e) {
+			LogActivity.e(this, "MainActivity", "Failed to load chnroutes.txt: " + e.getMessage());
 			edittext_chnroutes_content.setText(getString(R.string.unable_to_read_file, e.getMessage()));
 		}
 	}
@@ -1047,6 +1048,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			writer.close();
 			Toast.makeText(this, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
+			LogActivity.e(this, "MainActivity", "Failed to save chnroutes.txt: " + e.getMessage());
 			Toast.makeText(this, getString(R.string.save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -1070,6 +1072,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			loadChnroutesContent();
 			Toast.makeText(this, getString(R.string.extracted_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
+			LogActivity.e(this, "MainActivity", "Failed to extract chnroutes: " + e.getMessage());
 			Toast.makeText(this, getString(R.string.extract_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -1112,6 +1115,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			reader.close();
 			edittext_acl_content.setText(content.toString());
 		} catch (IOException e) {
+			LogActivity.e(this, "MainActivity", "Failed to load acl.txt: " + e.getMessage());
 			edittext_acl_content.setText(getString(R.string.unable_to_read_file, e.getMessage()));
 		}
 	}
@@ -1127,6 +1131,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			writer.close();
 			Toast.makeText(this, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
+			LogActivity.e(this, "MainActivity", "Failed to save acl.txt: " + e.getMessage());
 			Toast.makeText(this, getString(R.string.save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -1150,6 +1155,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			loadAclContent();
 			Toast.makeText(this, getString(R.string.extracted_successfully), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
+			LogActivity.e(this, "MainActivity", "Failed to extract acl.txt: " + e.getMessage());
 			Toast.makeText(this, getString(R.string.extract_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 		}
 	}
