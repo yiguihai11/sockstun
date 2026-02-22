@@ -352,6 +352,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			versionName = "v" + packageInfo.versionName;
 		} catch (PackageManager.NameNotFoundException e) {
+			LogActivity.w(this, "MainActivity", "Failed to get version name: " + e.getMessage());
 			// Keep default version
 		}
 		String fullText = getString(R.string.about_text, versionName);
@@ -484,6 +485,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			try {
 				copyFileFromUri(uri);
 			} catch (IOException e) {
+				LogActivity.e(this, "MainActivity", "Failed to upload chnroutes file: " + e.getMessage());
 				Toast.makeText(this, getString(R.string.upload_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -493,6 +495,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 			try {
 				copyFileFromUriForAcl(uri);
 			} catch (IOException e) {
+				LogActivity.e(this, "MainActivity", "Failed to upload ACL file: " + e.getMessage());
 				Toast.makeText(this, getString(R.string.upload_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -856,7 +859,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 				}
 			}
 		} catch (Exception e) {
-			// Silently ignore errors
+			LogActivity.e(this, "MainActivity", "Failed to update system DNS info: " + e.getMessage());
 		}
 	}
 
@@ -935,13 +938,21 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 		prefs.setSocksUdpAddress(edittext_socks_udp_addr.getText().toString());
 
 		String udpPortStr = edittext_socks_udp_port.getText().toString();
-		int udpPort = udpPortStr.isEmpty() ? 0 : Integer.parseInt(udpPortStr);
-		prefs.setSocksUdpPort(udpPort);
+		try {
+			int udpPort = udpPortStr.isEmpty() ? 0 : Integer.parseInt(udpPortStr);
+			prefs.setSocksUdpPort(udpPort);
+		} catch (NumberFormatException e) {
+			LogActivity.w(this, "MainActivity", "Invalid UDP port format: " + udpPortStr);
+		}
 
 		prefs.setSocksUdpUsername(edittext_socks_udp_user.getText().toString());
 		prefs.setSocksUdpPassword(edittext_socks_udp_pass.getText().toString());
 
-		prefs.setSocksPort(Integer.parseInt(edittext_socks_port.getText().toString()));
+		try {
+			prefs.setSocksPort(Integer.parseInt(edittext_socks_port.getText().toString()));
+		} catch (NumberFormatException e) {
+			LogActivity.w(this, "MainActivity", "Invalid SOCKS port format");
+		}
 		prefs.setSocksUsername(edittext_socks_user.getText().toString());
 		prefs.setSocksPassword(edittext_socks_pass.getText().toString());
 		prefs.setDnsIpv4(edittext_dns_ipv4.getText().toString());
