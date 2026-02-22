@@ -58,53 +58,40 @@ public class ConfigGenerator {
     private void appendSocks5Section() {
         config.append("socks5:\n");
 
-        appendTcpConfig();
-        appendUdpConfig();
-    }
+        // --- Common/TCP Config (Flattened) ---
+        config.append("  address: '").append(prefs.getSocksAddress()).append("'\n");
+        config.append("  port: ").append(prefs.getSocksPort()).append("\n");
 
-    private void appendTcpConfig() {
-        config.append("  tcp:\n");
-        config.append("    port: ").append(prefs.getSocksPort()).append("\n");
-        config.append("    address: '").append(prefs.getSocksAddress()).append("'");
+        String user = prefs.getSocksUsername();
+        String pass = prefs.getSocksPassword();
+        if (!user.isEmpty() && !pass.isEmpty()) {
+            config.append("  username: '").append(user).append("'\n");
+            config.append("  password: '").append(pass).append("'\n");
+        }
 
-        appendAuthentication(prefs.getSocksUsername(), prefs.getSocksPassword());
-    }
-
-    private void appendUdpConfig() {
-        config.append("  udp:\n");
-
-        // UDP relay mode
+        // --- UDP Config (Flattened) ---
+        // UDP Relay Mode (tcp|udp)
         String udpRelay = prefs.getUdpInTcp() ? "tcp" : "udp";
-        config.append("    udp: '").append(udpRelay).append("'\n");
+        config.append("  udp: '").append(udpRelay).append("'\n");
 
-        // UDP address (optional override)
+        // Independent UDP Address/Port (Optional)
         String udpAddr = prefs.getSocksUdpAddress();
         if (!udpAddr.isEmpty()) {
-            config.append("    udp-address: '").append(udpAddr).append("'\n");
+            config.append("  udp-address: '").append(udpAddr).append("'\n");
         }
 
-        // UDP port (optional override)
         int udpPort = prefs.getSocksUdpPort();
         if (udpPort > 0) {
-            config.append("    udp-port: ").append(udpPort).append("\n");
+            config.append("  udp-port: ").append(udpPort).append("\n");
         }
 
-        // UDP authentication (independent)
+        // Independent UDP Auth (Optional)
         String udpUser = prefs.getSocksUdpUsername();
         String udpPass = prefs.getSocksUdpPassword();
         if (!udpUser.isEmpty() && !udpPass.isEmpty()) {
-            config.append("    udp-username: '").append(udpUser).append("'\n");
-            config.append("    udp-password: '").append(udpPass).append("'\n");
+            config.append("  udp-username: '").append(udpUser).append("'\n");
+            config.append("  udp-password: '").append(udpPass).append("'\n");
         }
-    }
-
-    private void appendAuthentication(String username, String password) {
-        if (!username.isEmpty() && !password.isEmpty()) {
-            config.append("\n");
-            config.append("    username: '").append(username).append("'\n");
-            config.append("    password: '").append(password).append("'");
-        }
-        config.append("\n");
     }
 
     private void appendDnsSplitTunnelSection() {
@@ -205,17 +192,5 @@ public class ConfigGenerator {
 
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
         config.append("  log-level: ").append(prefs.getLogLevel()).append("\n");
-
-        // PID File: Not supported on Android
-        // String pidFile = prefs.getPidFile();
-        // if (!pidFile.isEmpty()) {
-        //     config.append("  pid-file: '").append(pidFile).append("'\n");
-        // }
-
-        // Limit Nofile: Limited by Android sandbox
-        // int limitNofile = prefs.getLimitNofile();
-        // if (limitNofile > 0) {
-        //     config.append("  limit-nofile: ").append(limitNofile).append("\n");
-        // }
     }
 }
