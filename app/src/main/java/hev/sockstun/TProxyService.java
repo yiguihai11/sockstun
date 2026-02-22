@@ -35,11 +35,6 @@ public class TProxyService extends VpnService {
 	private static native void TProxyStartService(String config_path, int fd);
 	private static native void TProxyStopService();
 	private static native long[] TProxyGetStats();
-	private static native String[] TProxyGetBlacklist();
-
-	public static String[] getBlacklist() {
-		return TProxyGetBlacklist();
-	}
 
 	public static final String ACTION_CONNECT = "hev.sockstun.CONNECT";
 	public static final String ACTION_DISCONNECT = "hev.sockstun.DISCONNECT";
@@ -313,11 +308,6 @@ public class TProxyService extends VpnService {
 		logsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent logsPi = PendingIntent.getActivity(this, 1, logsIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-		// Blacklist Action
-		Intent blacklistIntent = new Intent(this, BlacklistActivity.class);
-		blacklistIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		PendingIntent blacklistPi = PendingIntent.getActivity(this, 2, blacklistIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelName);
 
 		notification
@@ -327,8 +317,7 @@ public class TProxyService extends VpnService {
 				.setContentIntent(pi)
 				.setOngoing(true)
 				.setOnlyAlertOnce(true)
-				.addAction(0, getString(R.string.logs), logsPi)
-				.addAction(0, getString(R.string.blacklist), blacklistPi);
+				.addAction(0, getString(R.string.logs), logsPi);
 
 		// Add big text style if detailed info is available
 		if (bigText != null) {
