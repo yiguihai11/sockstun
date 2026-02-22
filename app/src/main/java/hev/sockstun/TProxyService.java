@@ -121,7 +121,7 @@ public class TProxyService extends VpnService {
 							Object ipPrefix = ipPrefixClass.getConstructor(String.class).newInstance(route);
 							excludeRouteMethod.invoke(builder, ipPrefix);
 						} catch (Exception e) {
-							// Silently ignore errors for individual routes
+							LogActivity.w(this, "TProxyService", "Failed to exclude IPv4 route " + route + ": " + e.getMessage());
 						}
 					}
 				}
@@ -133,12 +133,12 @@ public class TProxyService extends VpnService {
 							Object ipPrefix = ipPrefixClass.getConstructor(String.class).newInstance(route);
 							excludeRouteMethod.invoke(builder, ipPrefix);
 						} catch (Exception e) {
-							// Silently ignore errors for individual routes
+							LogActivity.w(this, "TProxyService", "Failed to exclude IPv6 route " + route + ": " + e.getMessage());
 						}
 					}
 				}
 			} catch (Exception e) {
-				// Silently ignore reflection errors (class not found, method not found, etc.)
+				LogActivity.e(this, "TProxyService", "Reflection failed for excludeRoute: " + e.getMessage());
 			}
 		}
 
@@ -221,6 +221,7 @@ public class TProxyService extends VpnService {
 			fos.write(tproxy_conf.getBytes());
 			fos.close();
 		} catch (IOException e) {
+			LogActivity.e(this, "TProxyService", "Failed to generate or write tproxy.conf: " + e.getMessage());
 			return;
 		}
 
@@ -241,6 +242,8 @@ public class TProxyService extends VpnService {
 			// This ensures state consistency if any step fails
 			prefs.setEnable(true);
 		} catch (Exception e) {
+			LogActivity.e(this, "TProxyService", "startService failed: " + e.getMessage());
+			e.printStackTrace();
 			// Any step fails, clean up and stop service
 			stopService();
 		}
@@ -273,6 +276,7 @@ public class TProxyService extends VpnService {
 				tunFd.close();
 			}
 		} catch (IOException e) {
+			LogActivity.e(this, "TProxyService", "Failed to close TUN device: " + e.getMessage());
 			showToast(getString(R.string.toast_tun_close_failed, e.getMessage()));
 		}
 		tunFd = null;
