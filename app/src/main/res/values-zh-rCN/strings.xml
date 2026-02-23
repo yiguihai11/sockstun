@@ -233,4 +233,5 @@
 	<string name="toast_vpn_establish_failed">建立VPN隧道失败，请检查VPN权限</string>
 	<string name="toast_service_not_running">服务未运行</string>
 	<string name="toast_tun_close_failed">关闭TUN设备失败: %s</string>
+	<string name="udp_local_hint">提示：如果 UDP 需要转发到本地运行的 SOCKS5 服务器（如 127.0.0.1:1080），通常只需在 TCP 配置中设置即可。此处的独立 UDP 字段仅用于多服务器分流等特殊场景。</string>
 </resources>

@@ -233,4 +233,5 @@
 	<string name="toast_vpn_establish_failed">Failed to establish VPN tunnel, please check VPN permissions</string>
 	<string name="toast_service_not_running">Service is not running</string>
 	<string name="toast_tun_close_failed">Failed to close TUN device: %s</string>
+	<string name="udp_local_hint">Hint: If you need to forward UDP to a local SOCKS5 server (e.g. 127.0.0.1:1080), usually you only need to configure the main TCP address and port. These independent UDP fields are only for special multi-server relay scenarios.</string>
 </resources>
