@@ -317,7 +317,7 @@ public class Preferences
 	}
 
 	public int getTunnelMtu() {
-		return prefs.getInt(TUNNEL_MTU, 1500);
+		return prefs.getInt(TUNNEL_MTU, 8500);
 	}
 
 	public void setTunnelMtu(int mtu) {
@@ -403,7 +403,7 @@ public class Preferences
 	}
 
 	public int getTaskStackSize() {
-		return prefs.getInt(TASK_STACK_SIZE, 81920);
+		return prefs.getInt(TASK_STACK_SIZE, 86016);
 	}
 
 	public void setTaskStackSize(int size) {
@@ -473,7 +473,7 @@ public class Preferences
 	}
 
 	public int getUdpReadWriteTimeout() {
-		return prefs.getInt(UDP_READ_WRITE_TIMEOUT, 5000);
+		return prefs.getInt(UDP_READ_WRITE_TIMEOUT, 60000);
 	}
 
 	public void setUdpReadWriteTimeout(int timeout) {

@@ -52,7 +52,10 @@ public class ConfigGenerator {
 
     private void appendTunnelSection() {
         config.append("tunnel:\n");
-        config.append("  mtu: ").append(prefs.getTunnelMtu()).append("\n");
+        int mtu = prefs.getTunnelMtu();
+        if (mtu != 8500) {
+            config.append("  mtu: ").append(mtu).append("\n");
+        }
     }
 
     private void appendSocks5Section() {
@@ -177,7 +180,7 @@ public class ConfigGenerator {
         config.append("misc:\n");
 
         int taskStackSize = prefs.getTaskStackSize();
-        if (taskStackSize != 81920) {
+        if (taskStackSize != 86016) {
             config.append("  task-stack-size: ").append(taskStackSize).append("\n");
         }
 
@@ -212,7 +215,7 @@ public class ConfigGenerator {
         }
 
         int udpReadWriteTimeout = prefs.getUdpReadWriteTimeout();
-        if (udpReadWriteTimeout != 5000) {
+        if (udpReadWriteTimeout != 60000) {
             config.append("  udp-read-write-timeout: ").append(udpReadWriteTimeout).append("\n");
         }
 
