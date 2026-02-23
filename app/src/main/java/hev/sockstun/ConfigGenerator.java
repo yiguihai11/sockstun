@@ -175,20 +175,46 @@ public class ConfigGenerator {
 
     private void appendMiscSection() {
         config.append("misc:\n");
-        config.append("  task-stack-size: ").append(prefs.getTaskStackSize()).append("\n");
 
-        config.append("  tcp-buffer-size: ").append(prefs.getTcpBufferSize()).append("\n");
-        config.append("  udp-recv-buffer-size: ").append(prefs.getUdpRecvBufferSize()).append("\n");
-        config.append("  udp-copy-buffer-nums: ").append(prefs.getUdpCopyBufferNums()).append("\n");
+        int taskStackSize = prefs.getTaskStackSize();
+        if (taskStackSize != 81920) {
+            config.append("  task-stack-size: ").append(taskStackSize).append("\n");
+        }
+
+        int tcpBufferSize = prefs.getTcpBufferSize();
+        if (tcpBufferSize != 65536) {
+            config.append("  tcp-buffer-size: ").append(tcpBufferSize).append("\n");
+        }
+
+        int udpRecvBufferSize = prefs.getUdpRecvBufferSize();
+        if (udpRecvBufferSize != 524288) {
+            config.append("  udp-recv-buffer-size: ").append(udpRecvBufferSize).append("\n");
+        }
+
+        int udpCopyBufferNums = prefs.getUdpCopyBufferNums();
+        if (udpCopyBufferNums != 10) {
+            config.append("  udp-copy-buffer-nums: ").append(udpCopyBufferNums).append("\n");
+        }
 
         int maxSessionCount = prefs.getMaxSessionCount();
         if (maxSessionCount > 0) {
             config.append("  max-session-count: ").append(maxSessionCount).append("\n");
         }
 
-        config.append("  connect-timeout: ").append(prefs.getConnectTimeout()).append("\n");
-        config.append("  tcp-read-write-timeout: ").append(prefs.getTcpReadWriteTimeout()).append("\n");
-        config.append("  udp-read-write-timeout: ").append(prefs.getUdpReadWriteTimeout()).append("\n");
+        int connectTimeout = prefs.getConnectTimeout();
+        if (connectTimeout != 10000) {
+            config.append("  connect-timeout: ").append(connectTimeout).append("\n");
+        }
+
+        int tcpReadWriteTimeout = prefs.getTcpReadWriteTimeout();
+        if (tcpReadWriteTimeout != 300000) {
+            config.append("  tcp-read-write-timeout: ").append(tcpReadWriteTimeout).append("\n");
+        }
+
+        int udpReadWriteTimeout = prefs.getUdpReadWriteTimeout();
+        if (udpReadWriteTimeout != 5000) {
+            config.append("  udp-read-write-timeout: ").append(udpReadWriteTimeout).append("\n");
+        }
 
         config.append("  log-file: '").append(logFile.getAbsolutePath()).append("'\n");
         config.append("  log-level: ").append(prefs.getLogLevel()).append("\n");
