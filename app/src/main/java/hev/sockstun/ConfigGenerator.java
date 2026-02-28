@@ -91,13 +91,9 @@ public class ConfigGenerator {
         String udpRelay = prefs.getUdpInTcp() ? "tcp" : "udp";
         config.append("    udp-relay: '").append(udpRelay).append("'");
 
-        // UDP authentication (use TCP credentials if not set)
+        // UDP authentication (only if specifically set for UDP)
         String udpUser = prefs.getSocksUdpUsername();
         String udpPass = prefs.getSocksUdpPassword();
-        if (udpUser.isEmpty() && udpPass.isEmpty()) {
-            udpUser = prefs.getSocksUsername();
-            udpPass = prefs.getSocksPassword();
-        }
         appendAuthentication(udpUser, udpPass);
     }
 
